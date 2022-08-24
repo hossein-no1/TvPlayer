@@ -8,13 +8,14 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.google.android.exoplayer2.ui.StyledPlayerView
+    <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/player_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:show_shuffle_button="true"
-        app:show_subtitle_button="true"
+        app:controller_layout_id="@layout/layout_own_controller"
+        app:shutter_background_color="@color/black"
         app:resize_mode="fill"
+        app:surface_type="surface_view"
         />
 
 </RelativeLayout>
