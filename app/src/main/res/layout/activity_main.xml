@@ -1,22 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.exoplayer2.ui.PlayerView
-        android:id="@+id/player_view"
+    <data>
+
+        <variable
+            name="isLoading"
+            type="Boolean" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:controller_layout_id="@layout/layout_own_controller"
-        app:shutter_background_color="@color/black"
-        app:resize_mode="fill"
-        app:surface_type="surface_view"
-        />
+        tools:context=".MainActivity">
 
-</RelativeLayout>
+        <com.tv.player.OptimizedPlayerView
+            android:id="@+id/player_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
+            app:animation_enabled="false"
+            app:controller_layout_id="@layout/layout_own_controller"
+            app:resize_mode="fill"
+            app:shutter_background_color="@color/black"
+            app:surface_type="surface_view"
+            app:use_artwork="false" />
+
+        <com.tv.player.OptimizedPlayerView
+            android:id="@+id/advertise_player_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:resize_mode="fill"
+            app:controller_layout_id="@layout/layout_advertise_controller"
+            app:show_timeout="0"
+            app:hide_on_touch="false"
+            app:shutter_background_color="@color/black"
+            app:surface_type="surface_view"
+            app:use_artwork="false" />
+
+        <ProgressBar
+            android:id="@+id/loading"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:visibility="@{isLoading ? View.VISIBLE : View.GONE , default=gone}" />
+
+    </RelativeLayout>
 </layout>

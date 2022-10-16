@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="#99000000">
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/exo_position"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
         android:layout_toStartOf="@id/exo_duration"
         android:layout_toEndOf="@id/exo_position" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/exo_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -42,49 +42,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/exo_progress"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <LinearLayout
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/exo_prev"
+            style="@style/ExoMediaButton.Previous"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
             android:layout_toStartOf="@+id/exo_rew"
             android:background="@drawable/selector_controller_button"
             android:clickable="true"
             android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:padding="12dp">
+            android:padding="12dp"
+            android:src="@drawable/ic_prev"
+            android:tintMode="src_in" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:clickable="true"
-                android:focusable="true"
-                android:src="@drawable/ic_prev"
-                android:tintMode="src_in" />
-        </LinearLayout>
-
-        <LinearLayout
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/exo_rew"
+            style="@style/ExoMediaButton.Rewind"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
             android:layout_toStartOf="@id/parent_pauseAndPlay"
             android:background="@drawable/selector_controller_button"
             android:clickable="true"
             android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:padding="12dp">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:clickable="true"
-                android:focusable="true"
-                android:src="@drawable/ic_fast_rewind"
-                android:tintMode="src_in" />
-        </LinearLayout>
+            android:padding="12dp"
+            android:src="@drawable/ic_fast_rewind"
+            android:tintMode="src_in" />
 
         <RelativeLayout
             android:id="@+id/parent_pauseAndPlay"
@@ -92,110 +81,75 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true">
 
-            <LinearLayout
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/exo_play"
+                style="@style/ExoMediaButton.Play"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:background="@drawable/selector_controller_button"
                 android:clickable="true"
                 android:focusable="true"
-                android:focusableInTouchMode="true"
+                android:padding="12dp"
+                android:src="@drawable/ic_play" />
 
-                android:padding="12dp">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:src="@drawable/ic_play" />
-            </LinearLayout>
-
-            <LinearLayout
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/exo_pause"
+                style="@style/ExoMediaButton.Pause"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
+                android:layout_gravity="center"
                 android:background="@drawable/selector_controller_button"
                 android:clickable="true"
                 android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:padding="12dp">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:src="@drawable/ic_pause" />
-            </LinearLayout>
+                android:padding="12dp"
+                android:src="@drawable/ic_pause" />
         </RelativeLayout>
 
-        <LinearLayout
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/exo_ffwd"
+            style="@style/ExoMediaButton.FastForward"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
             android:layout_toEndOf="@id/parent_pauseAndPlay"
             android:background="@drawable/selector_controller_button"
             android:clickable="true"
             android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:padding="12dp">
+            android:padding="12dp"
+            android:src="@drawable/ic_fast_forward" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:clickable="true"
-                android:focusable="true"
-                android:src="@drawable/ic_fast_forward" />
-        </LinearLayout>
-
-        <LinearLayout
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/exo_next"
+            style="@style/ExoMediaButton.Next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
             android:layout_toEndOf="@+id/exo_ffwd"
             android:background="@drawable/selector_controller_button"
             android:clickable="true"
+            android:duplicateParentState="true"
             android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:padding="12dp">
+            android:padding="12dp"
+            android:src="@drawable/ic_next" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:clickable="true"
-                android:focusable="true"
-                android:src="@drawable/ic_next" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/parent_subtitles"
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/ib_subtitles"
+            style="@style/ExoStyledControls.Button.Bottom.CC"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="8dp"
             android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:layout_marginEnd="8dp"
             android:background="@drawable/selector_controller_button"
             android:clickable="true"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:padding="12dp">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:clickable="true"
-                android:focusable="true"
-                android:src="@drawable/ic_subtitle"
-                android:tintMode="src_in" />
-
-        </LinearLayout>
+            android:src="@drawable/ic_subtitle"
+            android:tintMode="src_in" />
 
     </RelativeLayout>
 

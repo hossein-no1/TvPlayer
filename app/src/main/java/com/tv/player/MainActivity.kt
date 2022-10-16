@@ -1,123 +1,76 @@
 package com.tv.player
 
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.widget.LinearLayout
-import androidx.appcompat.app.AlertDialog
+import android.view.View
+import android.widget.RelativeLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.util.MimeTypes
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
+import androidx.appcompat.widget.AppCompatImageButton
+import androidx.appcompat.widget.AppCompatTextView
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.PlaybackException
+import com.google.android.exoplayer2.Player
+import com.tv.coretvlibrary.base.AdvertisePlayer
+import com.tv.coretvlibrary.util.AdvertisePlayerHandler
 import com.tv.player.databinding.ActivityMainBinding
-import java.util.*
-
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
-    private val TAG = "hossein"
+    private val filmWithoutSubtitleLink =
+        "http://dl.gemescape.com/film/2022/Blanda/SoftSub/B.l.o.n.d.e.2022.1080p.10bit.WEBRip.6CH.x265.HEVC.PSA.SoftSub.PK.mkv"
 
-    private val videoUrl720 =
-        "http://dl2.gemescape.com/FILM/2022/Minions/Minions.The.Rise.of.Gru.2022.720p.WEB-HD.x264.Pahe.SoftSub.PK.mkv"
+    private val filmLive =
+        "http://92.42.50.29/PLTV/88888888/224/3221226140/index.m3u8?rrsip=92.42.50.29&zoneoffset=0&devkbps=462-3000&servicetype=1&icpid=&accounttype=1&limitflux=-1&limitdur=-1&tenantId=9802&accountinfo=Xrt3KWcoCI5FlXhu5Zv8JxQnVoci7noamwPvHTQ6SQVrjR7xZ7nipIwU5pQG2f%2Bq%2BLz9EbXMj63mpUXJp%2FZIaRvnmpBPEQUyO0R0FdMse4cviE4toyc9SSc00HhDS3lJhZ9K4b4ymiVCSHr0%2BPpFtYRcSWuBLLH0De9WBPjgyJ8%3D%3A20211207150037%3AUTC%2C10001007206428%2C77.81.151.194%2C20211207150037%2Curn%3AHuawei%3AliveTV%3AXTV100000148%2C10001007206428%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C10000506368856%2C0%2C10500006361944%2C384af8f5386e59cb%2C%2C%2C1%2C1%2CEND&GuardEncType=2&it=H4sIAAAAAAAAADWOwQ6CMBBE_6bHplDB7aEnjYmJQRPRq1nLUomFaosm_r2AeNjL7LzJ6wMa2q61WiqQBCBB5ourkpAta2VyQlQKcpWwSM_C65QZdK7pbOGrETsfV5dE8DRNeCrGY-U4uHFotZi6xau9UtDZHzxSeDeGdBVr_sbI0dpAFvvGd_zg8HMKbq4wKme5JJcAMIhkQkjWj2mJ8T582A3jyrcPDFTtvJ0AXaOLxB5o7mipwJZ093Lux-1DNdh8AQYNhMH2AAAA"
+
+    private val ad1 =
+        "https://uptv-test.s3.ir-thr-at1.arvanstorage.com/ads/7467080130868809932.MP4"
+
+    private val ad2 =
+        "https://hajifirouz6.asset.aparat.com/aparat-video/f911642b62f9155be11dccc19cd43c0248239895-1080p.mp4?wmsAuthSign=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6IjI1NTU2YzJmNDQwZjBjODY2ZTRhODRlZTBiZTBiYzNhIiwiZXhwIjoxNjY1OTIzNDYyLCJpc3MiOiJTYWJhIElkZWEgR1NJRyJ9.y0ut_r2dHXt-6RJIR3wnIFhVjK_nt4cWQTL1gObz4c4"
+
+    private lateinit var playerHandler: AdvertisePlayer
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var exo: ExoPlayer
-    private lateinit var player: ForwardingPlayer
-    private lateinit var trackSelector: DefaultTrackSelector
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        playerHandler = AdvertisePlayer(
+            context = this,
+            playerView = binding.playerView,
+            adPlayerView = binding.advertisePlayerView
+        )
+
         val mediaItem = MediaItem.Builder()
-            .setUri(Uri.parse(videoUrl720))
-            .setMimeType(MimeTypes.TEXT_VTT)
+            .setUri(Uri.parse(filmLive))
             .build()
 
-        trackSelector = DefaultTrackSelector(this.applicationContext)
-        exo = ExoPlayer.Builder(this)
-            .setTrackSelector(trackSelector)
+        val advertiseMediaItem = MediaItem.Builder()
+            .setUri(Uri.parse(ad2))
             .build()
 
-        val player: ForwardingPlayer = object : ForwardingPlayer(exo) {
-            override fun getSeekBackIncrement(): Long {
-                return 10 * 1000 // 10 sec
-            }
+        playerHandler.addListener(playerListener)
+        playerHandler.addMedia(mediaItem)
+        playerHandler.addMediaAdvertise(advertiseMediaItem, 10)
+        playerHandler.playAdvertiseAutomatic()
 
-            override fun getSeekForwardIncrement(): Long {
-                return 10 * 1000 // 10 sec
-            }
+        playerHandler.advertisePlayerHandler = advertisePlayerHandler
+
+        findViewById<AppCompatTextView>(R.id.skippAd).setOnClickListener{
+            playerHandler.startForceVideo()
         }
 
-        binding.playerView.player = player
-
-        player.addListener(playerListener)
-
-        player.addMediaItem(mediaItem)
-        player.prepare()
-        player.playWhenReady = true
-        player.play()
-
-        findViewById<LinearLayout>(R.id.parent_subtitles).setOnClickListener {
-            showSubtitle()
+        findViewById<AppCompatImageButton>(R.id.ib_subtitles).setOnClickListener{
+            playerHandler.showSubtitle(R.style.alertDialog)
         }
-
-    }
-
-    private fun showSubtitle() {
-
-        val subtitles = ArrayList<String>()
-        val subtitlesList = ArrayList<String>()
-        for (group in binding.playerView.player?.currentTracks!!.groups) {
-            if (group.type == C.TRACK_TYPE_TEXT) {
-                val groupInfo = group.mediaTrackGroup
-                for (i in 0 until groupInfo.length) {
-                    subtitles.add(groupInfo.getFormat(i).language.toString())
-                    subtitlesList.add(
-                        "${subtitlesList.size + 1}. " + Locale(groupInfo.getFormat(i).language.toString()).displayLanguage
-                                + " (${groupInfo.getFormat(i).label})"
-                    )
-                }
-            }
-        }
-
-        val tempTracks = subtitlesList.toArray(arrayOfNulls<CharSequence>(subtitlesList.size))
-        val sDialog = MaterialAlertDialogBuilder(this, R.style.alertDialog)
-            .setTitle("Select Subtitles")
-            .setOnCancelListener { }
-            .setPositiveButton("Off Subtitles") { self, _ ->
-                trackSelector.setParameters(
-                    trackSelector.buildUponParameters().setRendererDisabled(
-                        C.TRACK_TYPE_VIDEO, true
-                    )
-                )
-                self.dismiss()
-            }
-            .setItems(tempTracks) { _, position ->
-                Snackbar.make(binding.root, subtitlesList[position] + " Selected", 3000).show()
-                trackSelector.setParameters(
-                    trackSelector.buildUponParameters()
-                        .setPreferredTextLanguages("en", "fa", "ar")
-                        .setPreferredVideoMimeTypes(
-                            MimeTypes.APPLICATION_SUBRIP,
-                            MimeTypes.TEXT_VTT,
-                            MimeTypes.TEXT_SSA,
-                            MimeTypes.TEXT_UNKNOWN,
-                            MimeTypes.TEXT_EXOPLAYER_CUES
-                        )
-                        .setAllowVideoMixedMimeTypeAdaptiveness(true)
-                        .setRendererDisabled(C.TRACK_TYPE_TEXT, false)
-                )
-            }
-            .create()
-        sDialog.show()
-        sDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.WHITE)
-        sDialog.window?.setBackgroundDrawable(ColorDrawable(0x99000000.toInt()))
 
     }
 
@@ -125,12 +78,43 @@ class MainActivity : AppCompatActivity() {
 
         override fun onPlayerError(error: PlaybackException) {
             super.onPlayerError(error)
-            Log.i(TAG, "onPlayerError: ${error.message}")
+        }
+
+        override fun onPlaybackStateChanged(playbackState: Int) {
+            super.onPlaybackStateChanged(playbackState)
+            binding.isLoading = playbackState == ExoPlayer.STATE_BUFFERING
+            if (playbackState == ExoPlayer.STATE_READY)
+                findViewById<RelativeLayout>(R.id.parent_pauseAndPlay).requestFocus()
+            if (playbackState == ExoPlayer.STATE_BUFFERING) {
+                //Start video loading
+                binding.loading.visibility = View.VISIBLE
+            } else {
+                //End video loading
+                binding.loading.visibility = View.GONE
+            }
+        }
+
+    }
+
+    private val advertisePlayerHandler = object : AdvertisePlayerHandler {
+        override fun playBackStateChange(playbackState: Int) {
+        }
+
+        override fun onPlayerError(error: PlaybackException) {
+        }
+
+        override fun onSkipTimeChange(currentTime: Int, skippTime: Int) {
+            findViewById<AppCompatTextView>(R.id.skippAd).apply {
+                this.visibility = View.VISIBLE
+                this.text = " تا رد کردن آگهی$currentTime"
+                if (currentTime <= 0)
+                    this.text = "ردکردن آگهی"
+            }
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        player.release()
+        playerHandler.release()
     }
 }

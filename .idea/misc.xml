@@ -3,7 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/hpleo/StudioProjects/TvPlayer/app/src/main/res/layout/activity_main.xml" value="0.2212962962962963" />
+        <entry key="..\:/Users/hpleo/.gradle/caches/transforms-3/7d5d214397e9bd8f6584368bbf546928/transformed/exoplayer-ui-2.18.1/res/drawable-anydpi-v21/exo_icon_pause.xml" value="0.1425" />
+        <entry key="..\:/Users/hpleo/.gradle/caches/transforms-3/7d5d214397e9bd8f6584368bbf546928/transformed/exoplayer-ui-2.18.1/res/layout/exo_player_control_view.xml" value="0.1703125" />
+        <entry key="..\:/Users/hpleo/.gradle/caches/transforms-3/7d5d214397e9bd8f6584368bbf546928/transformed/exoplayer-ui-2.18.1/res/layout/exo_styled_player_control_view.xml" value="0.1703125" />
+        <entry key="..\:/Users/hpleo/StudioProjects/TvPlayer/app/src/main/res/drawable/ic_fast_forward.xml" value="0.1425" />
+        <entry key="..\:/Users/hpleo/StudioProjects/TvPlayer/app/src/main/res/drawable/ic_fast_rewind.xml" value="0.1425" />
+        <entry key="..\:/Users/hpleo/StudioProjects/TvPlayer/app/src/main/res/drawable/ic_play.xml" value="0.1425" />
+        <entry key="..\:/Users/hpleo/StudioProjects/TvPlayer/app/src/main/res/drawable/selector_controller_button.xml" value="0.1425" />
+        <entry key="..\:/Users/hpleo/StudioProjects/TvPlayer/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/hpleo/StudioProjects/TvPlayer/app/src/main/res/layout/asd.xml" value="0.4015625" />
+        <entry key="..\:/Users/hpleo/StudioProjects/TvPlayer/app/src/main/res/layout/layout_advertise_controller.xml" value="0.10651041666666666" />
+        <entry key="..\:/Users/hpleo/StudioProjects/TvPlayer/app/src/main/res/layout/layout_own_controller.xml" value="0.1" />
       </map>
     </option>
   </component>
