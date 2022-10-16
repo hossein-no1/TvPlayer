@@ -20,7 +20,6 @@
         android:focusableInTouchMode="true"
         android:paddingHorizontal="16dp"
         android:paddingVertical="8dp"
-        android:text="Skipp"
         android:visibility="gone"
         android:textColor="#000000"
         android:textSize="24sp" />

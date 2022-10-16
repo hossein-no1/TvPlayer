@@ -21,7 +21,7 @@ abstract class BasePlayer(
 ) {
 
     private var trackSelector: DefaultTrackSelector
-    protected var player: ExoPlayer
+    var player: ExoPlayer
 
     init {
         val videoTrackSelectionFactory =
@@ -71,6 +71,16 @@ abstract class BasePlayer(
 
     fun pause() {
         player.pause()
+    }
+
+    fun fastForwardIncrement(duration : Int = 10){
+        val length = if (duration <= 1_000) duration * 1_000 else duration
+        player.seekTo(player.currentPosition + length)
+    }
+
+    fun fastRewindIncrement(duration : Int = 10){
+        val length = if (duration <= 1_000) duration * 1_000 else duration
+        player.seekTo(player.currentPosition - length)
     }
 
     abstract fun release()

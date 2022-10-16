@@ -29,17 +29,37 @@
             app:surface_type="surface_view"
             app:use_artwork="false" />
 
-        <com.tv.player.OptimizedPlayerView
-            android:id="@+id/advertise_player_view"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:resize_mode="fill"
-            app:controller_layout_id="@layout/layout_advertise_controller"
-            app:show_timeout="0"
-            app:hide_on_touch="false"
-            app:shutter_background_color="@color/black"
-            app:surface_type="surface_view"
-            app:use_artwork="false" />
+            android:orientation="horizontal">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottie_fastRewind"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".5"
+                app:lottie_autoPlay="true"
+                android:rotation="180"
+                android:scaleType="fitXY"
+                app:lottie_loop="true"
+                android:visibility="invisible"
+                android:background="#80FFFFFF"
+                app:lottie_fileName="lottie/fast_forward_animation.json" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottie_fastForward"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".5"
+                app:lottie_autoPlay="true"
+                android:scaleType="fitXY"
+                android:visibility="invisible"
+                app:lottie_loop="true"
+                android:background="#80FFFFFF"
+                app:lottie_fileName="lottie/fast_forward_animation.json" />
+
+        </LinearLayout>
 
         <ProgressBar
             android:id="@+id/loading"

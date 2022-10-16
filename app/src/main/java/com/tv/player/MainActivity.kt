@@ -2,10 +2,10 @@ package com.tv.player
 
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
+import android.os.Handler
+import android.view.KeyEvent
 import android.view.View
 import android.widget.RelativeLayout
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatTextView
@@ -13,12 +13,9 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
-import com.tv.coretvlibrary.base.AdvertisePlayer
+import com.tv.coretvlibrary.base.SimplePlayer
 import com.tv.coretvlibrary.util.AdvertisePlayerHandler
 import com.tv.player.databinding.ActivityMainBinding
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,7 +31,7 @@ class MainActivity : AppCompatActivity() {
     private val ad2 =
         "https://hajifirouz6.asset.aparat.com/aparat-video/f911642b62f9155be11dccc19cd43c0248239895-1080p.mp4?wmsAuthSign=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6IjI1NTU2YzJmNDQwZjBjODY2ZTRhODRlZTBiZTBiYzNhIiwiZXhwIjoxNjY1OTIzNDYyLCJpc3MiOiJTYWJhIElkZWEgR1NJRyJ9.y0ut_r2dHXt-6RJIR3wnIFhVjK_nt4cWQTL1gObz4c4"
 
-    private lateinit var playerHandler: AdvertisePlayer
+    private lateinit var playerHandler: SimplePlayer
 
     private lateinit var binding: ActivityMainBinding
 
@@ -43,32 +40,21 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        playerHandler = AdvertisePlayer(
+        playerHandler = SimplePlayer(
             context = this,
-            playerView = binding.playerView,
-            adPlayerView = binding.advertisePlayerView
+            playerView = binding.playerView
         )
 
         val mediaItem = MediaItem.Builder()
-            .setUri(Uri.parse(filmLive))
-            .build()
-
-        val advertiseMediaItem = MediaItem.Builder()
-            .setUri(Uri.parse(ad2))
+            .setUri(Uri.parse(filmWithoutSubtitleLink))
             .build()
 
         playerHandler.addListener(playerListener)
         playerHandler.addMedia(mediaItem)
-        playerHandler.addMediaAdvertise(advertiseMediaItem, 10)
-        playerHandler.playAdvertiseAutomatic()
+        playerHandler.preparePlayer()
+        playerHandler.play()
 
-        playerHandler.advertisePlayerHandler = advertisePlayerHandler
-
-        findViewById<AppCompatTextView>(R.id.skippAd).setOnClickListener{
-            playerHandler.startForceVideo()
-        }
-
-        findViewById<AppCompatImageButton>(R.id.ib_subtitles).setOnClickListener{
+        findViewById<AppCompatImageButton>(R.id.ib_subtitles).setOnClickListener {
             playerHandler.showSubtitle(R.style.alertDialog)
         }
 
@@ -110,6 +96,41 @@ class MainActivity : AppCompatActivity() {
                 if (currentTime <= 0)
                     this.text = "ردکردن آگهی"
             }
+        }
+    }
+
+    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        if (playerHandler.player.isPlaying && !binding.playerView.isControllerVisible) {
+            if (event.action == KeyEvent.ACTION_UP) {
+                when (event.keyCode) {
+                    KeyEvent.KEYCODE_DPAD_LEFT -> {
+                        playerHandler.fastRewindIncrement()
+
+                        binding.lottieFastRewind.visibility = View.VISIBLE
+                        Handler(mainLooper).postDelayed({
+                            binding.lottieFastRewind.visibility = View.INVISIBLE
+                        }, 2_000)
+                    }
+                    KeyEvent.KEYCODE_DPAD_RIGHT -> {
+                        playerHandler.fastForwardIncrement()
+
+                        binding.lottieFastForward.visibility = View.VISIBLE
+                        Handler(mainLooper).postDelayed({
+                            binding.lottieFastForward.visibility = View.INVISIBLE
+                        }, 2_000)
+                    }
+                    KeyEvent.KEYCODE_DPAD_CENTER -> {
+                        playerHandler.pause()
+                    }
+                }
+
+                return false
+            } else {
+                return false
+            }
+
+        } else {
+            return super.dispatchKeyEvent(event)
         }
     }
 

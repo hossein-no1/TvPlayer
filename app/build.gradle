@@ -50,4 +50,5 @@ dependencies {
     implementation "androidx.multidex:multidex:2.0.1"
 
     implementation 'com.google.android.exoplayer:exoplayer:2.18.1'
+    implementation 'com.airbnb.android:lottie:5.2.0'
 }
