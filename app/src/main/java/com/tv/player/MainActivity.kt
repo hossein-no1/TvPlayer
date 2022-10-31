@@ -13,8 +13,8 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
-import com.tv.coretvlibrary.base.SimplePlayer
-import com.tv.coretvlibrary.util.AdvertisePlayerHandler
+import com.tv.core.base.SimplePlayer
+import com.tv.core.util.AdvertisePlayerHandler
 import com.tv.player.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

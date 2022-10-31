@@ -5,5 +5,5 @@ import com.google.android.exoplayer2.PlaybackException
 interface AdvertisePlayerHandler {
     fun playBackStateChange(playbackState : Int)
     fun onPlayerError(error: PlaybackException)
-    fun onSkippTimeChange(currentTime : Int, skippTime : Int)
+    fun onSkipTimeChange(currentTime : Int, skippTime : Int)
 }
