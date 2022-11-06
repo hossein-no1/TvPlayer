@@ -13,14 +13,16 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.util.MimeTypes
 import com.tv.core.base.SimplePlayer
 import com.tv.core.util.AdvertisePlayerHandler
+import com.tv.core.util.MediaSourceType
 import com.tv.player.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
     private val filmWithoutSubtitleLink =
-        "http://dl.gemescape.com/film/2022/Blanda/SoftSub/B.l.o.n.d.e.2022.1080p.10bit.WEBRip.6CH.x265.HEVC.PSA.SoftSub.PK.mkv"
+        "http://dl3.gemescape.com/FILM/2022/Entergalactic/Entergalactic.2022.720p.WEBRip.x264.AAC.YTS.PK.mp4"
 
     private val filmLive =
         "http://92.42.50.29/PLTV/88888888/224/3221226140/index.m3u8?rrsip=92.42.50.29&zoneoffset=0&devkbps=462-3000&servicetype=1&icpid=&accounttype=1&limitflux=-1&limitdur=-1&tenantId=9802&accountinfo=Xrt3KWcoCI5FlXhu5Zv8JxQnVoci7noamwPvHTQ6SQVrjR7xZ7nipIwU5pQG2f%2Bq%2BLz9EbXMj63mpUXJp%2FZIaRvnmpBPEQUyO0R0FdMse4cviE4toyc9SSc00HhDS3lJhZ9K4b4ymiVCSHr0%2BPpFtYRcSWuBLLH0De9WBPjgyJ8%3D%3A20211207150037%3AUTC%2C10001007206428%2C77.81.151.194%2C20211207150037%2Curn%3AHuawei%3AliveTV%3AXTV100000148%2C10001007206428%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C10000506368856%2C0%2C10500006361944%2C384af8f5386e59cb%2C%2C%2C1%2C1%2CEND&GuardEncType=2&it=H4sIAAAAAAAAADWOwQ6CMBBE_6bHplDB7aEnjYmJQRPRq1nLUomFaosm_r2AeNjL7LzJ6wMa2q61WiqQBCBB5ourkpAta2VyQlQKcpWwSM_C65QZdK7pbOGrETsfV5dE8DRNeCrGY-U4uHFotZi6xau9UtDZHzxSeDeGdBVr_sbI0dpAFvvGd_zg8HMKbq4wKme5JJcAMIhkQkjWj2mJ8T582A3jyrcPDFTtvJ0AXaOLxB5o7mipwJZ093Lux-1DNdh8AQYNhMH2AAAA"
@@ -30,6 +32,9 @@ class MainActivity : AppCompatActivity() {
 
     private val ad2 =
         "https://hajifirouz6.asset.aparat.com/aparat-video/f911642b62f9155be11dccc19cd43c0248239895-1080p.mp4?wmsAuthSign=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6IjI1NTU2YzJmNDQwZjBjODY2ZTRhODRlZTBiZTBiYzNhIiwiZXhwIjoxNjY1OTIzNDYyLCJpc3MiOiJTYWJhIElkZWEgR1NJRyJ9.y0ut_r2dHXt-6RJIR3wnIFhVjK_nt4cWQTL1gObz4c4"
+
+    private val subtitleUrl =
+        "https://5fb0e2805042ef0018e46033.iran.liara.space/subtitles/6443346/Black%20Adam%20-%20Official%20Trailer%201%20-%20English%20%28United%20States%29.srt"
 
     private lateinit var playerHandler: SimplePlayer
 
@@ -45,8 +50,13 @@ class MainActivity : AppCompatActivity() {
             playerView = binding.playerView
         )
 
+        val subtitle =
+            MediaItem.SubtitleConfiguration.Builder(Uri.parse(subtitleUrl)).setLanguage("fa").setMimeType(MimeTypes.APPLICATION_SUBRIP).setLabel("Subtitle1").build()
+
         val mediaItem = MediaItem.Builder()
             .setUri(Uri.parse(filmWithoutSubtitleLink))
+            .setTag(MediaSourceType.Progressive)
+            .setSubtitleConfigurations(listOf(subtitle))
             .build()
 
         playerHandler.addListener(playerListener)

@@ -8,10 +8,18 @@ import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.source.MergingMediaSource
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.source.SingleSampleMediaSource
+import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
+import com.google.android.exoplayer2.util.Util
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.tv.core.util.MediaSourceType
 import java.util.*
 
 abstract class BasePlayer(
@@ -41,11 +49,11 @@ abstract class BasePlayer(
     }
 
     fun addMedia(media: MediaItem, index: Int = 0) {
-        player.addMediaItem(index, media)
+        player.addMediaSource(index, buildMediaSource(media))
     }
 
-    fun addMediaList(media: List<MediaItem>, index: Int) {
-        player.addMediaItems(index, media)
+    fun addMediaList(medias: List<MediaItem>, index: Int = 0) {
+        player.addMediaSources(index, buildMediaSources(medias))
     }
 
     fun isThereSubtitle(): Boolean {
@@ -55,6 +63,34 @@ abstract class BasePlayer(
             }
         }
         return false
+    }
+
+    private fun buildMediaSources(mediaItems: List<MediaItem>): List<MediaSource> {
+        val mediaSources = mutableListOf<MediaSource>()
+        mediaItems.forEach { mediaItem ->
+            mediaSources.add(buildMediaSource(mediaItem))
+        }
+        return mediaSources
+    }
+
+    private fun buildMediaSource(mediaItem: MediaItem): MediaSource {
+        val dataSourceFactory = DefaultHttpDataSource.Factory()
+            .setUserAgent(Util.getUserAgent(context, context.packageName))
+        val mediaSource: MediaSource =
+            if (mediaItem.localConfiguration?.tag.toString() == MediaSourceType.Hls.name)
+                HlsMediaSource.Factory(dataSourceFactory)
+                    .createMediaSource(mediaItem) else ProgressiveMediaSource.Factory(
+                dataSourceFactory
+            ).createMediaSource(mediaItem)
+        val subtitleSources: ArrayList<MediaSource> = arrayListOf()
+
+        mediaItem.localConfiguration?.subtitleConfigurations?.forEach { subtitleConfig ->
+            subtitleSources.add(
+                SingleSampleMediaSource.Factory(dataSourceFactory)
+                    .createMediaSource(subtitleConfig, C.TIME_UNSET)
+            )
+        }
+        return MergingMediaSource(mediaSource, *subtitleSources.toTypedArray())
     }
 
     fun preparePlayer() {
@@ -73,12 +109,12 @@ abstract class BasePlayer(
         player.pause()
     }
 
-    fun fastForwardIncrement(duration : Int = 10){
+    fun fastForwardIncrement(duration: Int = 10) {
         val length = if (duration <= 1_000) duration * 1_000 else duration
         player.seekTo(player.currentPosition + length)
     }
 
-    fun fastRewindIncrement(duration : Int = 10){
+    fun fastRewindIncrement(duration: Int = 10) {
         val length = if (duration <= 1_000) duration * 1_000 else duration
         player.seekTo(player.currentPosition - length)
     }
