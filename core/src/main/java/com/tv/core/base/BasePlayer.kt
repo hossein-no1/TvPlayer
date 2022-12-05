@@ -3,6 +3,11 @@ package com.tv.core.base
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.ListAdapter
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
@@ -15,11 +20,14 @@ import com.google.android.exoplayer2.source.SingleSampleMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.trackselection.TrackSelectionOverride
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.android.exoplayer2.util.Util
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.tv.core.R
 import com.tv.core.util.MediaSourceType
+import com.tv.core.util.SubtitleItemView
 import java.util.*
 
 abstract class BasePlayer(
@@ -123,48 +131,74 @@ abstract class BasePlayer(
 
     fun showSubtitle(overrideThemeResId: Int) {
         val subtitleLanguageList = ArrayList<String>()
-        val subtitlesList = ArrayList<String>()
+        val subtitlesList = ArrayList<SubtitleItemView>()
         for (group in player.currentTracks.groups) {
             if (group.type == C.TRACK_TYPE_TEXT) {
                 val groupInfo = group.mediaTrackGroup
                 for (i in 0 until groupInfo.length) {
                     subtitleLanguageList.add(groupInfo.getFormat(i).language.toString())
-                    subtitlesList.add(
-                        "${subtitlesList.size + 1}. " + Locale(groupInfo.getFormat(i).language.toString()).displayLanguage
-                                + " (${
-                            if (groupInfo.getFormat(i).label == null) "Subtitle" else groupInfo.getFormat(
-                                i
-                            ).label
+                    val subtitleText =
+                        "${subtitlesList.size + 1}. " + Locale(groupInfo.getFormat(i).language.toString()).displayLanguage + " (${
+                            if (groupInfo.getFormat(
+                                    i
+                                ).label == null
+                            ) "Subtitle" else groupInfo.getFormat(i).label
                         })"
-                    )
+                    val subtitleIcon = if (group.isSelected) R.drawable.ic_check else 0
+                    subtitlesList.add(SubtitleItemView(subtitleText, subtitleIcon))
                 }
             }
         }
 
-        val tempTracks = subtitlesList.toArray(arrayOfNulls<CharSequence>(subtitlesList.size))
         val subtitleDialog =
-            MaterialAlertDialogBuilder(context, overrideThemeResId)
-                .setTitle("Select Subtitles")
-                .setOnCancelListener { }
-                .setPositiveButton("Off Subtitles") { self, _ ->
+            MaterialAlertDialogBuilder(context, overrideThemeResId).setTitle("Select Subtitles")
+                .setAdapter(
+                    getAlertDialogAdapter(subtitlesList.toTypedArray())
+                ) { _, position ->
+                    val trackGroupList =
+                        trackSelector.currentMappedTrackInfo?.getTrackGroups(C.TRACK_TYPE_VIDEO)
+                    val trackGroup = trackGroupList?.get(position)
+                    trackGroup?.let { safeTrackGroup ->
+                        trackSelector.setParameters(
+                            trackSelector.buildUponParameters().setOverrideForType(
+                                TrackSelectionOverride(
+                                    safeTrackGroup, 0
+                                )
+                            ).setRendererDisabled(C.TRACK_TYPE_VIDEO, false)
+                        )
+                    }
+                }.setPositiveButton("Off Subtitles") { self, _ ->
                     trackSelector.setParameters(
                         trackSelector.buildUponParameters().setRendererDisabled(
                             C.TRACK_TYPE_VIDEO, true
                         )
                     )
                     self.dismiss()
-                }
-                .setItems(tempTracks) { _, position ->
-                    trackSelector.setParameters(
-                        trackSelector.buildUponParameters()
-                            .setRendererDisabled(C.TRACK_TYPE_VIDEO, false)
-                            .setPreferredTextLanguage(subtitleLanguageList[position])
-                    )
-                }
-                .create()
+                }.create()
         subtitleDialog.show()
         subtitleDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.WHITE)
         subtitleDialog.window?.setBackgroundDrawable(ColorDrawable(0x99000000.toInt()))
+    }
+
+    private fun getAlertDialogAdapter(items: Array<SubtitleItemView>): ListAdapter {
+        return object : ArrayAdapter<SubtitleItemView>(
+            context, android.R.layout.select_dialog_item, android.R.id.text1, items
+        ) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val v: View = super.getView(position, convertView, parent)
+                val tv = v.findViewById<TextView>(android.R.id.text1)
+
+                tv.text = items[position].text
+                tv.textSize = 16F
+                tv.setTextColor(Color.parseColor("#ffffff"))
+                tv.setCompoundDrawablesWithIntrinsicBounds(items[position].icon, 0, 0, 0)
+
+                val dp5 = (5 * context.resources.displayMetrics.density + 0.5f).toInt()
+                tv.compoundDrawablePadding = dp5
+
+                return v
+            }
+        }
     }
 
 }

@@ -24,7 +24,6 @@
             android:animateLayoutChanges="true"
             app:animation_enabled="false"
             app:controller_layout_id="@layout/layout_own_controller"
-            app:resize_mode="fill"
             app:shutter_background_color="@color/black"
             app:surface_type="surface_view"
             app:use_artwork="false" />
