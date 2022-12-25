@@ -1,6 +1,6 @@
 package com.tv.core.util
 
-data class SubtitleItemView(
+data class AlertDialogItemView(
     val text : String = "Item",
     val icon : Int = 0
 )

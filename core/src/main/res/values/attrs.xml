@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="TvPlayerView">
+        <attr name="show_subtitle_button" format="boolean"/>
+        <attr name="show_quality_button" format="boolean"/>
+    </declare-styleable>
+
+</resources>

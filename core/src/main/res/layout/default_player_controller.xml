@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#99000000">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/exo_position"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <com.google.android.exoplayer2.ui.DefaultTimeBar
+        android:id="@+id/exo_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginHorizontal="4dp"
+        android:layout_toStartOf="@id/exo_duration"
+        android:layout_toEndOf="@id/exo_position" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/exo_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/gray"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <RelativeLayout
+        android:id="@+id/layout_footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/exo_progress"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/exo_prev"
+            style="@style/ExoMediaButton.Previous"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:layout_toStartOf="@+id/exo_rew"
+            android:background="@drawable/selector_controller_button"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="12dp"
+            android:src="@drawable/ic_prev"
+            android:tintMode="src_in" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/exo_rew"
+            style="@style/ExoMediaButton.Rewind"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:layout_toStartOf="@id/parent_pauseAndPlay"
+            android:background="@drawable/selector_controller_button"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="12dp"
+            android:src="@drawable/ic_fast_rewind"
+            android:tintMode="src_in" />
+
+        <RelativeLayout
+            android:id="@+id/parent_pauseAndPlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/exo_play"
+                style="@style/ExoMediaButton.Play"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/selector_controller_button"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="12dp"
+                android:src="@drawable/ic_play" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/exo_pause"
+                style="@style/ExoMediaButton.Pause"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/selector_controller_button"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="12dp"
+                android:src="@drawable/ic_pause" />
+        </RelativeLayout>
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/exo_ffwd"
+            style="@style/ExoMediaButton.FastForward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:layout_toEndOf="@id/parent_pauseAndPlay"
+            android:background="@drawable/selector_controller_button"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="12dp"
+            android:src="@drawable/ic_fast_forward" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/exo_next"
+            style="@style/ExoMediaButton.Next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:layout_toEndOf="@+id/exo_ffwd"
+            android:background="@drawable/selector_controller_button"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="12dp"
+            android:src="@drawable/ic_next" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/ib_qualities"
+            style="@style/ExoStyledControls.Button.Bottom.CC"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:layout_marginLeft="4dp"
+            android:layout_marginEnd="8dp"
+            android:layout_toLeftOf="@id/ib_subtitles"
+            android:background="@drawable/selector_controller_button"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:src="@drawable/ic_setting"
+            android:tintMode="src_in"
+            android:visibility="invisible" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/ib_subtitles"
+            style="@style/ExoStyledControls.Button.Bottom.CC"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/selector_controller_button"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:src="@drawable/ic_subtitle"
+            android:tintMode="src_in" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

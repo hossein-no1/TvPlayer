@@ -8,11 +8,12 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.PlayerView
+import com.tv.core.ui.TvPlayerView
 import com.tv.core.util.AdvertisePlayerHandler
 
 class AdvertisePlayer(
     private val context: Context,
-    private val playerView: PlayerView,
+    private val playerView: TvPlayerView,
     private val adPlayerView: PlayerView,
     playWhenReady: Boolean = true
 ) : BasePlayer(context, playerView, playWhenReady) {
@@ -31,7 +32,7 @@ class AdvertisePlayer(
     }
 
     override fun release() {
-        playerView.player = null
+        playerView.playerView.player = null
         player.release()
         adPlayerView.player = null
         adPlayer.release()
@@ -51,7 +52,7 @@ class AdvertisePlayer(
         playerView.visibility = View.VISIBLE
         adPlayerView.visibility = View.GONE
         if (!player.isPlaying) {
-            preparePlayer()
+            prepare()
             play()
         }
     }
@@ -111,7 +112,7 @@ class AdvertisePlayer(
 
     private fun playMediaWhenAdvertiseFinished() {
         playerView.visibility = View.VISIBLE
-        preparePlayer()
+        prepare()
         play()
     }
 

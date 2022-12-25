@@ -17,16 +17,13 @@
         android:layout_height="match_parent"
         tools:context=".MainActivity">
 
-        <com.tv.player.OptimizedPlayerView
+        <com.tv.core.ui.TvPlayerView
             android:id="@+id/player_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:animateLayoutChanges="true"
-            app:animation_enabled="false"
-            app:controller_layout_id="@layout/layout_own_controller"
-            app:shutter_background_color="@color/black"
-            app:surface_type="surface_view"
-            app:use_artwork="false" />
+            app:show_subtitle_button="true"
+            app:show_quality_button="true"
+            />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -38,25 +35,25 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight=".5"
-                app:lottie_autoPlay="true"
+                android:background="#80FFFFFF"
                 android:rotation="180"
                 android:scaleType="fitXY"
-                app:lottie_loop="true"
                 android:visibility="invisible"
-                android:background="#80FFFFFF"
-                app:lottie_fileName="lottie/fast_forward_animation.json" />
+                app:lottie_autoPlay="true"
+                app:lottie_fileName="lottie/fast_forward_animation.json"
+                app:lottie_loop="true" />
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/lottie_fastForward"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight=".5"
-                app:lottie_autoPlay="true"
+                android:background="#80FFFFFF"
                 android:scaleType="fitXY"
                 android:visibility="invisible"
-                app:lottie_loop="true"
-                android:background="#80FFFFFF"
-                app:lottie_fileName="lottie/fast_forward_animation.json" />
+                app:lottie_autoPlay="true"
+                app:lottie_fileName="lottie/fast_forward_animation.json"
+                app:lottie_loop="true" />
 
         </LinearLayout>
 

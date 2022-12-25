@@ -9,11 +9,9 @@ import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatTextView
-import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.util.MimeTypes
+import com.tv.core.base.BasePlayer
 import com.tv.core.base.SimplePlayer
-import com.tv.core.util.AdvertisePlayerHandler
-import com.tv.core.util.MediaSourceType
+import com.tv.core.util.*
 import com.tv.player.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -36,6 +34,13 @@ class MainActivity : AppCompatActivity() {
     private val subtitleUrl2 =
         "https://5fb0e2805042ef0018e46033.iran.liara.space/subtitles/10687116/Entergalactic_2022_1080p_NF_WEB_DL_DDP5_1_Atmos_H_264_SMURF_FA.srt"
 
+    private val film480 =
+        "http://dl.gemescape.com/film/2022/Lightyear/BluRay/Lightyear.2022.480p.BluRay.x264.Pahe.SoftSub.PK.mkv"
+    private val film720 =
+        "http://dl.gemescape.com/film/2022/Lightyear/BluRay/Lightyear.2022.720p.BluRay.x264.6CH.Pahe.SoftSub.PK.mkv"
+    private val film1080 =
+        "http://dl.gemescape.com/film/2022/Lightyear/BluRay/Lightyear.2022.1080p.BluRay.x265.10Bit.DD%2B7.1.Pahe.SoftSub.PK.mkv"
+
     private lateinit var playerHandler: SimplePlayer
 
     private lateinit var binding: ActivityMainBinding
@@ -50,49 +55,50 @@ class MainActivity : AppCompatActivity() {
             playerView = binding.playerView
         )
 
-        val subtitle =
-            MediaItem.SubtitleConfiguration.Builder(Uri.parse(subtitleUrl2))
-                .setLanguage("fa")
-                .setMimeType(MimeTypes.APPLICATION_SUBRIP)
-                .setLabel("Subtitle 1")
-                .build()
+        val subtitle = SubtitleItem(
+            Uri.parse(subtitleUrl),
+            "fa",
+            "subtitle 1",
+            MimeType.APPLICATION_SUBRIP
+        )
 
-        val subtitle2 =
-            MediaItem.SubtitleConfiguration.Builder(Uri.parse(subtitleUrl))
-                .setLanguage("fa")
-                .setMimeType(MimeTypes.APPLICATION_SUBRIP)
-                .setLabel("Subtitle 2")
-                .build()
+        val subtitle2 = SubtitleItem(
+            Uri.parse(subtitleUrl2),
+            "fa",
+            "subtitle 2",
+            MimeType.APPLICATION_SUBRIP
+        )
 
-        val mediaItem = MediaItem.Builder()
-            .setUri(Uri.parse(filmWithoutSubtitleLink))
-            .setTag(MediaSourceType.Progressive)
-            .setSubtitleConfigurations(listOf(subtitle,subtitle2))
-            .build()
+        val mediaItem = MediaItem(
+            Uri.parse(ad1)
+        )
+
+        val mediaItem2 = MediaItem(
+            Uri.parse(film1080),
+            listOf(subtitle, subtitle2),
+            defaultQualityTitle = "1080"
+        ).addQuality("720", Uri.parse(film720)).addQuality("480", Uri.parse(film480))
+
+        val mediaItem3 = MediaItem(
+            Uri.parse(film1080)
+        )
 
         playerHandler.addListener(playerListener)
-        playerHandler.addMedia(mediaItem)
-        playerHandler.preparePlayer()
-        playerHandler.play()
-
-        findViewById<AppCompatImageButton>(R.id.ib_subtitles).setOnClickListener {
-            playerHandler.showSubtitle(R.style.alertDialog)
-        }
+        playerHandler.addMediaList(listOf(mediaItem, mediaItem2, mediaItem3))
+        playerHandler.prepareAndPlay()
 
     }
 
-    private val playerListener = object : Player.Listener {
+    private val playerListener = object : TvPlayerListener {
 
-        override fun onPlayerError(error: PlaybackException) {
-            super.onPlayerError(error)
+        override fun onPlayerError(error: java.lang.Exception) {
         }
 
         override fun onPlaybackStateChanged(playbackState: Int) {
-            super.onPlaybackStateChanged(playbackState)
-            binding.isLoading = playbackState == ExoPlayer.STATE_BUFFERING
-            if (playbackState == ExoPlayer.STATE_READY)
+            binding.isLoading = playbackState == BasePlayer.STATE_BUFFERING
+            if (playbackState == BasePlayer.STATE_READY)
                 findViewById<RelativeLayout>(R.id.parent_pauseAndPlay).requestFocus()
-            if (playbackState == ExoPlayer.STATE_BUFFERING) {
+            if (playbackState == BasePlayer.STATE_BUFFERING) {
                 //Start video loading
                 binding.loading.visibility = View.VISIBLE
             } else {
@@ -107,7 +113,7 @@ class MainActivity : AppCompatActivity() {
         override fun playBackStateChange(playbackState: Int) {
         }
 
-        override fun onPlayerError(error: PlaybackException) {
+        override fun onPlayerError(error: Exception) {
         }
 
         override fun onSkipTimeChange(currentTime: Int, skippTime: Int) {
@@ -121,7 +127,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
-        if (playerHandler.player.isPlaying && !binding.playerView.isControllerVisible) {
+        if (playerHandler.isPlaying() && !playerHandler.isControllerVisible()) {
             if (event.action == KeyEvent.ACTION_UP) {
                 when (event.keyCode) {
                     KeyEvent.KEYCODE_DPAD_LEFT -> {
