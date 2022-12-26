@@ -70,8 +70,7 @@ class MainActivity : AppCompatActivity() {
         )
 
         val mediaItem = MediaItem(
-            Uri.parse(ad1)
-        )
+            Uri.parse(ad1))
 
         val mediaItem2 = MediaItem(
             Uri.parse(film1080),

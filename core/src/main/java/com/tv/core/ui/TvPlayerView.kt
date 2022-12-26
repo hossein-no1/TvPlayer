@@ -7,10 +7,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.PopupMenu
 import androidx.appcompat.widget.AppCompatImageButton
-import com.google.android.exoplayer2.trackselection.TrackSelectionOverride
-import com.google.android.exoplayer2.trackselection.TrackSelectionParameters
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tv.core.R
 import com.tv.core.base.BasePlayer
@@ -22,6 +19,7 @@ class TvPlayerView(context: Context, attrs: AttributeSet?) : FrameLayout(context
 
     private var showSubtitleButton: Boolean? = false
     private var showQualityButton: Boolean? = false
+
     private var ibSubtitle: AppCompatImageButton? = null
     private var ibQuality: AppCompatImageButton? = null
 

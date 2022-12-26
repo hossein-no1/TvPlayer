@@ -13,6 +13,7 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.Player.Listener
+import com.google.android.exoplayer2.Player.STATE_IDLE
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.MergingMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -36,10 +37,10 @@ abstract class BasePlayer(
 ) {
 
     companion object {
-        const val STATE_IDLE = 1
-        const val STATE_BUFFERING = 2
-        const val STATE_READY = 3
-        const val STATE_ENDED = 4
+        const val STATE_IDLE = Player.STATE_IDLE
+        const val STATE_BUFFERING = Player.STATE_BUFFERING
+        const val STATE_READY = Player.STATE_READY
+        const val STATE_ENDED = Player.STATE_ENDED
     }
 
     private var trackSelector: DefaultTrackSelector
