@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <attr name="player_view_background" format="reference"/>
+
     <declare-styleable name="TvPlayerView">
         <attr name="show_subtitle_button" format="boolean"/>
         <attr name="show_quality_button" format="boolean"/>
-        <attr name="player_view_background" format="color|reference"/>
+        <attr name="player_view_background"/>
+    </declare-styleable>
+
+    <declare-styleable name="TvAdvertisePlayerView">
+        <attr name="player_view_background"/>
+    </declare-styleable>
+
+    <declare-styleable name="TvLivePlayerView">
+        <attr name="player_view_background"/>
+        <attr name="show_live_animation" format="boolean"/>
+        <attr name="live_animation_color" format="reference"/>
     </declare-styleable>
 
 </resources>

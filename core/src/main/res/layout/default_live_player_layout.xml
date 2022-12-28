@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -7,13 +6,15 @@
     android:keepScreenOn="true">
 
     <com.google.android.exoplayer2.ui.PlayerView
-        android:id="@+id/default_player_view"
+        android:id="@+id/default_live_player_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
-        app:animation_enabled="false"
         android:background="@color/black"
-        app:controller_layout_id="@layout/default_player_controller"
-        />
+        app:animation_enabled="false"
+        app:controller_layout_id="@layout/default_live_controller"
+        app:hide_on_touch="false"
+        app:show_timeout="0"
+        app:surface_type="surface_view" />
 
 </RelativeLayout>

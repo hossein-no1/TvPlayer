@@ -1,10 +1,11 @@
 package com.tv.core.util
 
+import android.net.Uri
 import com.google.android.exoplayer2.MediaItem.SubtitleConfiguration
 
-object SubtitleConverter {
+internal object SubtitleConverter {
     fun convert(subtitleItem: SubtitleItem): SubtitleConfiguration {
-        return SubtitleConfiguration.Builder(subtitleItem.uri)
+        return SubtitleConfiguration.Builder(Uri.parse(subtitleItem.url))
             .setLanguage(subtitleItem.language)
             .setLabel(subtitleItem.label)
             .setMimeType(subtitleItem.mimeType)

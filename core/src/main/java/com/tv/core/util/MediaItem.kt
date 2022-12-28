@@ -1,19 +1,17 @@
 package com.tv.core.util
 
-import android.net.Uri
-
 class MediaItem(
-    var uri: Uri,
-    val subtitleConfiguration: List<SubtitleItem> = listOf(),
+    var url: String,
+    val subtitleItems: List<SubtitleItem> = listOf(),
     val isLive: Boolean = false,
     defaultQualityTitle: String = "Default",
 ) {
 
     private val qualityList: MutableList<MediaQuality> =
-        mutableListOf(MediaQuality(defaultQualityTitle, uri))
+        mutableListOf(MediaQuality(defaultQualityTitle, url))
 
-    fun addQuality(quality: String, uri: Uri): MediaItem {
-        qualityList.add(MediaQuality(quality, uri))
+    fun addQuality(quality: String, url: String): MediaItem {
+        qualityList.add(MediaQuality(quality, url))
         if (qualityList.size > 1)
             qualityList.first().isSelected = true
         return this
@@ -27,6 +25,6 @@ class MediaItem(
 
 class MediaQuality(
     val title: String,
-    val link: Uri,
+    val link: String,
     var isSelected: Boolean = false
 )

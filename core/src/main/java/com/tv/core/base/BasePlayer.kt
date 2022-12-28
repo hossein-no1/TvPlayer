@@ -13,7 +13,6 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.Player.Listener
-import com.google.android.exoplayer2.Player.STATE_IDLE
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.MergingMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -25,14 +24,14 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionOverride
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.android.exoplayer2.util.Util
 import com.tv.core.R
-import com.tv.core.ui.TvPlayerView
+import com.tv.core.ui.BaseTvPlayerView
 import com.tv.core.util.*
 import java.util.*
 import com.tv.core.util.MediaItem as TvMediaItem
 
 abstract class BasePlayer(
     private val context: Context,
-    private val playerView: TvPlayerView,
+    private val playerView: BaseTvPlayerView,
     playWhenReady: Boolean = true
 ) {
 
@@ -97,12 +96,12 @@ abstract class BasePlayer(
 
     fun addMedia(media: TvMediaItem, index: Int = 0) {
         mediaItems.add(media)
-        player.addMediaSource(index, buildMediaSource(MediaItemConverter.convert(media)))
+        player.addMediaSource(index, buildMediaSource(MediaItemConverter.convertMediaItem(media)))
     }
 
     fun addMediaList(medias: List<TvMediaItem>, index: Int = 0) {
         mediaItems.addAll(medias)
-        player.addMediaSources(index, buildMediaSources(MediaItemConverter.convertList(medias)))
+        player.addMediaSources(index, buildMediaSources(MediaItemConverter.convertMediaList(medias)))
     }
 
     fun isThereSubtitle(): Boolean {
@@ -265,23 +264,23 @@ abstract class BasePlayer(
     }
 
     private fun changeQualityUriInItem(qualitySelectedPosition: Int) {
-        currentMediaItem.uri =
+        currentMediaItem.url =
             currentMediaItem.getQualityList()[qualitySelectedPosition].link
 
         val mediaSource =
-            buildMediaSource(MediaItemConverter.convert(currentMediaItem))
+            buildMediaSource(MediaItemConverter.convertMediaItem(currentMediaItem))
         player.setMediaSource(mediaSource)
     }
 
     private fun changeQualityUriInMediaList(qualitySelectedPosition: Int) {
         resetQualitySelected()
         currentMediaItem.getQualityList()[qualitySelectedPosition].let {
-            mediaItems[player.currentMediaItemIndex].uri = it.link
+            mediaItems[player.currentMediaItemIndex].url = it.link
             it.isSelected = true
         }
 
         val mediaSources = buildMediaSources(
-            MediaItemConverter.convertList(
+            MediaItemConverter.convertMediaList(
                 mediaItems
             )
         )
