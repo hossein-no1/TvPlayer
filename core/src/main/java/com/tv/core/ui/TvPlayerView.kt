@@ -3,11 +3,14 @@ package com.tv.core.ui
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.TypedArray
+import android.graphics.Color
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageButton
+import androidx.core.content.ContextCompat
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tv.core.R
 import com.tv.core.base.BasePlayer
@@ -19,6 +22,7 @@ class TvPlayerView(context: Context, attrs: AttributeSet?) : FrameLayout(context
 
     private var showSubtitleButton: Boolean? = false
     private var showQualityButton: Boolean? = false
+    private var playerViewBackground: Int? = 0
 
     private var ibSubtitle: AppCompatImageButton? = null
     private var ibQuality: AppCompatImageButton? = null
@@ -41,6 +45,9 @@ class TvPlayerView(context: Context, attrs: AttributeSet?) : FrameLayout(context
 
             showQualityButton =
                 typedArray.getBoolean(R.styleable.TvPlayerView_show_quality_button, true)
+
+            playerViewBackground =
+                typedArray.getResourceId(R.styleable.TvPlayerView_player_view_background , 0)
         } finally {
             typedArray?.recycle()
         }
@@ -54,6 +61,12 @@ class TvPlayerView(context: Context, attrs: AttributeSet?) : FrameLayout(context
     private fun updateUi() {
         ibSubtitle?.visibility =
             if (showSubtitleButton == true) View.VISIBLE else View.INVISIBLE
+
+        playerViewBackground?.let { safeBackground ->
+            if (safeBackground > 0) {
+                playerView.setBackgroundColor(ContextCompat.getColor(context, safeBackground))
+            }
+        }
     }
 
     fun setupElement(playerHandler: BasePlayer) {

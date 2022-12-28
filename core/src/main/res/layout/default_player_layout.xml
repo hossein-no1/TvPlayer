@@ -12,10 +12,7 @@
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
         app:animation_enabled="false"
-        app:shutter_background_color="@color/black"
-        android:background="@color/black"
-        app:surface_type="surface_view"
         app:controller_layout_id="@layout/default_player_controller"
-        app:use_artwork="false" />
+        />
 
 </RelativeLayout>

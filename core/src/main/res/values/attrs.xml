@@ -4,6 +4,7 @@
     <declare-styleable name="TvPlayerView">
         <attr name="show_subtitle_button" format="boolean"/>
         <attr name="show_quality_button" format="boolean"/>
+        <attr name="player_view_background" format="color|reference"/>
     </declare-styleable>
 
 </resources>
