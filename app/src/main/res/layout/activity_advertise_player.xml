@@ -16,7 +16,7 @@
             android:id="@+id/playerView_activityAdvertisePlayer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/black"
+            app:player_view_background="@color/black_600"
             app:show_subtitle_button="true"
             app:show_quality_button="true"/>
 

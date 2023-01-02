@@ -7,7 +7,7 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import com.tv.core.R
-import com.tv.core.base.AdvertisePlayer
+import com.tv.core.base.BasePlayer
 
 @SuppressLint("MissingInflatedId")
 class TvAdvertisePlayerView(private val mContext: Context, attrs: AttributeSet?) :
@@ -15,13 +15,13 @@ class TvAdvertisePlayerView(private val mContext: Context, attrs: AttributeSet?)
 
     private var playerViewBackground: Int? = 0
 
-    private var tvSkipAd: AppCompatTextView? = null
+    var tvSkipAd: AppCompatTextView? = null
 
     init {
         init(
-            resLayout = R.layout.default_advertise_player_layout,
-            playerViewId = R.id.default_advertise_player_view
+            layoutResId = R.layout.default_advertise_player_layout
         )
+        setupPlayerView(R.id.default_advertise_player_view)
     }
 
     @SuppressLint("Recycle")
@@ -52,9 +52,10 @@ class TvAdvertisePlayerView(private val mContext: Context, attrs: AttributeSet?)
         }
     }
 
-    fun setupElement(playerHandler: AdvertisePlayer) {
+    override fun setupElement(adPlayerHandler: BasePlayer) {
+        super.setupElement(adPlayerHandler)
         tvSkipAd?.setOnClickListener {
-            playerHandler.startForceVideo()
+            adPlayerHandler.startForceVideo()
         }
     }
 

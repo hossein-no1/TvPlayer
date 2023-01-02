@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Handler
 import android.view.View
 import com.google.android.exoplayer2.ExoPlayer
-import com.tv.core.util.MediaItem as TvMediaItem
 import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
 import com.tv.core.ui.TvAdvertisePlayerView
@@ -13,25 +12,30 @@ import com.tv.core.util.AdvertiseItem
 import com.tv.core.util.AdvertisePlayerListener
 import com.tv.core.util.MediaItemConverter
 
-class AdvertisePlayer(
+internal class AdvertisePlayer(
     private val context: Context,
     private val playerView: TvPlayerView,
     private val adPlayerView: TvAdvertisePlayerView,
+    isLive : Boolean,
     playWhenReady: Boolean = true
-) : BasePlayer(context, playerView, playWhenReady) {
+) : BasePlayer(context, playerView, isLive, playWhenReady) {
 
     private var adPlayer: ExoPlayer = ExoPlayer.Builder(context).build()
 
-    var advertiseListener: AdvertisePlayerListener? = null
+    private var advertiseListener: AdvertisePlayerListener? = null
     private var skipAdvertiseTime = 10
 
     init {
-        adPlayerView.setupElement(this)
+        setupElement()
         adPlayerView.isEnabled = false
         adPlayerView.isFocusable = false
         adPlayerView.isClickable = false
         adPlayerView.playerView.player = adPlayer
         adPlayer.playWhenReady = true
+    }
+
+    private fun setupElement(){
+        adPlayerView.setupElement(this)
     }
 
     override fun release() {
@@ -41,7 +45,7 @@ class AdvertisePlayer(
         adPlayer.release()
     }
 
-    fun playAdvertiseAutomatic() {
+    override fun playAdvertiseAutomatic() {
         adPlayer.addListener(advertisePlayerEvent)
         adPlayerView.visibility = View.VISIBLE
         playerView.visibility = View.GONE
@@ -49,7 +53,7 @@ class AdvertisePlayer(
         adPlayer.play()
     }
 
-    fun startForceVideo() {
+    override fun startForceVideo() {
         adPlayerView.playerView.player = null
         adPlayer.release()
         playerView.visibility = View.VISIBLE
@@ -60,27 +64,32 @@ class AdvertisePlayer(
         }
     }
 
-    fun addMediaAdvertise(media: AdvertiseItem, skippTime: Int = 10, index: Int = 0) {
+    override fun addMediaAdvertise(media: AdvertiseItem, skippTime: Int, index: Int) {
         this.skipAdvertiseTime = skippTime
         adPlayer.addMediaItem(index, MediaItemConverter.convertAdvertiseItem(media))
     }
 
-    fun playAdvertise() {
+    override fun playAdvertise() {
         adPlayer.play()
     }
 
-    fun stopAdvertise() {
+    override fun stopAdvertise() {
         adPlayer.stop()
     }
 
-    fun pauseAdvertise() {
+    override fun pauseAdvertise() {
         adPlayer.pause()
+    }
+
+    override fun setAdvertiseListener(adListener: AdvertisePlayerListener) {
+        super.setAdvertiseListener(adListener)
+        advertiseListener = adListener
     }
 
     private val advertisePlayerEvent = object : Player.Listener {
         override fun onPlaybackStateChanged(playbackState: Int) {
             super.onPlaybackStateChanged(playbackState)
-            advertiseListener?.playBackStateChange(playbackState)
+            advertiseListener?.onPlaybackStateChanged(playbackState)
             if (playbackState == Player.STATE_ENDED || playbackState == Player.STATE_IDLE) {
                 finishAdvertise()
             } else if (playbackState == Player.STATE_READY) {
@@ -97,7 +106,7 @@ class AdvertisePlayer(
     private fun handleSkippLoop() {
         val timeToLeft =
             if (skipAdvertiseTime <= 0) ((adPlayer.duration / 1000) - adPlayer.currentPosition / 1000).toInt() else (skipAdvertiseTime - adPlayer.currentPosition / 1000).toInt()
-        advertiseListener?.onSkipTimeChange(timeToLeft, skipAdvertiseTime)
+        advertiseListener?.onSkipTimeChange(timeToLeft, skipAdvertiseTime, adPlayerView.tvSkipAd)
         Handler(context.mainLooper).postDelayed(
             {
                 if (timeToLeft > 0 && adPlayer.isPlaying) {

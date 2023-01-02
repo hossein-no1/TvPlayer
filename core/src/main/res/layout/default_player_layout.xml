@@ -16,4 +16,16 @@
         app:controller_layout_id="@layout/default_player_controller"
         />
 
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:id="@+id/default_live_player_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        app:animation_enabled="false"
+        android:background="@color/black"
+        app:show_timeout="0"
+        app:hide_on_touch="false"
+        app:controller_layout_id="@layout/default_live_controller"
+        />
+
 </RelativeLayout>

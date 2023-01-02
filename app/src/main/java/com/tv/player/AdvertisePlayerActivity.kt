@@ -1,11 +1,11 @@
 package com.tv.player
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
-import com.tv.core.base.AdvertisePlayer
 import com.tv.core.base.BasePlayer
 import com.tv.core.util.AdvertiseItem
 import com.tv.core.util.AdvertisePlayerListener
@@ -17,19 +17,18 @@ import com.tv.player.util.UrlHelper
 class AdvertisePlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAdvertisePlayerBinding
-    private lateinit var playerHelper: AdvertisePlayer
+    private lateinit var playerHelper: BasePlayer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAdvertisePlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        playerHelper = AdvertisePlayer(
+        playerHelper = BasePlayer.Builder(
             context = this,
             playerView = binding.playerViewActivityAdvertisePlayer,
-            adPlayerView = binding.advertisePlayerViewActivityAdvertiserPlayer,
             /* Optional */playWhenReady = true
-        )
+        ).createAdvertisePlayer(adPlayerView = binding.advertisePlayerViewActivityAdvertiserPlayer, isLive = false)
 
         val adMedia = AdvertiseItem(url = UrlHelper.ad)
 
@@ -38,23 +37,26 @@ class AdvertisePlayerActivity : AppCompatActivity() {
         playerHelper.addMediaAdvertise(adMedia)
         playerHelper.addMedia(media)
         playerHelper.addListener(playerListener)
-        playerHelper.advertiseListener = advertiseListener
+        playerHelper.setAdvertiseListener(advertiseListener)
         playerHelper.playAdvertiseAutomatic()
 
     }
 
     private val advertiseListener = object : AdvertisePlayerListener {
 
-        override fun playBackStateChange(playbackState: Int) {
-            super.playBackStateChange(playbackState)
+        override fun onPlaybackStateChanged(playbackState: Int) {
+            super.onPlaybackStateChanged(playbackState)
+            //Handle loading
+            binding.isLoading = playbackState == BasePlayer.STATE_BUFFERING
         }
 
         override fun onPlayerError(error: Exception) {
             error.printStackTrace()
         }
 
-        override fun onSkipTimeChange(currentTime: Int, skippTime: Int) {
-            findViewById<AppCompatTextView>(R.id.skippAd).apply {
+        @SuppressLint("SetTextI18n")
+        override fun onSkipTimeChange(currentTime: Int, skippTime: Int, textViewSkip : AppCompatTextView?) {
+            textViewSkip?.apply {
                 this.visibility = View.VISIBLE
                 this.text = " تا رد کردن آگهی$currentTime"
                 if (currentTime <= 0)

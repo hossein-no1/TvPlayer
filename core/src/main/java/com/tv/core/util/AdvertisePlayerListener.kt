@@ -1,7 +1,7 @@
 package com.tv.core.util
 
-interface AdvertisePlayerListener {
-    fun playBackStateChange(playbackState : Int){}
-    fun onPlayerError(error: Exception)
-    fun onSkipTimeChange(currentTime : Int, skippTime : Int)
+import androidx.appcompat.widget.AppCompatTextView
+
+interface AdvertisePlayerListener : TvPlayerListener{
+    fun onSkipTimeChange(currentTime : Int, skippTime : Int,textViewSkip : AppCompatTextView?)
 }

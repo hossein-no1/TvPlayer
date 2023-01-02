@@ -25,6 +25,8 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.android.exoplayer2.util.Util
 import com.tv.core.R
 import com.tv.core.ui.BaseTvPlayerView
+import com.tv.core.ui.TvAdvertisePlayerView
+import com.tv.core.ui.TvPlayerView
 import com.tv.core.util.*
 import java.util.*
 import com.tv.core.util.MediaItem as TvMediaItem
@@ -32,6 +34,7 @@ import com.tv.core.util.MediaItem as TvMediaItem
 abstract class BasePlayer(
     private val context: Context,
     private val playerView: BaseTvPlayerView,
+    isLive: Boolean = false,
     playWhenReady: Boolean = true
 ) {
 
@@ -53,17 +56,21 @@ abstract class BasePlayer(
     private val mediaItems = mutableListOf<TvMediaItem>()
 
     init {
-        playerView.setupElement(this)
+        setupElement(isLive)
         val videoTrackSelectionFactory =
             AdaptiveTrackSelection.Factory()
         trackSelector = DefaultTrackSelector(context.applicationContext, videoTrackSelectionFactory)
         player = ExoPlayer.Builder(context)
             .setTrackSelector(trackSelector)
-            .setSeekBackIncrementMs(10000)
-            .setSeekForwardIncrementMs(10000)
+            .setSeekBackIncrementMs(10_000)
+            .setSeekForwardIncrementMs(10_000)
             .build()
         playerView.playerView.player = player
         player.playWhenReady = playWhenReady
+    }
+
+    private fun setupElement(isLive: Boolean) {
+        playerView.setupElement(this, isLive)
     }
 
     fun isPlaying() = player.isPlaying
@@ -101,7 +108,10 @@ abstract class BasePlayer(
 
     fun addMediaList(medias: List<TvMediaItem>, index: Int = 0) {
         mediaItems.addAll(medias)
-        player.addMediaSources(index, buildMediaSources(MediaItemConverter.convertMediaList(medias)))
+        player.addMediaSources(
+            index,
+            buildMediaSources(MediaItemConverter.convertMediaList(medias))
+        )
     }
 
     fun isThereSubtitle(): Boolean {
@@ -173,8 +183,6 @@ abstract class BasePlayer(
         val length = if (duration <= 1_000) duration * 1_000 else duration
         player.seekTo(player.currentPosition - length)
     }
-
-    abstract fun release()
 
     fun showSubtitle(overrideThemeResId: Int = R.style.defaultAlertDialogStyle) {
         val subtitleLanguageList = ArrayList<String>()
@@ -313,5 +321,41 @@ abstract class BasePlayer(
             }
         }
     }
+
+    class Builder(
+        private val context: Context,
+        private val playerView: TvPlayerView,
+        private val playWhenReady: Boolean = true
+    ) {
+
+        fun createSimplePlayer(isLive: Boolean = false): BasePlayer = SimplePlayer(
+            context = context,
+            playerView = playerView,
+            isLive = isLive,
+            playWhenReady = playWhenReady
+        )
+
+        fun createAdvertisePlayer(
+            adPlayerView: TvAdvertisePlayerView,
+            isLive: Boolean = false
+        ): BasePlayer =
+            AdvertisePlayer(
+                context = context,
+                playerView = playerView,
+                adPlayerView = adPlayerView,
+                isLive = isLive,
+                playWhenReady = playWhenReady
+            )
+
+    }
+
+    abstract fun release()
+    open fun playAdvertiseAutomatic() {}
+    open fun startForceVideo() {}
+    open fun addMediaAdvertise(media: AdvertiseItem, skippTime: Int = 10, index: Int = 0) {}
+    open fun playAdvertise() {}
+    open fun stopAdvertise() {}
+    open fun pauseAdvertise() {}
+    open fun setAdvertiseListener(adListener: AdvertisePlayerListener) {}
 
 }

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.tv.core.base.BasePlayer
-import com.tv.core.base.LivePlayer
 import com.tv.core.util.MediaItem
 import com.tv.core.util.TvPlayerListener
 import com.tv.player.databinding.ActivityLivePlayerBinding
@@ -13,17 +12,17 @@ import com.tv.player.util.UrlHelper
 class LivePlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLivePlayerBinding
-    private lateinit var playerHandler: LivePlayer
+    private lateinit var playerHandler: BasePlayer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLivePlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        playerHandler = LivePlayer(
+        playerHandler = BasePlayer.Builder(
             context = this,
             playerView = binding.livePlayerViewActivityLivePlayer
-        )
+        ).createSimplePlayer(isLive = true)
 
         val media = MediaItem(url = UrlHelper.linkLive, isLive = true)
         playerHandler.addListener(playerListener)
