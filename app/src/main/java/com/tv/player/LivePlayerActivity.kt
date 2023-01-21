@@ -40,7 +40,7 @@ class LivePlayerActivity : AppCompatActivity() {
         override fun onPlaybackStateChanged(playbackState: Int) {
             binding.isLoading = playbackState == BasePlayer.STATE_BUFFERING
             if (playbackState == BasePlayer.STATE_READY)
-                findViewById<RelativeLayout>(R.id.parent_pauseAndPlay)?.requestFocus()
+                findViewById<RelativeLayout>(com.tv.core.R.id.parent_pauseAndPlay)?.requestFocus()
         }
     }
 

@@ -28,7 +28,7 @@ class SimplePlayerActivity : AppCompatActivity() {
         val subtitle1 = SubtitleItem(url = UrlHelper.subtitleUrl, label = "Subtitle 1")
         val subtitle2 = SubtitleItem(url = UrlHelper.subtitleUrl2, label = "Subtitle 2")
 
-        val mediaWithoutSubtitle = MediaItem(UrlHelper.filmWithoutSubtitleLink)
+        val mediaWithoutSubtitle = MediaItem(UrlHelper.film720)
         val mediaWithQuality = MediaItem(
             url = UrlHelper.film1080,
             subtitleItems = listOf(subtitle1, subtitle2),
@@ -50,7 +50,7 @@ class SimplePlayerActivity : AppCompatActivity() {
         override fun onPlaybackStateChanged(playbackState: Int) {
             binding.isLoading = playbackState == BasePlayer.STATE_BUFFERING
             if (playbackState == BasePlayer.STATE_READY)
-                findViewById<RelativeLayout>(R.id.parent_pauseAndPlay)?.requestFocus()
+                findViewById<RelativeLayout>(com.tv.core.R.id.parent_pauseAndPlay)?.requestFocus()
         }
     }
 

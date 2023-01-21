@@ -14,8 +14,4 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="alertDialog" parent="Theme.AppCompat.Dialog.Alert">
-        <item name="android:textColor">@color/white</item>
-    </style>
-
 </resources>
