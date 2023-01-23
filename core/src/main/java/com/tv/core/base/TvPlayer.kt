@@ -28,9 +28,9 @@ import com.tv.core.util.*
 import java.util.*
 import com.tv.core.util.MediaItem as TvMediaItem
 
-abstract class BasePlayer(
+abstract class TvPlayer(
     private val context: Context,
-    private val playerView: BaseTvPlayerView,
+    private val tvPlayerView: BaseTvPlayerView,
     isLive: Boolean = false,
     playWhenReady: Boolean = true
 ) {
@@ -62,17 +62,15 @@ abstract class BasePlayer(
             .setSeekBackIncrementMs(10_000)
             .setSeekForwardIncrementMs(10_000)
             .build()
-        playerView.playerView.player = player
+        tvPlayerView.playerView.player = player
         player.playWhenReady = playWhenReady
     }
 
     private fun setupElement(isLive: Boolean) {
-        playerView.setupElement(this, isLive)
+        tvPlayerView.setupElement(this, isLive)
     }
 
     fun isPlaying() = player.isPlaying
-
-    fun isControllerVisible() = playerView.playerView.isControllerVisible
 
     fun addListener(listener: TvPlayerListener) {
         //Remove last listener
@@ -88,8 +86,8 @@ abstract class BasePlayer(
             override fun onPlaybackStateChanged(playbackState: Int) {
                 super.onPlaybackStateChanged(playbackState)
                 if (playbackState == Player.STATE_READY) {
-                    playerView.changeSubtitleState(isThereSubtitle())
-                    playerView.changeQualityState(isThereQualities())
+                    tvPlayerView.changeSubtitleState(isThereSubtitle())
+                    tvPlayerView.changeQualityState(isThereQualities())
                 }
                 listener.onPlaybackStateChanged(playbackState)
             }
@@ -325,9 +323,9 @@ abstract class BasePlayer(
         private val playWhenReady: Boolean = true
     ) {
 
-        fun createSimplePlayer(isLive: Boolean = false): BasePlayer = SimplePlayer(
+        fun createSimplePlayer(isLive: Boolean = false): TvPlayer = SimplePlayer(
             context = context,
-            playerView = playerView,
+            tvPlayerView = playerView,
             isLive = isLive,
             playWhenReady = playWhenReady
         )
@@ -335,11 +333,11 @@ abstract class BasePlayer(
         fun createAdvertisePlayer(
             adPlayerView: TvAdvertisePlayerView,
             isLive: Boolean = false
-        ): BasePlayer =
+        ): TvPlayer =
             AdvertisePlayer(
                 context = context,
-                playerView = playerView,
-                adPlayerView = adPlayerView,
+                tvPlayerView = playerView,
+                tvAdvertisePlayerView = adPlayerView,
                 isLive = isLive,
                 playWhenReady = playWhenReady
             )

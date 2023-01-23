@@ -14,11 +14,11 @@ import com.tv.core.util.MediaItemConverter
 
 internal class AdvertisePlayer(
     private val context: Context,
-    private val playerView: TvPlayerView,
-    private val adPlayerView: TvAdvertisePlayerView,
+    private val tvPlayerView: TvPlayerView,
+    private val tvAdvertisePlayerView: TvAdvertisePlayerView,
     isLive : Boolean,
     playWhenReady: Boolean = true
-) : BasePlayer(context, playerView, isLive, playWhenReady) {
+) : TvPlayer(context, tvPlayerView, isLive, playWhenReady) {
 
     private var adPlayer: ExoPlayer = ExoPlayer.Builder(context).build()
 
@@ -27,37 +27,37 @@ internal class AdvertisePlayer(
 
     init {
         setupElement()
-        adPlayerView.isEnabled = false
-        adPlayerView.isFocusable = false
-        adPlayerView.isClickable = false
-        adPlayerView.playerView.player = adPlayer
+        tvAdvertisePlayerView.isEnabled = false
+        tvAdvertisePlayerView.isFocusable = false
+        tvAdvertisePlayerView.isClickable = false
+        tvAdvertisePlayerView.playerView.player = adPlayer
         adPlayer.playWhenReady = true
     }
 
     private fun setupElement(){
-        adPlayerView.setupElement(this)
+        tvAdvertisePlayerView.setupElement(this)
     }
 
     override fun release() {
-        playerView.playerView.player = null
+        tvPlayerView.playerView.player = null
         player.release()
-        adPlayerView.playerView.player = null
+        tvAdvertisePlayerView.playerView.player = null
         adPlayer.release()
     }
 
     override fun playAdvertiseAutomatic() {
         adPlayer.addListener(advertisePlayerEvent)
-        adPlayerView.visibility = View.VISIBLE
-        playerView.visibility = View.GONE
+        tvAdvertisePlayerView.visibility = View.VISIBLE
+        tvPlayerView.visibility = View.GONE
         adPlayer.prepare()
         adPlayer.play()
     }
 
     override fun startForceVideo() {
-        adPlayerView.playerView.player = null
+        tvAdvertisePlayerView.playerView.player = null
         adPlayer.release()
-        playerView.visibility = View.VISIBLE
-        adPlayerView.visibility = View.GONE
+        tvPlayerView.visibility = View.VISIBLE
+        tvAdvertisePlayerView.visibility = View.GONE
         if (!player.isPlaying) {
             prepare()
             play()
@@ -106,7 +106,7 @@ internal class AdvertisePlayer(
     private fun handleSkippLoop() {
         val timeToLeft =
             if (skipAdvertiseTime <= 0) ((adPlayer.duration / 1000) - adPlayer.currentPosition / 1000).toInt() else (skipAdvertiseTime - adPlayer.currentPosition / 1000).toInt()
-        advertiseListener?.onSkipTimeChange(timeToLeft, skipAdvertiseTime, adPlayerView.tvSkipAd)
+        advertiseListener?.onSkipTimeChange(timeToLeft, skipAdvertiseTime, tvAdvertisePlayerView.tvSkipAd)
         Handler(context.mainLooper).postDelayed(
             {
                 if (timeToLeft > 0 && adPlayer.isPlaying) {
@@ -117,14 +117,14 @@ internal class AdvertisePlayer(
     }
 
     private fun finishAdvertise() {
-        adPlayerView.visibility = View.GONE
-        adPlayerView.playerView.player = null
+        tvAdvertisePlayerView.visibility = View.GONE
+        tvAdvertisePlayerView.playerView.player = null
         adPlayer.release()
         playMediaWhenAdvertiseFinished()
     }
 
     private fun playMediaWhenAdvertiseFinished() {
-        playerView.visibility = View.VISIBLE
+        tvPlayerView.visibility = View.VISIBLE
         prepare()
         play()
     }

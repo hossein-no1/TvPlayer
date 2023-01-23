@@ -3,7 +3,7 @@ package com.tv.player
 import android.os.Bundle
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
-import com.tv.core.base.BasePlayer
+import com.tv.core.base.TvPlayer
 import com.tv.core.util.MediaItem
 import com.tv.core.util.SubtitleItem
 import com.tv.core.util.TvPlayerListener
@@ -13,14 +13,14 @@ import com.tv.player.util.UrlHelper
 class SimplePlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySimplePlayerBinding
-    private lateinit var playerHandler: BasePlayer
+    private lateinit var playerHandler: TvPlayer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySimplePlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        playerHandler = BasePlayer.Builder(
+        playerHandler = TvPlayer.Builder(
             context = this,
             playerView = binding.tvPlayerViewActivitySimplePlayer
         ).createSimplePlayer(isLive = false)
@@ -48,8 +48,8 @@ class SimplePlayerActivity : AppCompatActivity() {
         }
 
         override fun onPlaybackStateChanged(playbackState: Int) {
-            binding.isLoading = playbackState == BasePlayer.STATE_BUFFERING
-            if (playbackState == BasePlayer.STATE_READY)
+            binding.isLoading = playbackState == TvPlayer.STATE_BUFFERING
+            if (playbackState == TvPlayer.STATE_READY)
                 findViewById<RelativeLayout>(com.tv.core.R.id.parent_pauseAndPlay)?.requestFocus()
         }
     }

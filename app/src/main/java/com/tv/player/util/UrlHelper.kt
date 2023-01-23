@@ -27,4 +27,9 @@ object UrlHelper {
     const val film1080 =
         "http://dl.gemescape.com/film/2022/Lightyear/BluRay/Lightyear.2022.1080p.BluRay.x265.10Bit.DD%2B7.1.Pahe.SoftSub.PK.mkv"
 
+    const val SAMPLE_VAST_TAG_URL =
+        "https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_ad_samples&sz=640x480&cust_params=sample_ct%3Dlinear&ciu_szs=300x250%2C728x90&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator="
+
+    const val VAST_BAKHABAR = "https://cloudspace.huma.ir/s/Vy2jqt91i6rsH5B/download"
+
 }

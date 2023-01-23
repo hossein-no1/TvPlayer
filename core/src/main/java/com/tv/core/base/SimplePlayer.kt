@@ -1,18 +1,17 @@
 package com.tv.core.base
 
 import android.content.Context
-import com.tv.core.ui.TvAdvertisePlayerView
 import com.tv.core.ui.TvPlayerView
 
 internal class SimplePlayer(
     context: Context,
-    private val playerView: TvPlayerView,
+    private val tvPlayerView: TvPlayerView,
     isLive: Boolean = false,
     playWhenReady: Boolean = true
-) : BasePlayer(context, playerView, isLive, playWhenReady) {
+) : TvPlayer(context, tvPlayerView, isLive, playWhenReady) {
 
     override fun release() {
-        playerView.playerView.player = null
+        tvPlayerView.playerView.player = null
         player.release()
     }
 

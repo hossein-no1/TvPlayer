@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
-import com.tv.core.base.BasePlayer
+import com.tv.core.base.TvPlayer
 import com.tv.core.util.AdvertiseItem
 import com.tv.core.util.AdvertisePlayerListener
 import com.tv.core.util.MediaItem
@@ -17,14 +17,14 @@ import com.tv.player.util.UrlHelper
 class AdvertisePlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAdvertisePlayerBinding
-    private lateinit var playerHelper: BasePlayer
+    private lateinit var playerHelper: TvPlayer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAdvertisePlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        playerHelper = BasePlayer.Builder(
+        playerHelper = TvPlayer.Builder(
             context = this,
             playerView = binding.playerViewActivityAdvertisePlayer,
             /* Optional */playWhenReady = true
@@ -47,7 +47,7 @@ class AdvertisePlayerActivity : AppCompatActivity() {
         override fun onPlaybackStateChanged(playbackState: Int) {
             super.onPlaybackStateChanged(playbackState)
             //Handle loading
-            binding.isLoading = playbackState == BasePlayer.STATE_BUFFERING
+            binding.isLoading = playbackState == TvPlayer.STATE_BUFFERING
         }
 
         override fun onPlayerError(error: Exception) {
@@ -72,8 +72,8 @@ class AdvertisePlayerActivity : AppCompatActivity() {
         }
 
         override fun onPlaybackStateChanged(playbackState: Int) {
-            binding.isLoading = playbackState == BasePlayer.STATE_BUFFERING
-            if (playbackState == BasePlayer.STATE_READY)
+            binding.isLoading = playbackState == TvPlayer.STATE_BUFFERING
+            if (playbackState == TvPlayer.STATE_READY)
                 findViewById<RelativeLayout>(com.tv.core.R.id.parent_pauseAndPlay)?.requestFocus()
         }
     }

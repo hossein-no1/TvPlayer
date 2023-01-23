@@ -14,10 +14,10 @@ import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.model.KeyPath
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tv.core.R
-import com.tv.core.base.BasePlayer
+import com.tv.core.base.TvPlayer
 
 @SuppressLint("MissingInflatedId")
-class TvPlayerView(private val mContext: Context, private val attrs: AttributeSet?) :
+class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
     BaseTvPlayerView(mContext, attrs) {
 
     private var showSubtitleButton: Boolean? = false
@@ -61,6 +61,22 @@ class TvPlayerView(private val mContext: Context, private val attrs: AttributeSe
         }
     }
 
+    fun showQualityButton() {
+        ibQuality?.visibility = View.VISIBLE
+    }
+
+    fun hideQualityButton() {
+        ibQuality?.visibility = View.GONE
+    }
+
+    fun showSubtitleButton() {
+        ibSubtitle?.visibility = View.VISIBLE
+    }
+
+    fun hideSubtitleButton() {
+        ibSubtitle?.visibility = View.GONE
+    }
+
     override fun findViews() {
         ibSubtitle = findViewById(R.id.ib_subtitles)
         ibQuality = findViewById(R.id.ib_qualities)
@@ -68,8 +84,7 @@ class TvPlayerView(private val mContext: Context, private val attrs: AttributeSe
     }
 
     override fun updateUi() {
-        ibSubtitle?.visibility =
-            if (showSubtitleButton == true) View.VISIBLE else View.GONE
+        if (showSubtitleButton == true) showSubtitleButton() else hideSubtitleButton()
 
         playerViewBackground?.let { safeBackground ->
             if (safeBackground > 0) {
@@ -95,7 +110,7 @@ class TvPlayerView(private val mContext: Context, private val attrs: AttributeSe
         }
     }
 
-    override fun setupElement(playerHandler: BasePlayer, isLive: Boolean) {
+    override fun setupElement(playerHandler: TvPlayer, isLive: Boolean) {
         setupPlayerView(if (isLive) R.id.default_live_player_view else R.id.default_player_view)
 
         ibSubtitle?.setOnClickListener {
@@ -124,8 +139,7 @@ class TvPlayerView(private val mContext: Context, private val attrs: AttributeSe
     }
 
     override fun changeQualityState(isThereQualities: Boolean) {
-        ibQuality?.visibility =
-            if (isThereQualities && (showQualityButton == true)) View.VISIBLE else View.INVISIBLE
+        if (isThereQualities && (showQualityButton == true)) showQualityButton() else hideQualityButton()
     }
 
 }
