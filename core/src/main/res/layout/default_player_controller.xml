@@ -42,7 +42,7 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <androidx.appcompat.widget.AppCompatImageButton
+        <ImageButton
             android:id="@+id/exo_prev"
             style="@style/TvButtonPrev"
             android:layout_width="wrap_content"
@@ -53,7 +53,7 @@
             android:padding="12dp"
             android:tintMode="src_in" />
 
-        <androidx.appcompat.widget.AppCompatImageButton
+        <ImageButton
             android:id="@+id/exo_rew"
             style="@style/TvButtonRewind"
             android:layout_width="wrap_content"
@@ -70,7 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true">
 
-            <androidx.appcompat.widget.AppCompatImageButton
+            <ImageButton
                 android:id="@+id/exo_play"
                 style="@style/TvButtonPlay"
                 android:layout_width="wrap_content"
@@ -78,7 +78,7 @@
                 android:layout_gravity="center"
                 android:padding="12dp" />
 
-            <androidx.appcompat.widget.AppCompatImageButton
+            <ImageButton
                 android:id="@+id/exo_pause"
                 style="@style/TvButtonPause"
                 android:layout_width="wrap_content"
@@ -87,7 +87,7 @@
                 android:padding="12dp" />
         </RelativeLayout>
 
-        <androidx.appcompat.widget.AppCompatImageButton
+        <ImageButton
             android:id="@+id/exo_ffwd"
             style="@style/TvButtonFastForward"
             android:layout_width="wrap_content"
@@ -97,7 +97,7 @@
             android:layout_toEndOf="@id/parent_pauseAndPlay"
             android:padding="12dp" />
 
-        <androidx.appcompat.widget.AppCompatImageButton
+        <ImageButton
             android:id="@+id/exo_next"
             style="@style/TvButtonNext"
             android:layout_width="wrap_content"
@@ -107,7 +107,15 @@
             android:layout_toEndOf="@+id/exo_ffwd"
             android:padding="12dp" />
 
-        <androidx.appcompat.widget.AppCompatImageButton
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            >
+        
+        <ImageButton
             android:id="@+id/ib_qualities"
             style="@style/TvButtonQuality"
             android:layout_width="wrap_content"
@@ -120,7 +128,7 @@
             android:tintMode="src_in"
             android:visibility="invisible" />
 
-        <androidx.appcompat.widget.AppCompatImageButton
+        <ImageButton
             android:id="@+id/ib_subtitles"
             style="@style/TvButtonSubtitle"
             android:layout_width="wrap_content"
@@ -130,6 +138,8 @@
             android:layout_gravity="center"
             android:layout_marginEnd="8dp"
             android:tintMode="src_in" />
+
+        </LinearLayout>
 
     </RelativeLayout>
 

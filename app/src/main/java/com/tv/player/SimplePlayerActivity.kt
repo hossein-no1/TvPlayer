@@ -21,7 +21,7 @@ class SimplePlayerActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         playerHandler = TvPlayer.Builder(
-            context = this,
+            activity = this,
             playerView = binding.tvPlayerViewActivitySimplePlayer
         ).createSimplePlayer(isLive = false)
 

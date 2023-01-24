@@ -1,6 +1,6 @@
 package com.tv.core.base
 
-import android.content.Context
+import android.app.Activity
 import android.os.Handler
 import android.view.View
 import com.google.android.exoplayer2.ExoPlayer
@@ -13,14 +13,14 @@ import com.tv.core.util.AdvertisePlayerListener
 import com.tv.core.util.MediaItemConverter
 
 internal class AdvertisePlayer(
-    private val context: Context,
+    private val activity: Activity,
     private val tvPlayerView: TvPlayerView,
     private val tvAdvertisePlayerView: TvAdvertisePlayerView,
     isLive : Boolean,
     playWhenReady: Boolean = true
-) : TvPlayer(context, tvPlayerView, isLive, playWhenReady) {
+) : TvPlayer(activity, tvPlayerView, isLive, playWhenReady) {
 
-    private var adPlayer: ExoPlayer = ExoPlayer.Builder(context).build()
+    private var adPlayer: ExoPlayer = ExoPlayer.Builder(activity.applicationContext).build()
 
     private var advertiseListener: AdvertisePlayerListener? = null
     private var skipAdvertiseTime = 10
@@ -107,7 +107,7 @@ internal class AdvertisePlayer(
         val timeToLeft =
             if (skipAdvertiseTime <= 0) ((adPlayer.duration / 1000) - adPlayer.currentPosition / 1000).toInt() else (skipAdvertiseTime - adPlayer.currentPosition / 1000).toInt()
         advertiseListener?.onSkipTimeChange(timeToLeft, skipAdvertiseTime, tvAdvertisePlayerView.tvSkipAd)
-        Handler(context.mainLooper).postDelayed(
+        Handler(activity.applicationContext.mainLooper).postDelayed(
             {
                 if (timeToLeft > 0 && adPlayer.isPlaying) {
                     handleSkippLoop()

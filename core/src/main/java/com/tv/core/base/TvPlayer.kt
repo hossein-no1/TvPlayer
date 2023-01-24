@@ -1,6 +1,6 @@
 package com.tv.core.base
 
-import android.content.Context
+import android.app.Activity
 import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
@@ -29,7 +29,7 @@ import java.util.*
 import com.tv.core.util.MediaItem as TvMediaItem
 
 abstract class TvPlayer(
-    private val context: Context,
+    private val activity: Activity,
     private val tvPlayerView: BaseTvPlayerView,
     isLive: Boolean = false,
     playWhenReady: Boolean = true
@@ -56,8 +56,9 @@ abstract class TvPlayer(
         setupElement(isLive)
         val videoTrackSelectionFactory =
             AdaptiveTrackSelection.Factory()
-        trackSelector = DefaultTrackSelector(context.applicationContext, videoTrackSelectionFactory)
-        player = ExoPlayer.Builder(context)
+        trackSelector =
+            DefaultTrackSelector(activity.applicationContext, videoTrackSelectionFactory)
+        player = ExoPlayer.Builder(activity.applicationContext)
             .setTrackSelector(trackSelector)
             .setSeekBackIncrementMs(10_000)
             .setSeekForwardIncrementMs(10_000)
@@ -130,7 +131,7 @@ abstract class TvPlayer(
 
     private fun buildMediaSource(mediaItem: MediaItem): MediaSource {
         val dataSourceFactory = DefaultHttpDataSource.Factory()
-            .setUserAgent(Util.getUserAgent(context, context.packageName))
+            .setUserAgent(Util.getUserAgent(activity, activity.packageName))
         val mediaSource: MediaSource =
             if (mediaItem.localConfiguration?.tag.toString() == MediaSourceType.Hls.name)
                 HlsMediaSource.Factory(dataSourceFactory)
@@ -179,7 +180,11 @@ abstract class TvPlayer(
         player.seekTo(player.currentPosition - length)
     }
 
-    fun showSubtitle(overrideThemeResId: Int = R.style.defaultAlertDialogStyle) {
+    fun showSubtitle(
+        dialogTitle: String,
+        dialogButtonText: String,
+        resIdStyle : Int
+    ) {
         val subtitleLanguageList = ArrayList<String>()
         val subtitlesList = ArrayList<AlertDialogItemView>()
         for (group in player.currentTracks.groups) {
@@ -200,7 +205,7 @@ abstract class TvPlayer(
             }
         }
 
-        val subtitleDialog = AlertDialogHelper(context, overrideThemeResId, "Select subtitles")
+        val subtitleDialog = AlertDialogHelper(activity,resIdStyle, dialogTitle)
         subtitleDialog.create(
             adapter = getAlertDialogAdapter(subtitlesList.toTypedArray()),
             itemClickListener = { _, position ->
@@ -225,12 +230,16 @@ abstract class TvPlayer(
                 )
                 self.dismiss()
             },
-            positiveButtonText = "Off Subtitles"
+            positiveButtonText = dialogButtonText
         )
         subtitleDialog.show()
     }
 
-    fun showQuality(overrideThemeResId: Int = R.style.defaultAlertDialogStyle) {
+    fun showQuality(
+        dialogTitle: String,
+        dialogButtonText: String,
+        resIdStyle : Int
+    ) {
         val qualityList = ArrayList<AlertDialogItemView>()
 
         currentMediaItem.getQualityList().forEach { mediaQuality ->
@@ -242,7 +251,7 @@ abstract class TvPlayer(
             )
         }
 
-        val qualityDialog = AlertDialogHelper(context, overrideThemeResId, "Select quality")
+        val qualityDialog = AlertDialogHelper(activity,resIdStyle, dialogTitle)
         qualityDialog.create(adapter = getAlertDialogAdapter(qualityList.toTypedArray()),
             itemClickListener = { self, position ->
                 if (!currentMediaItem.getQualityList()[position].isSelected)
@@ -250,7 +259,7 @@ abstract class TvPlayer(
                 else
                     self.dismiss()
             },
-            positiveButtonText = "Close",
+            positiveButtonText = dialogButtonText,
             positiveClickListener = { self, _ ->
                 self.dismiss()
             })
@@ -267,20 +276,19 @@ abstract class TvPlayer(
     }
 
     private fun changeQualityUriInItem(qualitySelectedPosition: Int) {
-        currentMediaItem.url =
-            currentMediaItem.getQualityList()[qualitySelectedPosition].link
-
         val mediaSource =
-            buildMediaSource(MediaItemConverter.convertMediaItem(currentMediaItem))
+            buildMediaSource(
+                MediaItemConverter.convertMediaItem(
+                    currentMediaItem.changeQualityUriInItem(
+                        qualitySelectedPosition
+                    )
+                )
+            )
         player.setMediaSource(mediaSource)
     }
 
     private fun changeQualityUriInMediaList(qualitySelectedPosition: Int) {
-        resetQualitySelected()
-        currentMediaItem.getQualityList()[qualitySelectedPosition].let {
-            mediaItems[player.currentMediaItemIndex].url = it.link
-            it.isSelected = true
-        }
+        mediaItems[player.currentMediaItemIndex].changeQualityUriInItem(qualitySelectedPosition)
 
         val mediaSources = buildMediaSources(
             MediaItemConverter.convertMediaList(
@@ -290,15 +298,12 @@ abstract class TvPlayer(
         player.setMediaSources(mediaSources, player.currentMediaItemIndex, player.currentPosition)
     }
 
-    private fun resetQualitySelected() {
-        currentMediaItem.getQualityList().forEach { mediaQuality ->
-            mediaQuality.isSelected = false
-        }
-    }
-
     private fun getAlertDialogAdapter(items: Array<AlertDialogItemView>): ListAdapter {
         return object : ArrayAdapter<AlertDialogItemView>(
-            context, android.R.layout.select_dialog_item, android.R.id.text1, items
+            activity.applicationContext,
+            android.R.layout.select_dialog_item,
+            android.R.id.text1,
+            items
         ) {
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                 val v: View = super.getView(position, convertView, parent)
@@ -318,13 +323,13 @@ abstract class TvPlayer(
     }
 
     class Builder(
-        private val context: Context,
+        private val activity: Activity,
         private val playerView: TvPlayerView,
         private val playWhenReady: Boolean = true
     ) {
 
         fun createSimplePlayer(isLive: Boolean = false): TvPlayer = SimplePlayer(
-            context = context,
+            activity = activity,
             tvPlayerView = playerView,
             isLive = isLive,
             playWhenReady = playWhenReady
@@ -335,7 +340,7 @@ abstract class TvPlayer(
             isLive: Boolean = false
         ): TvPlayer =
             AdvertisePlayer(
-                context = context,
+                activity = activity,
                 tvPlayerView = playerView,
                 tvAdvertisePlayerView = adPlayerView,
                 isLive = isLive,

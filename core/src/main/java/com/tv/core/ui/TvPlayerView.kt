@@ -20,7 +20,7 @@ import com.tv.core.base.TvPlayer
 class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
     BaseTvPlayerView(mContext, attrs) {
 
-    private var showSubtitleButton: Boolean? = false
+    private var showSubtitleButton: Boolean? = true
     private var showQualityButton: Boolean? = false
     private var playerViewBackground: Int? = 0
     private var liveAnimationColor: Int? = 0
@@ -29,6 +29,13 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
     private var lottieLiveAnimation: LottieAnimationView? = null
     private var ibSubtitle: AppCompatImageButton? = null
     private var ibQuality: AppCompatImageButton? = null
+
+    private var subtitleDialogTitle = "Select subtitle"
+    private var subtitleDialogButtonText = "Off subtitle"
+    private var qualityDialogTitle = "Select quality"
+    private var qualityDialogButtonText = "Close"
+    private var subtitleDialogResIdStyle = R.style.defaultAlertDialogStyle
+    private var qualityDialogResIdStyle = R.style.defaultAlertDialogStyle
 
     init {
         init(
@@ -42,7 +49,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
         try {
             typedArray = context.obtainStyledAttributes(attrs, R.styleable.TvPlayerView)
             showSubtitleButton =
-                typedArray.getBoolean(R.styleable.TvPlayerView_show_subtitle_button, false)
+                typedArray.getBoolean(R.styleable.TvPlayerView_show_subtitle_button, true)
 
             showQualityButton =
                 typedArray.getBoolean(R.styleable.TvPlayerView_show_quality_button, false)
@@ -61,20 +68,16 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
         }
     }
 
-    fun showQualityButton() {
-        ibQuality?.visibility = View.VISIBLE
+    fun qualityButtonVisibility(isVisible: Boolean) {
+        ibQuality?.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 
-    fun hideQualityButton() {
-        ibQuality?.visibility = View.GONE
+    fun subtitleButtonVisibility(isVisible: Boolean) {
+        ibSubtitle?.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 
-    fun showSubtitleButton() {
-        ibSubtitle?.visibility = View.VISIBLE
-    }
-
-    fun hideSubtitleButton() {
-        ibSubtitle?.visibility = View.GONE
+    fun liveAnimationVisibility(isVisible: Boolean){
+        lottieLiveAnimation?.visibility = if (isVisible) View.VISIBLE else View.INVISIBLE
     }
 
     override fun findViews() {
@@ -84,7 +87,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
     }
 
     override fun updateUi() {
-        if (showSubtitleButton == true) showSubtitleButton() else hideSubtitleButton()
+        subtitleButtonVisibility(showSubtitleButton ?: true)
 
         playerViewBackground?.let { safeBackground ->
             if (safeBackground > 0) {
@@ -92,8 +95,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
             }
         }
 
-        lottieLiveAnimation?.visibility =
-            if (showLiveAnimation == true) View.VISIBLE else View.INVISIBLE
+        liveAnimationVisibility(showLiveAnimation ?: false)
         liveAnimationColor?.let { safeColor ->
             if (safeColor > 0) {
                 lottieLiveAnimation?.addValueCallback(
@@ -114,10 +116,18 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
         setupPlayerView(if (isLive) R.id.default_live_player_view else R.id.default_player_view)
 
         ibSubtitle?.setOnClickListener {
-            playerHandler.showSubtitle()
+            playerHandler.showSubtitle(
+                dialogTitle = subtitleDialogTitle,
+                dialogButtonText = subtitleDialogButtonText,
+                resIdStyle = subtitleDialogResIdStyle
+            )
         }
         ibQuality?.setOnClickListener {
-            playerHandler.showQuality()
+            playerHandler.showQuality(
+                dialogTitle = qualityDialogTitle,
+                dialogButtonText = qualityDialogButtonText,
+                resIdStyle = qualityDialogResIdStyle
+            )
         }
 
         if (isLive) {
@@ -139,7 +149,28 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
     }
 
     override fun changeQualityState(isThereQualities: Boolean) {
-        if (isThereQualities && (showQualityButton == true)) showQualityButton() else hideQualityButton()
+        qualityButtonVisibility(isThereQualities && (showQualityButton == true))
+    }
+
+    fun changeSubtitleDialogTexts(title: String = "Select quality", buttonText: String = "Close") {
+        this.subtitleDialogTitle = title
+        this.subtitleDialogButtonText = buttonText
+    }
+
+    fun changeQualityDialogTexts(
+        title: String = "Select subtitle",
+        buttonText: String = "Off subtitle"
+    ) {
+        this.qualityDialogTitle = title
+        this.qualityDialogButtonText = buttonText
+    }
+
+    fun setSubtitleDialogStyle(resId: Int) {
+        this.subtitleDialogResIdStyle = resId
+    }
+
+    fun setQualityDialogStyle(resId: Int) {
+        this.qualityDialogResIdStyle = resId
     }
 
 }

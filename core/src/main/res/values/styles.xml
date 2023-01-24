@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="defaultAlertDialogStyle" parent="Theme.AppCompat.Dialog.Alert">
+    <style name="defaultAlertDialogStyle" parent="Theme.MaterialComponents.Dialog.Alert">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:titleTextColor" tools:targetApi="m">@color/white</item>
+        <item name="buttonBarPositiveButtonStyle">@style/positiveButtonStyle</item>
+    </style>
+
+    <style name="alertDialogTitleText" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="positiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">@color/white</item>
     </style>
 
