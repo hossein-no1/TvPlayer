@@ -7,11 +7,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ListAdapter
 import android.widget.TextView
-import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.PlaybackException
-import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.Player.Listener
 import com.google.android.exoplayer2.source.*
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
@@ -28,6 +24,7 @@ import com.tv.core.util.*
 import java.util.*
 import com.tv.core.util.MediaItem as TvMediaItem
 
+
 abstract class TvPlayer(
     private val activity: Activity,
     private val tvPlayerView: BaseTvPlayerView,
@@ -36,10 +33,10 @@ abstract class TvPlayer(
 ) {
 
     companion object {
-        const val STATE_IDLE = Player.STATE_IDLE
-        const val STATE_BUFFERING = Player.STATE_BUFFERING
-        const val STATE_READY = Player.STATE_READY
-        const val STATE_ENDED = Player.STATE_ENDED
+        const val STATE_IDLE = Player.STATE_IDLE // 1
+        const val STATE_BUFFERING = Player.STATE_BUFFERING // 2
+        const val STATE_READY = Player.STATE_READY // 3
+        const val STATE_ENDED = Player.STATE_ENDED // 4
     }
 
     private var trackSelector: DefaultTrackSelector
@@ -86,11 +83,27 @@ abstract class TvPlayer(
 
             override fun onPlaybackStateChanged(playbackState: Int) {
                 super.onPlaybackStateChanged(playbackState)
-                if (playbackState == Player.STATE_READY) {
+                if (playbackState == STATE_READY) {
+                    listener.onMediaPlay(currentMediaItem)
                     tvPlayerView.changeSubtitleState(isThereSubtitle())
                     tvPlayerView.changeQualityState(isThereQualities())
+                }else if (playbackState == STATE_ENDED){
+                    listener.onMediaListComplete(currentMediaItem)
                 }
                 listener.onPlaybackStateChanged(playbackState)
+            }
+
+            override fun onPositionDiscontinuity(
+                oldPosition: Player.PositionInfo,
+                newPosition: Player.PositionInfo,
+                reason: Int
+            ) {
+                super.onPositionDiscontinuity(oldPosition, newPosition, reason)
+                if (reason == Player.DISCONTINUITY_REASON_AUTO_TRANSITION)
+                    listener.onMediaComplete(currentMediaItem)
+                else if (reason == Player.DISCONTINUITY_REASON_SEEK_ADJUSTMENT)
+                    listener.onMediaChange(currentMediaItem)
+
             }
 
         }
