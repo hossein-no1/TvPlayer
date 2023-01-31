@@ -24,7 +24,6 @@ import com.tv.core.util.*
 import java.util.*
 import com.tv.core.util.MediaItem as TvMediaItem
 
-
 abstract class TvPlayer(
     private val activity: Activity,
     private val tvPlayerView: BaseTvPlayerView,
@@ -48,6 +47,8 @@ abstract class TvPlayer(
             return mediaItems[player.currentMediaItemIndex]
         }
     private val mediaItems = mutableListOf<TvMediaItem>()
+
+    private var startToPlayMedia = false
 
     init {
         setupElement(isLive)
@@ -79,16 +80,21 @@ abstract class TvPlayer(
             override fun onPlayerError(error: PlaybackException) {
                 super.onPlayerError(error)
                 listener.onPlayerError(error)
+                startToPlayMedia = true
             }
 
             override fun onPlaybackStateChanged(playbackState: Int) {
                 super.onPlaybackStateChanged(playbackState)
                 if (playbackState == STATE_READY) {
-                    listener.onMediaPlay(currentMediaItem)
+                    if (startToPlayMedia) {
+                        listener.onMediaStartToPlay(currentMediaItem)
+                        startToPlayMedia = false
+                    }
                     tvPlayerView.changeSubtitleState(isThereSubtitle())
                     tvPlayerView.changeQualityState(isThereQualities())
-                }else if (playbackState == STATE_ENDED){
+                } else if (playbackState == STATE_ENDED) {
                     listener.onMediaListComplete(currentMediaItem)
+                    startToPlayMedia = true
                 }
                 listener.onPlaybackStateChanged(playbackState)
             }
@@ -99,11 +105,13 @@ abstract class TvPlayer(
                 reason: Int
             ) {
                 super.onPositionDiscontinuity(oldPosition, newPosition, reason)
-                if (reason == Player.DISCONTINUITY_REASON_AUTO_TRANSITION)
+                if (reason == Player.DISCONTINUITY_REASON_AUTO_TRANSITION) {
                     listener.onMediaComplete(currentMediaItem)
-                else if (reason == Player.DISCONTINUITY_REASON_SEEK_ADJUSTMENT)
+                    startToPlayMedia = true
+                } else if (reason == Player.DISCONTINUITY_REASON_SEEK_ADJUSTMENT) {
                     listener.onMediaChange(currentMediaItem)
-
+                    startToPlayMedia = true
+                }
             }
 
         }
@@ -173,6 +181,7 @@ abstract class TvPlayer(
 
     fun play() {
         player.play()
+        startToPlayMedia = true
     }
 
     fun stop() {
@@ -196,7 +205,7 @@ abstract class TvPlayer(
     fun showSubtitle(
         dialogTitle: String,
         dialogButtonText: String,
-        resIdStyle : Int
+        resIdStyle: Int
     ) {
         val subtitleLanguageList = ArrayList<String>()
         val subtitlesList = ArrayList<AlertDialogItemView>()
@@ -218,7 +227,7 @@ abstract class TvPlayer(
             }
         }
 
-        val subtitleDialog = AlertDialogHelper(activity,resIdStyle, dialogTitle)
+        val subtitleDialog = AlertDialogHelper(activity, resIdStyle, dialogTitle)
         subtitleDialog.create(
             adapter = getAlertDialogAdapter(subtitlesList.toTypedArray()),
             itemClickListener = { _, position ->
@@ -251,7 +260,7 @@ abstract class TvPlayer(
     fun showQuality(
         dialogTitle: String,
         dialogButtonText: String,
-        resIdStyle : Int
+        resIdStyle: Int
     ) {
         val qualityList = ArrayList<AlertDialogItemView>()
 
@@ -264,7 +273,7 @@ abstract class TvPlayer(
             )
         }
 
-        val qualityDialog = AlertDialogHelper(activity,resIdStyle, dialogTitle)
+        val qualityDialog = AlertDialogHelper(activity, resIdStyle, dialogTitle)
         qualityDialog.create(adapter = getAlertDialogAdapter(qualityList.toTypedArray()),
             itemClickListener = { self, position ->
                 if (!currentMediaItem.getQualityList()[position].isSelected)
