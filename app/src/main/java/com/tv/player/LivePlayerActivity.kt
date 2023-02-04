@@ -20,7 +20,7 @@ class LivePlayerActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         playerHandler = TvPlayer.Builder(
-            context = this,
+            activity = this,
             playerView = binding.livePlayerViewActivityLivePlayer
         ).createSimplePlayer(isLive = true)
 

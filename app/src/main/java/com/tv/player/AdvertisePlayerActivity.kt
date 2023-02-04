@@ -25,7 +25,7 @@ class AdvertisePlayerActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         playerHelper = TvPlayer.Builder(
-            context = this,
+            activity = this,
             playerView = binding.playerViewActivityAdvertisePlayer,
             /* Optional */playWhenReady = true
         ).createAdvertisePlayer(adPlayerView = binding.advertisePlayerViewActivityAdvertiserPlayer, isLive = false)
