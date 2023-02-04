@@ -21,7 +21,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
     BaseTvPlayerView(mContext, attrs) {
 
     private var showSubtitleButton: Boolean? = true
-    private var showQualityButton: Boolean? = false
+    private var showQualityButton: Boolean? = true
     private var playerViewBackground: Int? = 0
     private var liveAnimationColor: Int? = 0
     private var showLiveAnimation: Boolean? = true
@@ -52,7 +52,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
                 typedArray.getBoolean(R.styleable.TvPlayerView_show_subtitle_button, true)
 
             showQualityButton =
-                typedArray.getBoolean(R.styleable.TvPlayerView_show_quality_button, false)
+                typedArray.getBoolean(R.styleable.TvPlayerView_show_quality_button, true)
 
             playerViewBackground =
                 typedArray.getResourceId(R.styleable.TvPlayerView_player_view_background, 0)
@@ -88,6 +88,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
 
     override fun updateUi() {
         subtitleButtonVisibility(showSubtitleButton ?: true)
+        qualityButtonVisibility(showQualityButton ?: true)
 
         playerViewBackground?.let { safeBackground ->
             if (safeBackground > 0) {
@@ -149,7 +150,12 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
     }
 
     override fun changeQualityState(isThereQualities: Boolean) {
-        qualityButtonVisibility(isThereQualities && (showQualityButton == true))
+        isThereQualities.apply {
+            ibQuality?.isFocusable = this
+            ibQuality?.isFocusableInTouchMode = this
+            ibQuality?.isClickable = this
+            ibQuality?.alpha = if (this) 1F else .5F
+        }
     }
 
     fun changeSubtitleDialogTexts(title: String = "Select quality", buttonText: String = "Close") {
