@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.tv.core.base.TvPlayer
+import com.tv.core.ui.TvDefaultTimeBar
 import com.tv.core.util.MediaItem
 import com.tv.core.util.SubtitleItem
+import com.tv.core.util.TvPlayBackException
 import com.tv.core.util.TvPlayerListener
 import com.tv.player.databinding.ActivitySimplePlayerBinding
 import com.tv.player.util.UrlHelper
@@ -28,7 +30,7 @@ class SimplePlayerActivity : AppCompatActivity() {
         val subtitle1 = SubtitleItem(url = UrlHelper.subtitleUrl, label = "Subtitle 1")
         val subtitle2 = SubtitleItem(url = UrlHelper.subtitleUrl2, label = "Subtitle 2")
 
-        val mediaWithoutSubtitle = MediaItem(UrlHelper.film720)
+        val mediaWithoutSubtitle = MediaItem(url = UrlHelper.film720)
         val mediaWithQuality = MediaItem(
             url = UrlHelper.film1080,
             subtitleItems = listOf(subtitle1, subtitle2),
@@ -42,9 +44,10 @@ class SimplePlayerActivity : AppCompatActivity() {
     }
 
     private val playerListener = object : TvPlayerListener {
-        override fun onPlayerError(error: Exception) {
+
+        override fun onPlayerError(error: TvPlayBackException) {
             super.onPlayerError(error)
-            error.printStackTrace()
+            error.getErrorCodeMessage()
         }
 
         override fun onPlaybackStateChanged(playbackState: Int) {

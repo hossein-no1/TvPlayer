@@ -7,10 +7,7 @@ import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
 import com.tv.core.base.TvPlayer
-import com.tv.core.util.AdvertiseItem
-import com.tv.core.util.AdvertisePlayerListener
-import com.tv.core.util.MediaItem
-import com.tv.core.util.TvPlayerListener
+import com.tv.core.util.*
 import com.tv.player.databinding.ActivityAdvertisePlayerBinding
 import com.tv.player.util.UrlHelper
 
@@ -50,7 +47,8 @@ class AdvertisePlayerActivity : AppCompatActivity() {
             binding.isLoading = playbackState == TvPlayer.STATE_BUFFERING
         }
 
-        override fun onPlayerError(error: Exception) {
+        override fun onPlayerError(error: TvPlayBackException) {
+            super.onPlayerError(error)
             error.printStackTrace()
         }
 
@@ -66,7 +64,7 @@ class AdvertisePlayerActivity : AppCompatActivity() {
     }
 
     private val playerListener = object : TvPlayerListener {
-        override fun onPlayerError(error: Exception) {
+        override fun onPlayerError(error: TvPlayBackException) {
             super.onPlayerError(error)
             error.printStackTrace()
         }

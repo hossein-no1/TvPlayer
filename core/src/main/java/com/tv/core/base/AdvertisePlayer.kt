@@ -11,6 +11,7 @@ import com.tv.core.ui.TvPlayerView
 import com.tv.core.util.AdvertiseItem
 import com.tv.core.util.AdvertisePlayerListener
 import com.tv.core.util.MediaItemConverter
+import com.tv.core.util.TvPlayBackException
 
 internal class AdvertisePlayer(
     private val activity: Activity,
@@ -99,7 +100,7 @@ internal class AdvertisePlayer(
 
         override fun onPlayerError(error: PlaybackException) {
             super.onPlayerError(error)
-            advertiseListener?.onPlayerError(error)
+            advertiseListener?.onPlayerError(TvPlayBackException(errorCode = error.errorCode))
         }
     }
 

@@ -5,6 +5,7 @@ import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.tv.core.base.TvPlayer
 import com.tv.core.util.MediaItem
+import com.tv.core.util.TvPlayBackException
 import com.tv.core.util.TvPlayerListener
 import com.tv.player.databinding.ActivityLivePlayerBinding
 import com.tv.player.util.UrlHelper
@@ -32,7 +33,7 @@ class LivePlayerActivity : AppCompatActivity() {
     }
 
     private val playerListener = object : TvPlayerListener {
-        override fun onPlayerError(error: Exception) {
+        override fun onPlayerError(error: TvPlayBackException) {
             super.onPlayerError(error)
             error.printStackTrace()
         }

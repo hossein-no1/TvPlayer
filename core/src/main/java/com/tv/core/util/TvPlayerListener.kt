@@ -1,7 +1,7 @@
 package com.tv.core.util
 
 interface TvPlayerListener {
-    fun onPlayerError(error: Exception){}
+    fun onPlayerError(error: TvPlayBackException){}
     fun onPlaybackStateChanged(playbackState: Int){}
     fun onMediaStartToPlay(mediaItem : MediaItem){}
     fun onMediaChange(mediaItem : MediaItem){}

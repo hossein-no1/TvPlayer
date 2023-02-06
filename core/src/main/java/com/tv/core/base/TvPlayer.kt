@@ -42,7 +42,7 @@ abstract class TvPlayer(
     private var playerListener: Listener? = null
     var player: ExoPlayer
 
-    private val currentMediaItem: TvMediaItem
+    val currentMediaItem: TvMediaItem
         get() {
             return mediaItems[player.currentMediaItemIndex]
         }
@@ -79,7 +79,7 @@ abstract class TvPlayer(
         playerListener = object : Listener {
             override fun onPlayerError(error: PlaybackException) {
                 super.onPlayerError(error)
-                listener.onPlayerError(error)
+                listener.onPlayerError(TvPlayBackException(errorCode = error.errorCode))
                 startToPlayMedia = true
             }
 
