@@ -1,5 +1,7 @@
 package com.tv.core.util
 
+import com.google.android.exoplayer2.MediaItem.AdsConfiguration
+
 internal object MediaItemConverter {
     fun convertMediaItem(mediaItem : MediaItem) : com.google.android.exoplayer2.MediaItem{
         return com.google.android.exoplayer2.MediaItem.Builder()
@@ -7,6 +9,7 @@ internal object MediaItemConverter {
             .setUri(mediaItem.url)
             .setTag(if (mediaItem.isLive) MediaSourceType.Hls else MediaSourceType.Progressive)
             .setSubtitleConfigurations(SubtitleConverter.convertList(mediaItem.subtitleItems))
+            .setAdsConfiguration(AdsConfiguration.Builder(mediaItem.adTagUri).build())
             .build()
     }
 

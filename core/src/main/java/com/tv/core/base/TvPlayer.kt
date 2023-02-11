@@ -9,13 +9,12 @@ import android.widget.ListAdapter
 import android.widget.TextView
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.Player.Listener
-import com.google.android.exoplayer2.source.*
-import com.google.android.exoplayer2.source.hls.HlsMediaSource
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
+import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.source.MergingMediaSource
+import com.google.android.exoplayer2.source.SingleSampleMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionOverride
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
-import com.google.android.exoplayer2.util.Util
+import com.google.android.exoplayer2.upstream.DataSource
 import com.tv.core.R
 import com.tv.core.ui.BaseTvPlayerView
 import com.tv.core.ui.TvAdvertisePlayerView
@@ -28,7 +27,8 @@ abstract class TvPlayer(
     private val activity: Activity,
     private val tvPlayerView: BaseTvPlayerView,
     isLive: Boolean = false,
-    playWhenReady: Boolean = true
+    playWhenReady: Boolean = true,
+    tvImaAdsLoader: TvImaAdsLoader? = null
 ) {
 
     companion object {
@@ -41,6 +41,8 @@ abstract class TvPlayer(
     private var trackSelector: DefaultTrackSelector
     private var playerListener: Listener? = null
     var player: ExoPlayer
+    private lateinit var mediaSourceFactory: MediaSource.Factory
+    private var dataSourceFactory: DataSource.Factory
 
     val currentMediaItem: TvMediaItem
         get() {
@@ -52,16 +54,29 @@ abstract class TvPlayer(
 
     init {
         setupElement(isLive)
-        val videoTrackSelectionFactory =
-            AdaptiveTrackSelection.Factory()
-        trackSelector =
-            DefaultTrackSelector(activity.applicationContext, videoTrackSelectionFactory)
-        player = ExoPlayer.Builder(activity.applicationContext)
-            .setTrackSelector(trackSelector)
-            .setSeekBackIncrementMs(10_000)
-            .setSeekForwardIncrementMs(10_000)
-            .build()
+        trackSelector = ExoPlayerHelper.getTrackSelector(activity.applicationContext)
+        dataSourceFactory = ExoPlayerHelper.getDataSourceFactory(activity)
+        tvImaAdsLoader?.let { safeAdsLoader ->
+            mediaSourceFactory = ExoPlayerHelper.getMediaSourceFactory(
+                activity = activity,
+                dataSourceFactory = dataSourceFactory,
+                tvImaAdsLoader = safeAdsLoader,
+                playerView = tvPlayerView.playerView
+            )
+        } ?: kotlin.run {
+            mediaSourceFactory = ExoPlayerHelper.getMediaSourceFactory(
+                activity = activity,
+                dataSourceFactory = dataSourceFactory,
+            )
+        }
+
+        player = ExoPlayerHelper.getExoPlayer(
+            context = activity.applicationContext,
+            trackSelector = trackSelector,
+            mediaSourceFactory = mediaSourceFactory
+        )
         tvPlayerView.playerView.player = player
+        tvImaAdsLoader?.setPlayer(player)
         player.playWhenReady = playWhenReady
     }
 
@@ -100,9 +115,7 @@ abstract class TvPlayer(
             }
 
             override fun onPositionDiscontinuity(
-                oldPosition: Player.PositionInfo,
-                newPosition: Player.PositionInfo,
-                reason: Int
+                oldPosition: Player.PositionInfo, newPosition: Player.PositionInfo, reason: Int
             ) {
                 super.onPositionDiscontinuity(oldPosition, newPosition, reason)
                 if (reason == Player.DISCONTINUITY_REASON_AUTO_TRANSITION) {
@@ -126,8 +139,7 @@ abstract class TvPlayer(
     fun addMediaList(medias: List<TvMediaItem>, index: Int = 0) {
         mediaItems.addAll(medias)
         player.addMediaSources(
-            index,
-            buildMediaSources(MediaItemConverter.convertMediaList(medias))
+            index, buildMediaSources(MediaItemConverter.convertMediaList(medias))
         )
     }
 
@@ -151,14 +163,6 @@ abstract class TvPlayer(
     }
 
     private fun buildMediaSource(mediaItem: MediaItem): MediaSource {
-        val dataSourceFactory = DefaultHttpDataSource.Factory()
-            .setUserAgent(Util.getUserAgent(activity, activity.packageName))
-        val mediaSource: MediaSource =
-            if (mediaItem.localConfiguration?.tag.toString() == MediaSourceType.Hls.name)
-                HlsMediaSource.Factory(dataSourceFactory)
-                    .createMediaSource(mediaItem) else ProgressiveMediaSource.Factory(
-                dataSourceFactory
-            ).createMediaSource(mediaItem)
         val subtitleSources: ArrayList<MediaSource> = arrayListOf()
 
         mediaItem.localConfiguration?.subtitleConfigurations?.forEach { subtitleConfig ->
@@ -167,7 +171,9 @@ abstract class TvPlayer(
                     .createMediaSource(subtitleConfig, C.TIME_UNSET)
             )
         }
-        return MergingMediaSource(mediaSource, *subtitleSources.toTypedArray())
+        return MergingMediaSource(
+            mediaSourceFactory.createMediaSource(mediaItem), *subtitleSources.toTypedArray()
+        )
     }
 
     fun prepare() {
@@ -203,9 +209,7 @@ abstract class TvPlayer(
     }
 
     fun showSubtitle(
-        dialogTitle: String,
-        dialogButtonText: String,
-        resIdStyle: Int
+        dialogTitle: String, dialogButtonText: String, resIdStyle: Int
     ) {
         val subtitleLanguageList = ArrayList<String>()
         val subtitlesList = ArrayList<AlertDialogItemView>()
@@ -258,17 +262,14 @@ abstract class TvPlayer(
     }
 
     fun showQuality(
-        dialogTitle: String,
-        dialogButtonText: String,
-        resIdStyle: Int
+        dialogTitle: String, dialogButtonText: String, resIdStyle: Int
     ) {
         val qualityList = ArrayList<AlertDialogItemView>()
 
         currentMediaItem.getQualityList().forEach { mediaQuality ->
             qualityList.add(
                 AlertDialogItemView(
-                    mediaQuality.title,
-                    if (mediaQuality.isSelected) R.drawable.ic_check else 0
+                    mediaQuality.title, if (mediaQuality.isSelected) R.drawable.ic_check else 0
                 )
             )
         }
@@ -276,10 +277,8 @@ abstract class TvPlayer(
         val qualityDialog = AlertDialogHelper(activity, resIdStyle, dialogTitle)
         qualityDialog.create(adapter = getAlertDialogAdapter(qualityList.toTypedArray()),
             itemClickListener = { self, position ->
-                if (!currentMediaItem.getQualityList()[position].isSelected)
-                    changeQuality(position)
-                else
-                    self.dismiss()
+                if (!currentMediaItem.getQualityList()[position].isSelected) changeQuality(position)
+                else self.dismiss()
             },
             positiveButtonText = dialogButtonText,
             positiveClickListener = { self, _ ->
@@ -298,14 +297,13 @@ abstract class TvPlayer(
     }
 
     private fun changeQualityUriInItem(qualitySelectedPosition: Int) {
-        val mediaSource =
-            buildMediaSource(
-                MediaItemConverter.convertMediaItem(
-                    currentMediaItem.changeQualityUriInItem(
-                        qualitySelectedPosition
-                    )
+        val mediaSource = buildMediaSource(
+            MediaItemConverter.convertMediaItem(
+                currentMediaItem.changeQualityUriInItem(
+                    qualitySelectedPosition
                 )
             )
+        )
         player.setMediaSource(mediaSource)
     }
 
@@ -347,27 +345,37 @@ abstract class TvPlayer(
     class Builder(
         private val activity: Activity,
         private val playerView: TvPlayerView,
-        private val playWhenReady: Boolean = true
+        private val playWhenReady: Boolean = true,
     ) {
 
-        fun createSimplePlayer(isLive: Boolean = false): TvPlayer = SimplePlayer(
+        fun createSimplePlayer(
+            isLive: Boolean = false
+        ): TvPlayer = SimplePlayer(
             activity = activity,
             tvPlayerView = playerView,
             isLive = isLive,
             playWhenReady = playWhenReady
         )
 
+        fun createImaPlayer(
+            tvImaAdsLoader: TvImaAdsLoader? = null, isLive: Boolean = false
+        ): TvPlayer = ImaPlayer(
+            activity = activity,
+            tvPlayerView = playerView,
+            isLive = isLive,
+            playWhenReady = playWhenReady,
+            tvImaAdsLoader = tvImaAdsLoader
+        )
+
         fun createAdvertisePlayer(
-            adPlayerView: TvAdvertisePlayerView,
-            isLive: Boolean = false
-        ): TvPlayer =
-            AdvertisePlayer(
-                activity = activity,
-                tvPlayerView = playerView,
-                tvAdvertisePlayerView = adPlayerView,
-                isLive = isLive,
-                playWhenReady = playWhenReady
-            )
+            adPlayerView: TvAdvertisePlayerView, isLive: Boolean = false
+        ): TvPlayer = AdvertisePlayer(
+            activity = activity,
+            tvPlayerView = playerView,
+            tvAdvertisePlayerView = adPlayerView,
+            isLive = isLive,
+            playWhenReady = playWhenReady
+        )
 
     }
 

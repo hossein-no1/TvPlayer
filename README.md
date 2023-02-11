@@ -7,6 +7,32 @@ In the module gradle, dependencies insert this line:
 check the lateast relese version in github.
 <br/>
 <br/>
+
+<h1>Version 2.*.*</h1>
+
+What's happend in this version?
+-for use library, only implement library(without exoplayer library)
+-implement internal ui(for simplePlayer, advertisePlayer and livePlayer), but can edit them with everride that xml file or ovverride that styles
+-define some attribute for small chagne of player views
+-improve some class, for easer use it!
+
+<h2>Declaration code</h2>
+There are 3 defferent player that all them extended of BasePlayer<br/>
+1. SimplePlayer<br/>
+2. AdvertisePlayer<br/>
+3. LivePlayer<br/>
+<br/>
+For easier use, please take a look at the sample project
+
+<h1>Version 1.*.*</h1>
+A plyer that optimized for tv and based on Exo player google
+# Implement in gradle
+In the module gradle, dependencies insert this line:
+<br/>
+`implementation 'com.github.hossein-no1:TvPlayer:vx,x,x'`
+check the lateast relese version in github.
+<br/>
+<br/>
 # Setup Simple player
 1.Create a player view in xml<br/>
 2.Pass the player view to SimplePlayer constructor<br/>

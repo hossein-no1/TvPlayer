@@ -2,11 +2,14 @@ package com.tv.core.util
 
 import java.util.UUID
 
+import android.net.Uri
+
 class MediaItem(
     val id : String = UUID.randomUUID().toString(),
     var url: String,
     val subtitleItems: List<SubtitleItem> = listOf(),
     val isLive: Boolean = false,
+    val adTagUri : Uri = Uri.EMPTY,
     defaultQualityTitle: String = "Item",
 ) {
 
