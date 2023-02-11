@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.tv.core.base.TvPlayer
-import com.tv.core.ui.TvDefaultTimeBar
 import com.tv.core.util.MediaItem
 import com.tv.core.util.SubtitleItem
 import com.tv.core.util.TvPlayBackException
@@ -37,9 +36,11 @@ class SimplePlayerActivity : AppCompatActivity() {
             defaultQualityTitle = "Default quality"
         ).addQuality("720", UrlHelper.film720).addQuality("480", UrlHelper.film480)
 
+        val mediaWithQualityList = MediaItem(url = UrlHelper.film1080, qualities = listOf(Pair("Item 1", UrlHelper.film720),Pair("Item 2", UrlHelper.film1080)))
+
         playerHandler.addListener(playerListener)
-        playerHandler.addMediaList(listOf(mediaWithoutSubtitle, mediaWithQuality))
-        playerHandler.prepareAndPlay()
+        playerHandler.addMediaList(listOf(mediaWithoutSubtitle, mediaWithQuality, mediaWithQualityList))
+        playerHandler.prepareAndPlay(2)
 
     }
 

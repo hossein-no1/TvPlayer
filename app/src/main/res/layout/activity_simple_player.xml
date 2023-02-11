@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:show_subtitle_button="true"
-        app:show_quality_button="false"
+        app:show_quality_button="true"
         app:player_view_background="@color/black"/>
 
     <ProgressBar

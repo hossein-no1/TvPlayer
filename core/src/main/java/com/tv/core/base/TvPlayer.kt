@@ -180,12 +180,13 @@ abstract class TvPlayer(
         player.prepare()
     }
 
-    fun prepareAndPlay() {
+    fun prepareAndPlay(mediaIndex: Int = 0, mediaSeek : Long = C.TIME_UNSET) {
         prepare()
-        play()
+        play(mediaIndex, mediaSeek)
     }
 
-    fun play() {
+    fun play(mediaIndex: Int = 0, mediaSeek : Long = C.TIME_UNSET) {
+        player.seekTo(mediaIndex, mediaSeek)
         player.play()
         startToPlayMedia = true
     }

@@ -5,16 +5,24 @@ import java.util.UUID
 import android.net.Uri
 
 class MediaItem(
-    val id : String = UUID.randomUUID().toString(),
+    val id: String = UUID.randomUUID().toString(),
     var url: String,
     val subtitleItems: List<SubtitleItem> = listOf(),
     val isLive: Boolean = false,
-    val adTagUri : Uri = Uri.EMPTY,
-    defaultQualityTitle: String = "Item",
+    val adTagUri: Uri = Uri.EMPTY,
+    qualities: List<Pair<String, String>> = listOf(),
+    defaultQualityTitle: String = "Item"
 ) {
 
     private val qualityList: MutableList<MediaQuality> =
         mutableListOf(MediaQuality(defaultQualityTitle, url))
+
+    init {
+        qualities.forEach {
+            qualityList.add(MediaQuality(title = it.first, link = it.second))
+        }
+        if (qualityList.size > 1) qualityList.first().isSelected = true
+    }
 
     fun addQuality(quality: String, url: String): MediaItem {
         qualityList.add(MediaQuality(quality, url))
@@ -22,7 +30,7 @@ class MediaItem(
         return this
     }
 
-    fun getQualityList(): List<MediaQuality> = qualityList
+    internal fun getQualityList(): List<MediaQuality> = qualityList
 
     fun isThereQuality() = qualityList.size > 1
 
@@ -34,7 +42,6 @@ class MediaItem(
             url = qualityList[index].link
             qualityList[0] = qualityList[index].also { qualityList[index] = qualityList[0] }
         } else throw IndexOutOfBoundsException("Not found quality index in the list!")
-
     }
 
     @Throws(IndexOutOfBoundsException::class)
@@ -64,6 +71,6 @@ class MediaItem(
 
 }
 
-class MediaQuality(
-    val title: String, val link: String, var isSelected: Boolean = false
+internal class MediaQuality(
+    val title: String, val link: String, internal var isSelected: Boolean = false
 )

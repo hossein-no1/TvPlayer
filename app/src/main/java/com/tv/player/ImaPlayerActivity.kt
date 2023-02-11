@@ -81,7 +81,7 @@ class ImaPlayerActivity : AppCompatActivity() {
         ).createImaPlayer(tvImaAdsLoader = imaAdsLoader)
 
         val media =
-            MediaItem(UrlHelper.film720, adTagUri = Uri.parse(UrlHelper.SAMPLE_VAST_TAG_URL_2))
+            MediaItem(url = UrlHelper.film720, adTagUri = Uri.parse(UrlHelper.SAMPLE_VAST_TAG_URL_2))
 
         playerHandler.addMedia(media)
         playerHandler.prepareAndPlay()
