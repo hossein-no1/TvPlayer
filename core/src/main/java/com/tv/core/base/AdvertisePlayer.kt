@@ -16,7 +16,7 @@ internal class AdvertisePlayer(
     private val activity: Activity,
     private val tvPlayerView: TvPlayerView,
     private val tvAdvertisePlayerView: TvAdvertisePlayerView,
-    isLive : Boolean,
+    isLive: Boolean,
     playWhenReady: Boolean = true
 ) : TvPlayer(activity, tvPlayerView, isLive, playWhenReady) {
 
@@ -34,7 +34,7 @@ internal class AdvertisePlayer(
         adPlayer.playWhenReady = true
     }
 
-    private fun setupElement(){
+    private fun setupElement() {
         tvAdvertisePlayerView.setupElement(this)
     }
 
@@ -106,7 +106,11 @@ internal class AdvertisePlayer(
     private fun handleSkippLoop() {
         val timeToLeft =
             if (skipAdvertiseTime <= 0) ((adPlayer.duration / 1000) - adPlayer.currentPosition / 1000).toInt() else (skipAdvertiseTime - adPlayer.currentPosition / 1000).toInt()
-        advertiseListener?.onSkipTimeChange(timeToLeft, skipAdvertiseTime, tvAdvertisePlayerView.tvSkipAd)
+        advertiseListener?.onSkipTimeChange(
+            timeToLeft,
+            skipAdvertiseTime,
+            tvAdvertisePlayerView.tvSkipAd
+        )
         Handler(activity.applicationContext.mainLooper).postDelayed(
             {
                 if (timeToLeft > 0 && adPlayer.isPlaying) {

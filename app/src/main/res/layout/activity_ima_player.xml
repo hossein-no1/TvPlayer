@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="isLoading"
+            type="Boolean" />
+        <import type="android.view.View" />
+    </data>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.tv.core.ui.TvPlayerView
+            android:id="@+id/tvPlayerView_activityImaPlayer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:show_subtitle_button="true"
+            app:show_quality_button="false"
+            app:player_view_background="@color/black"/>
+
+        <ProgressBar
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:visibility="@{isLoading ? View.VISIBLE : View.GONE , default=gone}" />
+
+    </RelativeLayout>
+</layout>
