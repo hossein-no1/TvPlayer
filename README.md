@@ -4,17 +4,32 @@ A plyer that optimized for tv and based on Exo player google
 In the module gradle, dependencies insert this line:
 <br/>
 `implementation 'com.github.hossein-no1:TvPlayer:vx,x,x'`
-check the lateast relese version in github.
+check the lateast release version in github.
+
+and 
+`implementation 'com.google.ads.interactivemedia.v3:interactivemedia:x.x.x'`
+for show VAST ads
 <br/>
+
+<h1>Version 3.*.*</h1>
+What's happend in this version?<br/>
+-Implement ImaPlayer for show VAST ads<br/>
+-Add some feature(for read more, take a look to release note)<br/>
+-Fix some bugs<br/>
+
 <br/>
+For use VAST tags:<br/>
+Create an instance of ImaPlayer and pass ImaAdsLoadre object to them<br/>
+Then create media item and pass a VAST tag uri to them
+<h3>**Note: plesae don't forget implemention interactive library for use ImaPlayer**<h3/>
 
 <h1>Version 2.*.*</h1>
 
-What's happend in this version?
--for use library, only implement library(without exoplayer library)
--implement internal ui(for simplePlayer, advertisePlayer and livePlayer), but can edit them with everride that xml file or ovverride that styles
--define some attribute for small chagne of player views
--improve some class, for easer use it!
+What's happend in this version?<br/>
+-For use library, only implement library(without exoplayer library)<br/>
+-Implement internal ui(for simplePlayer, advertisePlayer and livePlayer), but can edit them with everride that xml file or ovverride that styles<br/>
+-Define some attribute for small chagne of player views<br/>
+-Improve some class, for easer use it!<br/>
 
 <h2>Declaration code</h2>
 There are 3 defferent player that all them extended of BasePlayer<br/>
@@ -30,7 +45,7 @@ A plyer that optimized for tv and based on Exo player google
 In the module gradle, dependencies insert this line:
 <br/>
 `implementation 'com.github.hossein-no1:TvPlayer:vx,x,x'`
-check the lateast relese version in github.
+check the lateast release version in github.
 <br/>
 <br/>
 # Setup Simple player
