@@ -21,7 +21,7 @@ What's happend in this version?<br/>
 For use VAST tags:<br/>
 Create an instance of ImaPlayer and pass ImaAdsLoadre object to them<br/>
 Then create media item and pass a VAST tag uri to them
-<h3>**Note: plesae don't forget implemention interactive library for use ImaPlayer**<h3/>
+<h3>**Note: please don't forget implemention interactive library for use ImaPlayer**<h3/>
 
 <h1>Version 2.*.*</h1>
 
