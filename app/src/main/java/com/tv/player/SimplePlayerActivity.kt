@@ -29,7 +29,7 @@ class SimplePlayerActivity : AppCompatActivity() {
         val subtitle1 = SubtitleItem(url = UrlHelper.subtitleUrl, label = "Subtitle 1")
         val subtitle2 = SubtitleItem(url = UrlHelper.subtitleUrl2, label = "Subtitle 2")
 
-        val mediaWithoutSubtitle = MediaItem(url = UrlHelper.film720)
+        val mediaWithoutSubtitle = MediaItem(url = UrlHelper.filmWithDubbed, dubbedList = listOf(UrlHelper.dubbed1, UrlHelper.dubbed2))
         val mediaWithQuality = MediaItem(
             url = UrlHelper.film1080,
             subtitleItems = listOf(subtitle1, subtitle2),
@@ -40,7 +40,7 @@ class SimplePlayerActivity : AppCompatActivity() {
 
         playerHandler.addListener(playerListener)
         playerHandler.addMediaList(listOf(mediaWithoutSubtitle, mediaWithQuality, mediaWithQualityList))
-        playerHandler.prepareAndPlay(2)
+        playerHandler.prepareAndPlay()
 
     }
 

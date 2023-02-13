@@ -5,6 +5,13 @@ object UrlHelper {
     const val filmWithoutSubtitleLink =
         "http://dl.gemescape.com/film/2022/Black.Adam/Black.Adam.2022.1080p.10bit.WEBRip.6CH.x265.HEVC.PSA.PK.mkv"
 
+    const val filmWithDubbed =
+        "http://dl3.gemescape.com/FILM/2006/Cars/Cars.2006.BluRay.1080p.Dubbed.PK.mkv"
+
+    const val dubbed1 = "https://cloudspace.huma.ir/s/qzq1GAtwzXCvdue/download"
+
+    const val dubbed2 = "https://cloudspace.huma.ir/s/wCMUZL0aB3DjRHN/download"
+
     const val linkLive =
         "http://92.42.50.29/PLTV/88888888/224/3221226140/index.m3u8?rrsip=92.42.50.29&zoneoffset=0&devkbps=462-3000&servicetype=1&icpid=&accounttype=1&limitflux=-1&limitdur=-1&tenantId=9802&accountinfo=Xrt3KWcoCI5FlXhu5Zv8JxQnVoci7noamwPvHTQ6SQVrjR7xZ7nipIwU5pQG2f%2Bq%2BLz9EbXMj63mpUXJp%2FZIaRvnmpBPEQUyO0R0FdMse4cviE4toyc9SSc00HhDS3lJhZ9K4b4ymiVCSHr0%2BPpFtYRcSWuBLLH0De9WBPjgyJ8%3D%3A20211207150037%3AUTC%2C10001007206428%2C77.81.151.194%2C20211207150037%2Curn%3AHuawei%3AliveTV%3AXTV100000148%2C10001007206428%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C10000506368856%2C0%2C10500006361944%2C384af8f5386e59cb%2C%2C%2C1%2C1%2CEND&GuardEncType=2&it=H4sIAAAAAAAAADWOwQ6CMBBE_6bHplDB7aEnjYmJQRPRq1nLUomFaosm_r2AeNjL7LzJ6wMa2q61WiqQBCBB5ourkpAta2VyQlQKcpWwSM_C65QZdK7pbOGrETsfV5dE8DRNeCrGY-U4uHFotZi6xau9UtDZHzxSeDeGdBVr_sbI0dpAFvvGd_zg8HMKbq4wKme5JJcAMIhkQkjWj2mJ8T582A3jyrcPDFTtvJ0AXaOLxB5o7mipwJZ093Lux-1DNdh8AQYNhMH2AAAA"
 

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/TvRelativeParent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -41,6 +40,16 @@
         android:layout_above="@id/exo_progress"
         android:gravity="center_vertical"
         android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/ib_audioTrack"
+            style="@style/TvButtonAudioTrack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:visibility="invisible"/>
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/exo_prev"
@@ -110,34 +119,33 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            >
-        
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/ib_qualities"
-            style="@style/TvButtonQuality"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center"
-            android:layout_marginLeft="4dp"
-            android:layout_marginEnd="8dp"
-            android:layout_toLeftOf="@id/ib_subtitles"
-            android:tintMode="src_in"
-            android:visibility="invisible" />
+            android:orientation="horizontal">
 
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/ib_subtitles"
-            style="@style/TvButtonSubtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center"
-            android:layout_marginEnd="8dp"
-            android:tintMode="src_in" />
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/ib_qualities"
+                style="@style/TvButtonQuality"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:layout_marginLeft="4dp"
+                android:layout_marginEnd="8dp"
+                android:layout_toLeftOf="@id/ib_subtitles"
+                android:tintMode="src_in"
+                android:visibility="invisible" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/ib_subtitles"
+                style="@style/TvButtonSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:layout_marginEnd="8dp"
+                android:tintMode="src_in" />
 
         </LinearLayout>
 

@@ -1,8 +1,7 @@
 package com.tv.core.util
 
-import java.util.UUID
-
 import android.net.Uri
+import java.util.*
 
 class MediaItem(
     val id: String = UUID.randomUUID().toString(),
@@ -10,6 +9,7 @@ class MediaItem(
     val subtitleItems: List<SubtitleItem> = listOf(),
     val isLive: Boolean = false,
     val adTagUri: Uri = Uri.EMPTY,
+    val dubbedList : List<String> = listOf(),
     qualities: List<Pair<String, String>> = listOf(),
     defaultQualityTitle: String = "Item"
 ) {

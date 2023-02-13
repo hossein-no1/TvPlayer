@@ -9,6 +9,7 @@ import android.widget.ListAdapter
 import android.widget.TextView
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.Player.Listener
+import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.MergingMediaSource
 import com.google.android.exoplayer2.source.SingleSampleMediaSource
@@ -107,6 +108,7 @@ abstract class TvPlayer(
                     }
                     tvPlayerView.changeSubtitleState(isThereSubtitle())
                     tvPlayerView.changeQualityState(isThereQualities())
+                    tvPlayerView.changeAudioTrackState(isThereDubbed())
                 } else if (playbackState == STATE_ENDED) {
                     listener.onMediaListComplete(currentMediaItem)
                     startToPlayMedia = true
@@ -133,13 +135,19 @@ abstract class TvPlayer(
 
     fun addMedia(media: TvMediaItem, index: Int = 0) {
         mediaItems.add(media)
-        player.addMediaSource(index, buildMediaSource(MediaItemConverter.convertMediaItem(media)))
+        player.addMediaSource(
+            index,
+            buildMediaSource(
+                MediaItemConverter.convertMediaItem(media),
+                media.dubbedList
+            )
+        )
     }
 
     fun addMediaList(medias: List<TvMediaItem>, index: Int = 0) {
         mediaItems.addAll(medias)
         player.addMediaSources(
-            index, buildMediaSources(MediaItemConverter.convertMediaList(medias))
+            index, buildMediaSources(medias)
         )
     }
 
@@ -152,40 +160,73 @@ abstract class TvPlayer(
         return false
     }
 
+    fun isThereDubbed(): Boolean {
+        for (group in player.currentTracks.groups) {
+            if (group.type == C.TRACK_TYPE_AUDIO) {
+                return true
+            }
+        }
+        return false
+    }
+
     fun isThereQualities() = currentMediaItem.isThereQuality()
 
-    private fun buildMediaSources(mediaItems: List<MediaItem>): List<MediaSource> {
+    private fun buildMediaSource(mediaItem: MediaItem, dubbedList: List<String>) =
+        MergingMediaSource(
+            mediaSourceFactory.createMediaSource(mediaItem),
+            *buildDubbedMediaSource(dubbedList).toTypedArray(),
+            *buildSubtitleMediaSource(mediaItem).toTypedArray()
+        )
+
+    private fun buildMediaSources(mediaItems: List<com.tv.core.util.MediaItem>): List<MediaSource> {
         val mediaSources = mutableListOf<MediaSource>()
         mediaItems.forEach { mediaItem ->
-            mediaSources.add(buildMediaSource(mediaItem))
+            mediaSources.add(
+                buildMediaSource(
+                    MediaItemConverter.convertMediaItem(mediaItem),
+                    mediaItem.dubbedList
+                )
+            )
         }
         return mediaSources
     }
 
-    private fun buildMediaSource(mediaItem: MediaItem): MediaSource {
+    private fun buildSubtitleMediaSource(mediaItem: MediaItem): ArrayList<MediaSource> {
         val subtitleSources: ArrayList<MediaSource> = arrayListOf()
-
         mediaItem.localConfiguration?.subtitleConfigurations?.forEach { subtitleConfig ->
             subtitleSources.add(
                 SingleSampleMediaSource.Factory(dataSourceFactory)
                     .createMediaSource(subtitleConfig, C.TIME_UNSET)
             )
         }
-        return MergingMediaSource(
-            mediaSourceFactory.createMediaSource(mediaItem), *subtitleSources.toTypedArray()
-        )
+        return subtitleSources
+    }
+
+    private fun buildDubbedMediaSource(dubbedList: List<String>): ArrayList<MediaSource> {
+        val dubbedSources: ArrayList<MediaSource> = arrayListOf()
+        dubbedList.forEach {
+            dubbedSources.add(
+                DefaultMediaSourceFactory(activity)
+                    .createMediaSource(
+                        MediaItem.Builder().setUri(
+                            it
+                        ).build()
+                    )
+            )
+        }
+        return dubbedSources
     }
 
     fun prepare() {
         player.prepare()
     }
 
-    fun prepareAndPlay(mediaIndex: Int = 0, mediaSeek : Long = C.TIME_UNSET) {
+    fun prepareAndPlay(mediaIndex: Int = 0, mediaSeek: Long = C.TIME_UNSET) {
         prepare()
         play(mediaIndex, mediaSeek)
     }
 
-    fun play(mediaIndex: Int = 0, mediaSeek : Long = C.TIME_UNSET) {
+    fun play(mediaIndex: Int = 0, mediaSeek: Long = C.TIME_UNSET) {
         player.seekTo(mediaIndex, mediaSeek)
         player.play()
         startToPlayMedia = true
@@ -262,6 +303,58 @@ abstract class TvPlayer(
         subtitleDialog.show()
     }
 
+    fun showAudioTrack(
+        dialogTitle: String, dialogButtonText: String, resIdStyle: Int
+    ) {
+        val audioTrackLanguageList = ArrayList<String>()
+        val audioTracksList = ArrayList<AlertDialogItemView>()
+        for (group in player.currentTracks.groups) {
+            if (group.type == C.TRACK_TYPE_AUDIO) {
+                val groupInfo = group.mediaTrackGroup
+                for (i in 0 until groupInfo.length) {
+                    audioTrackLanguageList.add(groupInfo.getFormat(i).language.toString())
+                    val displayLanguage =
+                        Locale(groupInfo.getFormat(i).language.toString()).displayLanguage.let {
+                            if (it == "null") "" else it
+                        }
+                    val subtitleText =
+                        "${audioTracksList.size + 1}. " + displayLanguage + " (${
+                            if (groupInfo.getFormat(
+                                    i
+                                ).label == null
+                            ) "Dubbed" else groupInfo.getFormat(i).label
+                        })"
+                    val audioTrackIcon = if (group.isSelected) R.drawable.ic_check else 0
+                    audioTracksList.add(AlertDialogItemView(subtitleText, audioTrackIcon))
+                }
+            }
+        }
+
+        val audioTrackDialog = AlertDialogHelper(activity, resIdStyle, dialogTitle)
+        audioTrackDialog.create(
+            adapter = getAlertDialogAdapter(audioTracksList.toTypedArray()),
+            itemClickListener = { _, position ->
+                val trackGroupList =
+                    trackSelector.currentMappedTrackInfo?.getTrackGroups(C.TRACK_TYPE_AUDIO)
+                val trackGroup = trackGroupList?.get(position)
+                trackGroup?.let { safeTrackGroup ->
+                    trackSelector.setParameters(
+                        trackSelector.buildUponParameters().setOverrideForType(
+                            TrackSelectionOverride(
+                                safeTrackGroup, 0
+                            )
+                        ).setRendererDisabled(C.TRACK_TYPE_AUDIO, false)
+                    )
+                }
+            },
+            positiveClickListener = { self, _ ->
+                self.dismiss()
+            },
+            positiveButtonText = dialogButtonText
+        )
+        audioTrackDialog.show()
+    }
+
     fun showQuality(
         dialogTitle: String, dialogButtonText: String, resIdStyle: Int
     ) {
@@ -303,7 +396,7 @@ abstract class TvPlayer(
                 currentMediaItem.changeQualityUriInItem(
                     qualitySelectedPosition
                 )
-            )
+            ), currentMediaItem.dubbedList
         )
         player.setMediaSource(mediaSource)
     }
@@ -311,11 +404,7 @@ abstract class TvPlayer(
     private fun changeQualityUriInMediaList(qualitySelectedPosition: Int) {
         mediaItems[player.currentMediaItemIndex].changeQualityUriInItem(qualitySelectedPosition)
 
-        val mediaSources = buildMediaSources(
-            MediaItemConverter.convertMediaList(
-                mediaItems
-            )
-        )
+        val mediaSources = buildMediaSources(mediaItems)
         player.setMediaSources(mediaSources, player.currentMediaItemIndex, player.currentPosition)
     }
 
