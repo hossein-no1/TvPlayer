@@ -11,6 +11,11 @@ and
 for show VAST ads
 <br/>
 
+<h1>Version 3.1.*</h1>
+What's happend in this version?<br/>
+-Implement dubbed
+<br/>
+
 <h1>Version 3.*.*</h1>
 What's happend in this version?<br/>
 -Implement ImaPlayer for show VAST ads<br/>
