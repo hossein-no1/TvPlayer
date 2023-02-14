@@ -11,16 +11,13 @@ and
 for show VAST ads
 <br/>
 
-<h1>Version 3.1.*</h1>
-What's happend in this version?<br/>
--Implement dubbed
-<br/>
-
 <h1>Version 3.*.*</h1>
 What's happend in this version?<br/>
 -Implement ImaPlayer for show VAST ads<br/>
 -Add some feature(for read more, take a look to release note)<br/>
--Fix some bugs<br/>
+-Fix some bugs
+-Implement dubbed
+-Configure custom subtitle text<br/>
 
 <br/>
 For use VAST tags:<br/>
