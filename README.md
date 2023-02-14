@@ -15,8 +15,8 @@ for show VAST ads
 What's happend in this version?<br/>
 -Implement ImaPlayer for show VAST ads<br/>
 -Add some feature(for read more, take a look to release note)<br/>
--Fix some bugs
--Implement dubbed
+-Fix some bugs<br/>
+-Implement dubbed<br/>
 -Configure custom subtitle text<br/>
 
 <br/>
