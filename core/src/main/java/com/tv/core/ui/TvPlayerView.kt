@@ -3,15 +3,21 @@ package com.tv.core.ui
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.TypedArray
+import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
+import android.graphics.Typeface
+import android.os.Build
 import android.util.AttributeSet
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.model.KeyPath
+import com.google.android.exoplayer2.text.Cue.TEXT_SIZE_TYPE_ABSOLUTE
+import com.google.android.exoplayer2.ui.CaptionStyleCompat
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tv.core.R
 import com.tv.core.base.TvPlayer
@@ -92,7 +98,14 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
         lottieLiveAnimation?.visibility = if (isVisible) View.VISIBLE else View.INVISIBLE
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun findViews() {
+        configureSubtitleView(
+            Typeface.createFromAsset(
+                mContext.assets,
+                "fonts/iran_sans_x_medium.ttf"
+            )
+        )
         ibSubtitle = findViewById(R.id.ib_subtitles)
         ibQuality = findViewById(R.id.ib_qualities)
         ibAudioTack = findViewById(R.id.ib_audioTrack)
@@ -125,6 +138,26 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
                 }
             }
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun configureSubtitleView(
+        typeface: Typeface,
+        textSize: Float = 18F,
+        textColor: Int = Color.WHITE,
+        backgroundTextColor: Int = mContext.getColor(R.color.black_200)
+    ) {
+        val subtitleView = playerView.subtitleView
+        subtitleView?.setApplyEmbeddedFontSizes(false)
+        subtitleView?.setApplyEmbeddedStyles(false)
+        subtitleView?.setFixedTextSize(TEXT_SIZE_TYPE_ABSOLUTE, textSize)
+        subtitleView?.setBottomPaddingFraction(.1F)
+
+        val style = CaptionStyleCompat(
+            textColor, backgroundTextColor, Color.TRANSPARENT,
+            CaptionStyleCompat.EDGE_TYPE_NONE, Color.TRANSPARENT, typeface
+        )
+        subtitleView?.setStyle(style)
     }
 
     override fun setupElement(playerHandler: TvPlayer, isLive: Boolean) {
