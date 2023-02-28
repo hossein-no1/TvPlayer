@@ -17,11 +17,14 @@ class MainActivity : AppCompatActivity() {
         binding.btSimplePlayerActivityMain.setOnClickListener {
             startActivity(Intent(this, SimplePlayerActivity::class.java))
         }
-        binding.btLivePlayerActivityMain.setOnClickListener {
-            startActivity(Intent(this, LivePlayerActivity::class.java))
+        binding.btAdvertisePlayerActivityMain.setOnClickListener {
+            startActivity(Intent(this, AdvertisePlayerActivity::class.java))
         }
         binding.btImaPlayerActivityMain.setOnClickListener {
             startActivity(Intent(this, ImaPlayerActivity::class.java))
+        }
+        binding.btLivePlayerActivityMain.setOnClickListener {
+            startActivity(Intent(this, LivePlayerActivity::class.java))
         }
 
     }

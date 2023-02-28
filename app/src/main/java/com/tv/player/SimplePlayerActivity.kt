@@ -1,7 +1,7 @@
 package com.tv.player
 
 import android.os.Bundle
-import android.widget.RelativeLayout
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.tv.core.base.TvPlayer
 import com.tv.core.util.MediaItem
@@ -12,6 +12,10 @@ import com.tv.player.databinding.ActivitySimplePlayerBinding
 import com.tv.player.util.UrlHelper
 
 class SimplePlayerActivity : AppCompatActivity() {
+
+    companion object {
+        private const val TAG = "SimplePlayerActivity"
+    }
 
     private lateinit var binding: ActivitySimplePlayerBinding
     private lateinit var playerHandler: TvPlayer
@@ -49,12 +53,11 @@ class SimplePlayerActivity : AppCompatActivity() {
         override fun onPlayerError(error: TvPlayBackException) {
             super.onPlayerError(error)
             error.getErrorCodeMessage()
+            Log.i(TAG, "Error : ${error.message} for ${playerHandler.currentMediaItem.url}")
         }
 
         override fun onPlaybackStateChanged(playbackState: Int) {
             binding.isLoading = playbackState == TvPlayer.STATE_BUFFERING
-            if (playbackState == TvPlayer.STATE_READY)
-                findViewById<RelativeLayout>(com.tv.core.R.id.parent_pauseAndPlay)?.requestFocus()
         }
     }
 

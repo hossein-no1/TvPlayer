@@ -12,13 +12,14 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatImageButton
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.model.KeyPath
 import com.google.android.exoplayer2.text.Cue.TEXT_SIZE_TYPE_ABSOLUTE
 import com.google.android.exoplayer2.ui.CaptionStyleCompat
-import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.tv.core.R
 import com.tv.core.base.TvPlayer
 
@@ -47,6 +48,8 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
     private var subtitleDialogResIdStyle = R.style.defaultAlertDialogStyle
     private var qualityDialogResIdStyle = R.style.defaultAlertDialogStyle
     private var audioTrackDialogResIdStyle = R.style.defaultAlertDialogStyle
+
+    private lateinit var iranSansTypeFace: Typeface
 
     init {
         init(
@@ -98,21 +101,21 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
         lottieLiveAnimation?.visibility = if (isVisible) View.VISIBLE else View.INVISIBLE
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun findViews() {
-        configureSubtitleView(
-            Typeface.createFromAsset(
-                mContext.assets,
-                "fonts/iran_sans_x_medium.ttf"
-            )
-        )
         ibSubtitle = findViewById(R.id.ib_subtitles)
         ibQuality = findViewById(R.id.ib_qualities)
         ibAudioTack = findViewById(R.id.ib_audioTrack)
         lottieLiveAnimation = findViewById(R.id.lottie_liveAnimation)
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun updateUi() {
+        iranSansTypeFace = Typeface.createFromAsset(
+            mContext.assets,
+            "fonts/iran_sans_x_medium.ttf"
+        )
+        configureSubtitleView(iranSansTypeFace)
+        changePlayerTextTypeFace(iranSansTypeFace)
         subtitleButtonVisibility(showSubtitleButton ?: true)
         qualityButtonVisibility(showQualityButton ?: true)
         audioTrackButtonVisibility(showAudioTrackButton ?: false)
@@ -145,7 +148,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
         typeface: Typeface,
         textSize: Float = 18F,
         textColor: Int = Color.WHITE,
-        backgroundTextColor: Int = mContext.getColor(R.color.black_200)
+        backgroundTextColor: Int = mContext.getColor(R.color.black_400)
     ) {
         val subtitleView = playerView.subtitleView
         subtitleView?.setApplyEmbeddedFontSizes(false)
@@ -158,6 +161,13 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
             CaptionStyleCompat.EDGE_TYPE_NONE, Color.TRANSPARENT, typeface
         )
         subtitleView?.setStyle(style)
+    }
+
+    /*
+    * Duration and position text view*/
+    fun changePlayerTextTypeFace(typeface: Typeface) {
+        findViewById<AppCompatTextView>(R.id.exo_duration).typeface = typeface
+        findViewById<AppCompatTextView>(R.id.exo_position).typeface = typeface
     }
 
     override fun setupElement(playerHandler: TvPlayer, isLive: Boolean) {
@@ -187,11 +197,12 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
         }
 
         if (isLive) {
-            findViewById<PlayerView>(R.id.default_player_view).visibility = View.INVISIBLE
-            findViewById<PlayerView>(R.id.default_live_player_view).visibility = View.VISIBLE
+            findViewById<StyledPlayerView>(R.id.default_player_view).visibility = View.INVISIBLE
+            findViewById<StyledPlayerView>(R.id.default_live_player_view).visibility = View.VISIBLE
         } else {
-            findViewById<PlayerView>(R.id.default_player_view).visibility = View.VISIBLE
-            findViewById<PlayerView>(R.id.default_live_player_view).visibility = View.INVISIBLE
+            findViewById<StyledPlayerView>(R.id.default_player_view).visibility = View.VISIBLE
+            findViewById<StyledPlayerView>(R.id.default_live_player_view).visibility =
+                View.INVISIBLE
         }
     }
 

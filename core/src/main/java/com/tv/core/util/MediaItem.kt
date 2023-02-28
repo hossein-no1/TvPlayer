@@ -7,7 +7,6 @@ class MediaItem(
     val id: String = UUID.randomUUID().toString(),
     var url: String,
     val subtitleItems: List<SubtitleItem> = listOf(),
-    val isLive: Boolean = false,
     val adTagUri: Uri = Uri.EMPTY,
     val dubbedList : List<String> = listOf(),
     qualities: List<Pair<String, String>> = listOf(),

@@ -39,4 +39,6 @@ object UrlHelper {
 
     const val SAMPLE_VAST_TAG_URL_2 = "https://newsapi.akharinkhabar.ir/api/v1/Video/news/6748352/tile/38"
 
+    const val SAMPLE_VAST_TAG_URL_3 = "http://94.182.181.88:8080/api/page/custom-ads"
+
 }

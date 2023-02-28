@@ -1,7 +1,6 @@
 package com.tv.player
 
 import android.os.Bundle
-import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.tv.core.base.TvPlayer
 import com.tv.core.util.MediaItem
@@ -25,7 +24,7 @@ class LivePlayerActivity : AppCompatActivity() {
             playerView = binding.livePlayerViewActivityLivePlayer
         ).createSimplePlayer(isLive = true)
 
-        val media = MediaItem(url = UrlHelper.linkLive, isLive = true)
+        val media = MediaItem(url = UrlHelper.linkLive)
         playerHandler.addListener(playerListener)
         playerHandler.addMedia(media)
         playerHandler.prepareAndPlay()
@@ -40,8 +39,6 @@ class LivePlayerActivity : AppCompatActivity() {
 
         override fun onPlaybackStateChanged(playbackState: Int) {
             binding.isLoading = playbackState == TvPlayer.STATE_BUFFERING
-            if (playbackState == TvPlayer.STATE_READY)
-                findViewById<RelativeLayout>(com.tv.core.R.id.parent_pauseAndPlay)?.requestFocus()
         }
     }
 

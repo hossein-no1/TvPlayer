@@ -7,7 +7,6 @@ internal object MediaItemConverter {
         return com.google.android.exoplayer2.MediaItem.Builder()
             .setMediaId(mediaItem.id)
             .setUri(mediaItem.url)
-            .setTag(if (mediaItem.isLive) MediaSourceType.Hls else MediaSourceType.Progressive)
             .setSubtitleConfigurations(SubtitleConverter.convertList(mediaItem.subtitleItems))
             .setAdsConfiguration(AdsConfiguration.Builder(mediaItem.adTagUri).build())
             .build()

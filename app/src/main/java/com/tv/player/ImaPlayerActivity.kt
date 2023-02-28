@@ -29,8 +29,8 @@ class ImaPlayerActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         imaAdsLoader = TvImaAdsLoader(this)
-            .setAdErrorListener { Log.i(TAG, "Error : ${it.error.message}") }
-            .setAdEventListener { Log.i(TAG, it.ad.title) }
+            .setAdErrorListener { Log.i(TAG, "Error : ${it?.error?.message}") }
+            .setAdEventListener { Log.i(TAG, it?.ad?.title.toString()) }
             .setVideoAdPlayerCallBack(object : VideoAdPlayer.VideoAdPlayerCallback {
                 override fun onAdProgress(p0: AdMediaInfo?, p1: VideoProgressUpdate?) {
                     Log.i(TAG, "onAdProgress")
@@ -86,6 +86,11 @@ class ImaPlayerActivity : AppCompatActivity() {
         playerHandler.addMedia(media)
         playerHandler.prepareAndPlay()
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        playerHandler.release()
     }
 
 }

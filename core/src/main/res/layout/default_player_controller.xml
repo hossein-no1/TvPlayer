@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/TvRelativeParent"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -14,14 +15,20 @@
         android:layout_marginStart="4dp"
         android:layout_marginBottom="4dp" />
 
-    <com.google.android.exoplayer2.ui.DefaultTimeBar
+    <com.tv.core.ui.TvDefaultTimeBar
         android:id="@+id/exo_progress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginHorizontal="4dp"
         android:layout_toStartOf="@id/exo_duration"
-        android:layout_toEndOf="@id/exo_position" />
+        android:layout_toEndOf="@id/exo_position"
+        app:bar_height="1dp"
+        app:buffered_color="@color/white_400"
+        app:played_color="@color/white"
+        app:scrubber_drawable="@drawable/shape_vertical_line_white"
+        app:scrubber_enabled_size="1dp"
+        app:unplayed_color="@color/white_200" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/exo_duration"
@@ -49,7 +56,7 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="8dp"
-            android:visibility="invisible"/>
+            android:visibility="invisible" />
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/exo_prev"
@@ -69,32 +76,18 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_gravity="center"
-            android:layout_toStartOf="@id/parent_pauseAndPlay"
+            android:layout_toStartOf="@id/exo_play_pause"
             android:padding="12dp"
             android:tintMode="src_in" />
 
-        <RelativeLayout
-            android:id="@+id/parent_pauseAndPlay"
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/exo_play_pause"
+            style="@style/TvButtonPlay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true">
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/exo_play"
-                style="@style/TvButtonPlay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:padding="12dp" />
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/exo_pause"
-                style="@style/TvButtonPause"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:padding="12dp" />
-        </RelativeLayout>
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:padding="12dp" />
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/exo_ffwd"
@@ -103,7 +96,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_gravity="center"
-            android:layout_toEndOf="@id/parent_pauseAndPlay"
+            android:layout_toEndOf="@id/exo_play_pause"
             android:padding="12dp" />
 
         <androidx.appcompat.widget.AppCompatImageButton

@@ -3,7 +3,6 @@ package com.tv.player
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
-import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
 import com.tv.core.base.TvPlayer
@@ -14,28 +13,31 @@ import com.tv.player.util.UrlHelper
 class AdvertisePlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAdvertisePlayerBinding
-    private lateinit var playerHelper: TvPlayer
+    private lateinit var playerHandler: TvPlayer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAdvertisePlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        playerHelper = TvPlayer.Builder(
+        playerHandler = TvPlayer.Builder(
             activity = this,
             playerView = binding.playerViewActivityAdvertisePlayer,
             /* Optional */playWhenReady = true
-        ).createAdvertisePlayer(adPlayerView = binding.advertisePlayerViewActivityAdvertiserPlayer, isLive = false)
+        ).createAdvertisePlayer(
+            adPlayerView = binding.advertisePlayerViewActivityAdvertiserPlayer,
+            isLive = false
+        )
 
         val adMedia = AdvertiseItem(url = UrlHelper.ad)
 
         val media = MediaItem(url = UrlHelper.film720)
 
-        playerHelper.addMediaAdvertise(adMedia)
-        playerHelper.addMedia(media)
-        playerHelper.addListener(playerListener)
-        playerHelper.setAdvertiseListener(advertiseListener)
-        playerHelper.playAdvertiseAutomatic()
+        playerHandler.addMediaAdvertise(adMedia)
+        playerHandler.addMedia(media)
+        playerHandler.addListener(playerListener)
+        playerHandler.setAdvertiseListener(advertiseListener)
+        playerHandler.playAdvertiseAutomatic()
 
     }
 
@@ -53,7 +55,11 @@ class AdvertisePlayerActivity : AppCompatActivity() {
         }
 
         @SuppressLint("SetTextI18n")
-        override fun onSkipTimeChange(currentTime: Int, skippTime: Int, textViewSkip : AppCompatTextView?) {
+        override fun onSkipTimeChange(
+            currentTime: Int,
+            skippTime: Int,
+            textViewSkip: AppCompatTextView?
+        ) {
             textViewSkip?.apply {
                 this.visibility = View.VISIBLE
                 this.text = " تا رد کردن آگهی$currentTime"
@@ -71,9 +77,13 @@ class AdvertisePlayerActivity : AppCompatActivity() {
 
         override fun onPlaybackStateChanged(playbackState: Int) {
             binding.isLoading = playbackState == TvPlayer.STATE_BUFFERING
-            if (playbackState == TvPlayer.STATE_READY)
-                findViewById<RelativeLayout>(com.tv.core.R.id.parent_pauseAndPlay)?.requestFocus()
         }
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        playerHandler.release()
     }
 
 }

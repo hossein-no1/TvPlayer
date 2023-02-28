@@ -75,17 +75,19 @@
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">true</item>
-        <item name="android:src">@drawable/ic_pause</item>
+        <item name="android:src">@drawable/exo_icon_pause</item>
         <item name="android:background">@drawable/selector_controller_button</item>
     </style>
 
-    <style name="TvButtonPlay" parent="ExoMediaButton.Play">
+    <style name="TvButtonPlay" parent="ExoStyledControls.Button.Center.PlayPause">
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">true</item>
-        <item name="android:src">@drawable/ic_play</item>
         <item name="android:background">@drawable/selector_controller_button</item>
     </style>
+
+    <drawable name="exo_styled_controls_play" tools:ignore="DuplicateDefinition">@drawable/exo_icon_play</drawable>
+    <drawable name="exo_styled_controls_pause" tools:ignore="DuplicateDefinition">@drawable/exo_icon_pause</drawable>
 
     <style name="TvTextViewDuration" parent="Widget.AppCompat.TextView">
         <item name="android:textColor">@color/gray</item>

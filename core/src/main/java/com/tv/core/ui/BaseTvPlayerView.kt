@@ -5,13 +5,13 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.tv.core.base.TvPlayer
 
 abstract class BaseTvPlayerView(private val mContext: Context, private val attrs: AttributeSet?) :
     FrameLayout(mContext, attrs) {
 
-    lateinit var playerView: PlayerView
+    lateinit var playerView: StyledPlayerView
     private lateinit var view : View
 
     fun init(layoutResId: Int) {
@@ -25,7 +25,7 @@ abstract class BaseTvPlayerView(private val mContext: Context, private val attrs
         updateUi()
     }
 
-    fun isControllerVisible() = playerView.isControllerVisible
+    fun isControllerVisible() = playerView.isControllerFullyVisible
     fun hideController() = playerView.hideController()
     fun showController() = playerView.showController()
 

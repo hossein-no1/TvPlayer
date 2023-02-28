@@ -8,7 +8,7 @@ import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelector
-import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.android.exoplayer2.upstream.cache.CacheDataSource
@@ -26,7 +26,7 @@ object ExoPlayerHelper {
         activity: Activity,
         dataSourceFactory: DataSource.Factory,
         tvImaAdsLoader: TvImaAdsLoader,
-        playerView: PlayerView
+        playerView: StyledPlayerView
     ) = DefaultMediaSourceFactory(activity)
         .setDataSourceFactory(CacheDataSource.Factory())
         .setDataSourceFactory(dataSourceFactory)
