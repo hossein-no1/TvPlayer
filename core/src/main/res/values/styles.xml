@@ -27,7 +27,7 @@
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">true</item>
-        <item name="android:src">@drawable/ic_setting</item>
+        <item name="android:src">@drawable/ic_quality</item>
         <item name="android:background">@drawable/selector_controller_button</item>
     </style>
 

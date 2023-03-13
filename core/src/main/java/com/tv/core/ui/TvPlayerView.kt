@@ -211,7 +211,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
             ibSubtitle?.isFocusable = this
             ibSubtitle?.isFocusableInTouchMode = this
             ibSubtitle?.isClickable = this
-            ibSubtitle?.alpha = if (this) 1F else .5F
+            ibSubtitle?.alpha = if (this) 1F else .3F
         }
     }
 
@@ -220,7 +220,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
             ibQuality?.isFocusable = this
             ibQuality?.isFocusableInTouchMode = this
             ibQuality?.isClickable = this
-            ibQuality?.alpha = if (this) 1F else .5F
+            ibQuality?.alpha = if (this) 1F else .3F
         }
     }
 
@@ -230,7 +230,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
             ibAudioTack?.isFocusable = this
             ibAudioTack?.isFocusableInTouchMode = this
             ibAudioTack?.isClickable = this
-            ibAudioTack?.alpha = if (this) 1F else .5F
+            ibAudioTack?.alpha = if (this) 1F else .3F
         }
     }
 
