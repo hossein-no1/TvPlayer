@@ -23,6 +23,8 @@
         android:layout_marginHorizontal="4dp"
         android:layout_toStartOf="@id/exo_duration"
         android:layout_toEndOf="@id/exo_position"
+        android:nextFocusLeft="@id/exo_progress"
+        android:nextFocusRight="@id/exo_progress"
         app:bar_height="1dp"
         app:buffered_color="@color/white_400"
         app:played_color="@color/white"

@@ -16,6 +16,7 @@ import com.google.android.exoplayer2.source.SingleSampleMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionOverride
 import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.util.Util
 import com.tv.core.R
 import com.tv.core.ui.BaseTvPlayerView
 import com.tv.core.ui.TvAdvertisePlayerView
@@ -52,6 +53,9 @@ abstract class TvPlayer(
     private val mediaItems = mutableListOf<TvMediaItem>()
 
     private var startToPlayMedia = false
+
+    private val formatBuilder = StringBuilder()
+    private val formatter = Formatter(formatBuilder, Locale.getDefault())
 
     init {
         setupElement(isLive)
@@ -239,6 +243,16 @@ abstract class TvPlayer(
     fun pause() {
         player.pause()
     }
+
+    fun getCurrentPosition() = player.currentPosition / 1000
+
+    fun getDuration() = player.duration / 1000
+
+    fun getCurrentPositionString() =
+        Util.getStringForTime(formatBuilder, formatter, player.currentPosition)
+
+    fun getDurationString() =
+        Util.getStringForTime(formatBuilder, formatter, player.duration)
 
     fun fastForwardIncrement(duration: Int = 10) {
         val length = if (duration <= 1_000) duration * 1_000 else duration
