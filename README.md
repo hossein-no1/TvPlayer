@@ -16,6 +16,8 @@ for show VAST ads
 1. Handle remote key for rewind and fast forward
 2. Add start position in mediaItem
 
+https://user-images.githubusercontent.com/53558241/228231422-fceeaa91-3c4e-43bf-82df-dbe471411627.mp4
+
 # Version 3.*.*
 ##### What's happened in this version?
 - Implement ImaPlayer for show VAST ads
