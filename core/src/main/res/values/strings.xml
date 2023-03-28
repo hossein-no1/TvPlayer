@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="label_skipAdvertise">رد کردن آگهی</string>
+    <string name="label_incrementVideo">+%1$s sec</string>
+    <string name="label_decrementVideo">-%1$s sec</string>
 </resources>

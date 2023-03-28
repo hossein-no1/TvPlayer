@@ -6,6 +6,7 @@ import java.util.*
 class MediaItem(
     val id: String = UUID.randomUUID().toString(),
     var url: String,
+    var startPositionMs: Long = 0L,
     val subtitleItems: List<SubtitleItem> = listOf(),
     val adTagUri: Uri = Uri.EMPTY,
     val dubbedList : List<String> = listOf(),

@@ -100,7 +100,7 @@ internal class AdvertisePlayer(
 
         override fun onPlayerError(error: PlaybackException) {
             super.onPlayerError(error)
-            advertiseListener?.onPlayerError(TvPlayBackException(errorCode = error.errorCode))
+            advertiseListener?.onPlayerError(TvPlayBackException(errorMessage = error.message, errorCode = error.errorCode))
         }
     }
 

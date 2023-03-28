@@ -99,7 +99,11 @@ abstract class TvPlayer(
         playerListener = object : Listener {
             override fun onPlayerError(error: PlaybackException) {
                 super.onPlayerError(error)
-                listener.onPlayerError(TvPlayBackException(errorCode = error.errorCode))
+                listener.onPlayerError(
+                    TvPlayBackException(
+                        errorMessage = error.message, errorCode = error.errorCode
+                    )
+                )
                 startToPlayMedia = true
             }
 
@@ -133,6 +137,13 @@ abstract class TvPlayer(
                 }
             }
 
+            override fun onTracksChanged(tracks: Tracks) {
+                super.onTracksChanged(tracks)
+                if (getCurrentPosition() == 0L) player.seekTo(
+                    currentMediaItem.startPositionMs
+                )
+            }
+
         }
         player.addListener(requireNotNull(playerListener))
     }
@@ -140,10 +151,8 @@ abstract class TvPlayer(
     fun addMedia(media: TvMediaItem, index: Int = 0) {
         mediaItems.add(media)
         player.addMediaSource(
-            index,
-            buildMediaSource(
-                MediaItemConverter.convertMediaItem(media),
-                media.dubbedList
+            index, buildMediaSource(
+                MediaItemConverter.convertMediaItem(media), media.dubbedList
             )
         )
     }
@@ -187,8 +196,7 @@ abstract class TvPlayer(
         mediaItems.forEach { mediaItem ->
             mediaSources.add(
                 buildMediaSource(
-                    MediaItemConverter.convertMediaItem(mediaItem),
-                    mediaItem.dubbedList
+                    MediaItemConverter.convertMediaItem(mediaItem), mediaItem.dubbedList
                 )
             )
         }
@@ -210,12 +218,11 @@ abstract class TvPlayer(
         val dubbedSources: ArrayList<MediaSource> = arrayListOf()
         dubbedList.forEach {
             dubbedSources.add(
-                DefaultMediaSourceFactory(activity)
-                    .createMediaSource(
-                        MediaItem.Builder().setUri(
-                            it
-                        ).build()
-                    )
+                DefaultMediaSourceFactory(activity).createMediaSource(
+                    MediaItem.Builder().setUri(
+                        it
+                    ).build()
+                )
             )
         }
         return dubbedSources
@@ -244,15 +251,17 @@ abstract class TvPlayer(
         player.pause()
     }
 
-    fun getCurrentPosition() = player.currentPosition / 1000
+    fun getCurrentPosition() = player.currentPosition
 
-    fun getDuration() = player.duration / 1000
+    fun getDuration() = player.duration
 
     fun getCurrentPositionString() =
         Util.getStringForTime(formatBuilder, formatter, player.currentPosition)
 
-    fun getDurationString() =
-        Util.getStringForTime(formatBuilder, formatter, player.duration)
+    fun getPositionString(position: Long) =
+        Util.getStringForTime(formatBuilder, formatter, if (position > 0) position else 0)
+
+    fun getDurationString() = Util.getStringForTime(formatBuilder, formatter, player.duration)
 
     fun fastForwardIncrement(duration: Int = 10) {
         val length = if (duration <= 1_000) duration * 1_000 else duration
@@ -331,13 +340,12 @@ abstract class TvPlayer(
                         Locale(groupInfo.getFormat(i).language.toString()).displayLanguage.let {
                             if (it == "null") "" else it
                         }
-                    val subtitleText =
-                        "${audioTracksList.size + 1}. " + displayLanguage + " (${
-                            if (groupInfo.getFormat(
-                                    i
-                                ).label == null
-                            ) "Dubbed" else groupInfo.getFormat(i).label
-                        })"
+                    val subtitleText = "${audioTracksList.size + 1}. " + displayLanguage + " (${
+                        if (groupInfo.getFormat(
+                                i
+                            ).label == null
+                        ) "Dubbed" else groupInfo.getFormat(i).label
+                    })"
                     val audioTrackIcon = if (group.isSelected) R.drawable.ic_check else 0
                     audioTracksList.add(AlertDialogItemView(subtitleText, audioTrackIcon))
                 }
@@ -402,6 +410,10 @@ abstract class TvPlayer(
         )
         player.prepare()
         player.seekTo(currentTime)
+    }
+
+    fun updateMediaStartPosition(positionMs: Long) {
+        currentMediaItem.startPositionMs = positionMs
     }
 
     private fun changeQualityUriInItem(qualitySelectedPosition: Int) {

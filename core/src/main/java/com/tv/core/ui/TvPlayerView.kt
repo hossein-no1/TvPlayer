@@ -1,6 +1,7 @@
 package com.tv.core.ui
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Color
@@ -9,7 +10,9 @@ import android.graphics.PorterDuffColorFilter
 import android.graphics.Typeface
 import android.os.Build
 import android.util.AttributeSet
+import android.view.KeyEvent
 import android.view.View
+import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatTextView
@@ -22,10 +25,13 @@ import com.google.android.exoplayer2.ui.CaptionStyleCompat
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.tv.core.R
 import com.tv.core.base.TvPlayer
+import kotlinx.coroutines.*
 
 @SuppressLint("MissingInflatedId")
 class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
     BaseTvPlayerView(mContext, attrs) {
+
+    private lateinit var playerHandler: TvPlayer
 
     private var showSubtitleButton: Boolean? = true
     private var showQualityButton: Boolean? = true
@@ -50,6 +56,21 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
     private var audioTrackDialogResIdStyle = R.style.defaultAlertDialogStyle
 
     private lateinit var iranSansTypeFace: Typeface
+
+    private lateinit var tvIncrement: AppCompatTextView
+    private lateinit var tvDecrement: AppCompatTextView
+    private lateinit var tvDurationKeyControl: AppCompatTextView
+    private lateinit var tvPositionKeyControl: AppCompatTextView
+    private lateinit var llParentRewindAnimation: LinearLayout
+    private lateinit var llParentFastForwardAnimation: LinearLayout
+    private lateinit var llParentVideoState: LinearLayout
+
+    private var incrementLongPressJob: Job? = null
+    private var decrementLongPressJob: Job? = null
+    private var incrementLongPressValidation = false
+    private var decrementLongPressValidation = false
+    private var incrementCounter = 10
+    private var decrementCounter = 10
 
     init {
         init(
@@ -106,6 +127,13 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
         ibQuality = findViewById(R.id.ib_qualities)
         ibAudioTack = findViewById(R.id.ib_audioTrack)
         lottieLiveAnimation = findViewById(R.id.lottie_liveAnimation)
+        tvIncrement = findViewById(R.id.tv_labelIncrement)
+        tvDecrement = findViewById(R.id.tv_labelDecrement)
+        tvDurationKeyControl = findViewById(R.id.tv_durationKeyControl)
+        tvPositionKeyControl = findViewById(R.id.tv_positionKeyControl)
+        llParentRewindAnimation = findViewById(R.id.ll_parentRewindAnimation)
+        llParentFastForwardAnimation = findViewById(R.id.ll_parentFastForwardAnimation)
+        llParentVideoState = findViewById(R.id.ll_parentVideoState)
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -148,7 +176,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
         typeface: Typeface,
         textSize: Float = 18F,
         textColor: Int = Color.WHITE,
-        backgroundTextColor: Int = mContext.getColor(R.color.black_400)
+        backgroundTextColor: Int = mContext.getColor(R.color.black_600)
     ) {
         val subtitleView = playerView.subtitleView
         subtitleView?.setApplyEmbeddedFontSizes(false)
@@ -171,6 +199,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
     }
 
     override fun setupElement(playerHandler: TvPlayer, isLive: Boolean) {
+        this.playerHandler = playerHandler
         setupPlayerView(if (isLive) R.id.default_live_player_view else R.id.default_player_view)
 
         ibSubtitle?.setOnClickListener {
@@ -265,6 +294,110 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
 
     fun setDubbedDialogStyle(resId: Int) {
         this.audioTrackDialogResIdStyle = resId
+    }
+
+    fun handleDispatchKeyEvent(event: KeyEvent, activity: Activity): Boolean {
+        if (!isControllerVisible()) {
+            if (event.action == KeyEvent.ACTION_DOWN) {
+                tvDurationKeyControl.text = playerHandler.getDurationString()
+                when (event.keyCode) {
+                    KeyEvent.KEYCODE_DPAD_LEFT -> {
+                        if (decrementLongPressJob == null) {
+                            decrementLongPressValidation = true
+                            decrementLongPressJob = GlobalScope.launch(Dispatchers.Main) {
+                                llParentRewindAnimation.visibility = View.VISIBLE
+                                llParentVideoState.visibility = View.VISIBLE
+
+                                setDecrementLabelText(decrementCounter.toString())
+
+                                delay(200)
+
+                                if (decrementLongPressValidation) {
+                                    setDecrementLabelText(decrementCounter.toString())
+
+                                    decrementCounter += 10
+                                    tvPositionKeyControl.text =
+                                        playerHandler.getPositionString(playerHandler.getCurrentPosition() - (decrementCounter * 1_000))
+                                }
+                                decrementLongPressJob = null
+                            }
+                        }
+                    }
+                    KeyEvent.KEYCODE_DPAD_RIGHT -> {
+                        if (incrementLongPressJob == null) {
+                            incrementLongPressValidation = true
+                            incrementLongPressJob = GlobalScope.launch(Dispatchers.Main) {
+                                llParentFastForwardAnimation.visibility = View.VISIBLE
+                                llParentVideoState.visibility = View.VISIBLE
+
+                                setIncrementLabelText(incrementCounter.toString())
+
+                                delay(200)
+
+                                if (incrementLongPressValidation) {
+                                    setIncrementLabelText(incrementCounter.toString())
+
+                                    incrementCounter += 10
+                                    tvPositionKeyControl.text =
+                                        playerHandler.getPositionString(playerHandler.getCurrentPosition() + (incrementCounter * 1_000))
+                                }
+                                incrementLongPressJob = null
+                            }
+                        }
+                    }
+                    KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> {
+                        showController()
+                    }
+                    KeyEvent.KEYCODE_BACK -> {
+                        activity.onBackPressed()
+                    }
+                }
+                return false
+            } else {
+                GlobalScope.launch(Dispatchers.Main) {
+                    delay(200)
+                    if (incrementLongPressValidation) {
+                        playerHandler.fastForwardIncrement(incrementCounter)
+                        incrementCounter = 10
+                    } else if (decrementLongPressValidation) {
+                        playerHandler.fastRewindIncrement(decrementCounter)
+                        decrementCounter = 10
+                    }
+                    delay(2_000)
+                    incrementLongPressValidation = false
+                    decrementLongPressValidation = false
+                    llParentFastForwardAnimation.visibility = View.INVISIBLE
+                    llParentRewindAnimation.visibility = View.INVISIBLE
+                    llParentVideoState.visibility = View.INVISIBLE
+                }
+                return false
+            }
+        } else {
+            return if (incrementLongPressJob == null || decrementLongPressJob == null) {
+                if (event.keyCode == KeyEvent.KEYCODE_BACK) {
+                    hideController()
+                    false
+                } else {
+                    super.dispatchKeyEvent(event)
+                }
+            } else {
+                false
+            }
+        }
+    }
+
+    private fun setIncrementLabelText(text: String) {
+        tvIncrement.text = String.format(
+            mContext.getString(R.string.label_incrementVideo),
+            text
+        )
+    }
+
+    private fun setDecrementLabelText(text: String) {
+        tvDecrement.text = String.format(
+            mContext.getString(R.string.label_decrementVideo),
+            text
+        )
     }
 
 }

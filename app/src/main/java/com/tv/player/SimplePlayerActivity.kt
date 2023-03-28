@@ -2,6 +2,8 @@ package com.tv.player
 
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.tv.core.base.TvPlayer
 import com.tv.core.util.MediaItem
@@ -33,17 +35,33 @@ class SimplePlayerActivity : AppCompatActivity() {
         val subtitle1 = SubtitleItem(url = UrlHelper.subtitleUrl, label = "Subtitle 1")
         val subtitle2 = SubtitleItem(url = UrlHelper.subtitleUrl2, label = "Subtitle 2")
 
-        val mediaWithoutSubtitle = MediaItem(url = UrlHelper.filmWithDubbed, dubbedList = listOf(UrlHelper.dubbed1, UrlHelper.dubbed2))
+        val mediaWithoutSubtitle = MediaItem(
+            url = UrlHelper.filmWithDubbed,
+            dubbedList = listOf(UrlHelper.dubbed1, UrlHelper.dubbed2)
+        )
         val mediaWithQuality = MediaItem(
             url = UrlHelper.film1080,
+            startPositionMs = 3_600_000L,
             subtitleItems = listOf(subtitle1, subtitle2),
             defaultQualityTitle = "Default quality"
         ).addQuality("720", UrlHelper.film720).addQuality("480", UrlHelper.film480)
 
-        val mediaWithQualityList = MediaItem(url = UrlHelper.film1080, qualities = listOf(Pair("Item 1", UrlHelper.film720),Pair("Item 2", UrlHelper.film1080)))
+        val mediaWithQualityList = MediaItem(
+            url = UrlHelper.film1080,
+            qualities = listOf(
+                Pair("Item 1", UrlHelper.film720),
+                Pair("Item 2", UrlHelper.film1080)
+            )
+        )
 
         playerHandler.addListener(playerListener)
-        playerHandler.addMediaList(listOf(mediaWithoutSubtitle, mediaWithQuality, mediaWithQualityList))
+        playerHandler.addMediaList(
+            listOf(
+                mediaWithoutSubtitle,
+                mediaWithQuality,
+                mediaWithQualityList
+            )
+        )
         playerHandler.prepareAndPlay()
 
     }
@@ -53,7 +71,16 @@ class SimplePlayerActivity : AppCompatActivity() {
         override fun onPlayerError(error: TvPlayBackException) {
             super.onPlayerError(error)
             error.getErrorCodeMessage()
-            Log.i(TAG, "Error : ${error.message} for ${playerHandler.currentMediaItem.url}")
+            if (error.errorCode == TvPlayBackException.ERROR_CODE_IO_BAD_HTTP_STATUS)
+                Toast.makeText(
+                    this@SimplePlayerActivity.applicationContext,
+                    "Bad source error!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            Log.i(
+                TAG,
+                "ErrorMessage : ${error.errorMessage} and errorCode : ${error.errorCode} for ${playerHandler.currentMediaItem.url}"
+            )
         }
 
         override fun onPlaybackStateChanged(playbackState: Int) {
@@ -65,4 +92,9 @@ class SimplePlayerActivity : AppCompatActivity() {
         super.onDestroy()
         playerHandler.release()
     }
+
+    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        return binding.tvPlayerViewActivitySimplePlayer.handleDispatchKeyEvent(event, this)
+    }
+
 }

@@ -11,21 +11,132 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
-        app:animation_enabled="false"
         android:background="@color/black"
-        app:controller_layout_id="@layout/default_player_controller"
-        />
+        app:animation_enabled="false"
+        app:controller_layout_id="@layout/default_player_controller" />
 
     <com.google.android.exoplayer2.ui.StyledPlayerView
         android:id="@+id/default_live_player_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
-        app:animation_enabled="false"
         android:background="@color/black"
-        app:show_timeout="0"
-        app:hide_on_touch="false"
+        app:animation_enabled="false"
         app:controller_layout_id="@layout/default_live_controller"
-        />
+        app:hide_on_touch="false"
+        app:show_timeout="0" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true">
+
+        <LinearLayout
+            android:id="@+id/ll_parentFastForwardAnimation"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="80dp"
+            android:background="@drawable/shape_circle_alpha_black"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:orientation="vertical"
+            android:visibility="invisible">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight=".8"
+                android:scaleType="fitXY"
+                app:lottie_autoPlay="true"
+                app:lottie_colorFilter="@color/white"
+                app:lottie_fileName="animation/fast_forward_animation.json"
+                app:lottie_loop="true" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_labelIncrement"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight=".2"
+                android:fontFamily="@font/iran_yekan_demi_bold"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_parentVideoState"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/shape_rectangle_black_alpha_25_radius_5"
+            android:orientation="horizontal"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6dp"
+            android:visibility="invisible">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_positionKeyControl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/iran_yekan_demi_bold"
+                android:text="00:00"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="6dp"
+                android:background="@color/gray_500" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_durationKeyControl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:fontFamily="@font/iran_yekan_demi_bold"
+                android:textColor="@color/gray_700"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_parentRewindAnimation"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="80dp"
+            android:background="@drawable/shape_circle_alpha_black"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:orientation="vertical"
+            android:visibility="invisible">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight=".8"
+                android:rotation="180"
+                android:scaleType="fitXY"
+                app:lottie_autoPlay="true"
+                app:lottie_colorFilter="@color/white"
+                app:lottie_fileName="animation/fast_forward_animation.json"
+                app:lottie_loop="true" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_labelDecrement"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight=".2"
+                android:fontFamily="@font/iran_yekan_demi_bold"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </RelativeLayout>

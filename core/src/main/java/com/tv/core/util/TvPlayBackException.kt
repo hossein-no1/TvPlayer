@@ -2,7 +2,7 @@ package com.tv.core.util
 
 import com.google.android.exoplayer2.PlaybackException
 
-class TvPlayBackException(val errorCode: Int) : Exception() {
+class TvPlayBackException(val errorMessage : String?, val errorCode: Int) : Exception() {
     companion object {
         const val ERROR_CODE_UNSPECIFIED = PlaybackException.ERROR_CODE_UNSPECIFIED
         const val ERROR_CODE_REMOTE_ERROR = PlaybackException.ERROR_CODE_REMOTE_ERROR

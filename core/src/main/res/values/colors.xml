@@ -9,4 +9,6 @@
     <color name="yellow">#FFEB3B</color>
     <color name="black_600">#99000000</color>
     <color name="black_400">#66000000</color>
+    <color name="gray_500">#9D9D9D</color>
+    <color name="gray_700">#B5B1B1</color>
 </resources>
