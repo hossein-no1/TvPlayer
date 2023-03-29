@@ -6,10 +6,7 @@ import android.view.KeyEvent
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.tv.core.base.TvPlayer
-import com.tv.core.util.MediaItem
-import com.tv.core.util.SubtitleItem
-import com.tv.core.util.TvPlayBackException
-import com.tv.core.util.TvPlayerListener
+import com.tv.core.util.*
 import com.tv.player.databinding.ActivitySimplePlayerBinding
 import com.tv.player.util.UrlHelper
 
@@ -94,7 +91,20 @@ class SimplePlayerActivity : AppCompatActivity() {
     }
 
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
-        return binding.tvPlayerViewActivitySimplePlayer.handleDispatchKeyEvent(event, this)
+        return binding.tvPlayerViewActivitySimplePlayer.handleDispatchKeyEvent(
+            event,
+            this,
+            customDispatcherKeyEvent
+        )
+    }
+
+    private val customDispatcherKeyEvent = object : TvDispatchKeyEvent {
+        override fun onEnterClick() {
+            super.onEnterClick()
+            // Do custom event on DPAD_CENTER click...
+
+            playerHandler.pause()
+        }
     }
 
 }

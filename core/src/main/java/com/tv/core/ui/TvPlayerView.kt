@@ -25,6 +25,7 @@ import com.google.android.exoplayer2.ui.CaptionStyleCompat
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.tv.core.R
 import com.tv.core.base.TvPlayer
+import com.tv.core.util.TvDispatchKeyEvent
 import kotlinx.coroutines.*
 
 @SuppressLint("MissingInflatedId")
@@ -296,12 +297,17 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
         this.audioTrackDialogResIdStyle = resId
     }
 
-    fun handleDispatchKeyEvent(event: KeyEvent, activity: Activity): Boolean {
-        if (!isControllerVisible()) {
+    fun handleDispatchKeyEvent(
+        event: KeyEvent,
+        activity: Activity,
+        tvDispatcherListener: TvDispatchKeyEvent? = null
+    ): Boolean {
+        if (!isControllerVisible() && !playerHandler.isAdPlaying()) {
             if (event.action == KeyEvent.ACTION_DOWN) {
                 tvDurationKeyControl.text = playerHandler.getDurationString()
                 when (event.keyCode) {
                     KeyEvent.KEYCODE_DPAD_LEFT -> {
+                        tvDispatcherListener?.onLeftClick()
                         if (decrementLongPressJob == null) {
                             decrementLongPressValidation = true
                             decrementLongPressJob = GlobalScope.launch(Dispatchers.Main) {
@@ -324,6 +330,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
                         }
                     }
                     KeyEvent.KEYCODE_DPAD_RIGHT -> {
+                        tvDispatcherListener?.onRightClick()
                         if (incrementLongPressJob == null) {
                             incrementLongPressValidation = true
                             incrementLongPressJob = GlobalScope.launch(Dispatchers.Main) {
@@ -346,10 +353,18 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
                         }
                     }
                     KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> {
+                        tvDispatcherListener?.onEnterClick()
                         showController()
                     }
                     KeyEvent.KEYCODE_BACK -> {
+                        tvDispatcherListener?.onBackClick()
                         activity.onBackPressed()
+                    }
+                    KeyEvent.KEYCODE_DPAD_UP -> {
+                        tvDispatcherListener?.onUpClick()
+                    }
+                    KeyEvent.KEYCODE_DPAD_DOWN -> {
+                        tvDispatcherListener?.onDownClick()
                     }
                 }
                 return false

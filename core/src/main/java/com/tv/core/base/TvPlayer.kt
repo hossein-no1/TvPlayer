@@ -91,6 +91,8 @@ abstract class TvPlayer(
 
     fun isPlaying() = player.isPlaying
 
+    fun isAdPlaying() = player.isPlayingAd
+
     fun addListener(listener: TvPlayerListener) {
         //Remove last listener
         playerListener?.let { safeListener ->
