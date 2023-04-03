@@ -93,6 +93,8 @@ abstract class TvPlayer(
 
     fun isAdPlaying() = player.isPlayingAd
 
+    fun getCurrentQuality() = currentMediaItem.getCurrentQuality()
+
     fun addListener(listener: TvPlayerListener) {
         //Remove last listener
         playerListener?.let { safeListener ->

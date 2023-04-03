@@ -33,21 +33,25 @@ class SimplePlayerActivity : AppCompatActivity() {
         val subtitle2 = SubtitleItem(url = UrlHelper.subtitleUrl2, label = "Subtitle 2")
 
         val mediaWithoutSubtitle = MediaItem(
-            url = UrlHelper.filmWithDubbed,
+            qualities = listOf(
+                MediaQuality(title = "Movie with Dubbed", link = UrlHelper.filmWithDubbed)
+            ),
             dubbedList = listOf(UrlHelper.dubbed1, UrlHelper.dubbed2)
         )
         val mediaWithQuality = MediaItem(
-            url = UrlHelper.film1080,
             startPositionMs = 3_600_000L,
             subtitleItems = listOf(subtitle1, subtitle2),
-            defaultQualityTitle = "Default quality"
-        ).addQuality("720", UrlHelper.film720).addQuality("480", UrlHelper.film480)
+            qualities = listOf(
+                MediaQuality(title = "1080", link = UrlHelper.film1080)
+            )
+        )
+            .addQuality("720", link = UrlHelper.film720)
+            .addQuality("480", link = UrlHelper.film480)
 
         val mediaWithQualityList = MediaItem(
-            url = UrlHelper.film1080,
             qualities = listOf(
-                Pair("Item 1", UrlHelper.film720),
-                Pair("Item 2", UrlHelper.film1080)
+                MediaQuality(title = "720", link = UrlHelper.film720),
+                MediaQuality(title = "1080", link = UrlHelper.film1080)
             )
         )
 
@@ -76,7 +80,7 @@ class SimplePlayerActivity : AppCompatActivity() {
                 ).show()
             Log.i(
                 TAG,
-                "ErrorMessage : ${error.errorMessage} and errorCode : ${error.errorCode} for ${playerHandler.currentMediaItem.url}"
+                "ErrorMessage : ${error.errorMessage} and errorCode : ${error.errorCode} for ${playerHandler.getCurrentQuality()?.title}"
             )
         }
 

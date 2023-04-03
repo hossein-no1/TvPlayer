@@ -1,14 +1,15 @@
 package com.tv.core.util
 
+import android.net.Uri
 import com.google.android.exoplayer2.MediaItem.AdsConfiguration
 
 internal object MediaItemConverter {
     fun convertMediaItem(mediaItem : MediaItem) : com.google.android.exoplayer2.MediaItem{
         return com.google.android.exoplayer2.MediaItem.Builder()
             .setMediaId(mediaItem.id)
-            .setUri(mediaItem.url)
+            .setUri(mediaItem.getCurrentQuality()?.link)
             .setSubtitleConfigurations(SubtitleConverter.convertList(mediaItem.subtitleItems))
-            .setAdsConfiguration(AdsConfiguration.Builder(mediaItem.adTagUri).build())
+            .setAdsConfiguration(AdsConfiguration.Builder(mediaItem.getCurrentQuality()?.adTagUri ?: Uri.EMPTY).build())
             .build()
     }
 

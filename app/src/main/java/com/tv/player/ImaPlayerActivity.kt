@@ -9,6 +9,7 @@ import com.google.ads.interactivemedia.v3.api.player.VideoAdPlayer
 import com.google.ads.interactivemedia.v3.api.player.VideoProgressUpdate
 import com.tv.core.base.TvPlayer
 import com.tv.core.util.MediaItem
+import com.tv.core.util.MediaQuality
 import com.tv.core.util.TvImaAdsLoader
 import com.tv.player.databinding.ActivityImaPlayerBinding
 import com.tv.player.util.UrlHelper
@@ -81,7 +82,15 @@ class ImaPlayerActivity : AppCompatActivity() {
         ).createImaPlayer(tvImaAdsLoader = imaAdsLoader)
 
         val media =
-            MediaItem(url = UrlHelper.film720, adTagUri = Uri.parse(UrlHelper.SAMPLE_VAST_TAG_URL_2))
+            MediaItem(
+                qualities = listOf(
+                    MediaQuality(
+                        title = "720",
+                        link = UrlHelper.film720,
+                        adTagUri = Uri.parse(UrlHelper.SAMPLE_VAST_TAG_URL_2)
+                    )
+                )
+            )
 
         playerHandler.addMedia(media)
         playerHandler.prepareAndPlay()

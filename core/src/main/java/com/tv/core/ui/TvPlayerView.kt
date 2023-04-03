@@ -362,9 +362,11 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
                     }
                     KeyEvent.KEYCODE_DPAD_UP -> {
                         tvDispatcherListener?.onUpClick()
+                        showController()
                     }
                     KeyEvent.KEYCODE_DPAD_DOWN -> {
                         tvDispatcherListener?.onDownClick()
+                        showController()
                     }
                 }
                 return false

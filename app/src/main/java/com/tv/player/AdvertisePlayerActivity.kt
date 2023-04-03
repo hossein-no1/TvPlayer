@@ -31,7 +31,7 @@ class AdvertisePlayerActivity : AppCompatActivity() {
 
         val adMedia = AdvertiseItem(url = UrlHelper.ad)
 
-        val media = MediaItem(url = UrlHelper.film720)
+        val media = MediaItem(qualities = listOf(MediaQuality(link = UrlHelper.film720)))
 
         playerHandler.addMediaAdvertise(adMedia)
         playerHandler.addMedia(media)

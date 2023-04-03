@@ -5,27 +5,22 @@ import java.util.*
 
 class MediaItem(
     val id: String = UUID.randomUUID().toString(),
-    var url: String,
     var startPositionMs: Long = 0L,
     val subtitleItems: List<SubtitleItem> = listOf(),
-    val adTagUri: Uri = Uri.EMPTY,
-    val dubbedList : List<String> = listOf(),
-    qualities: List<Pair<String, String>> = listOf(),
-    defaultQualityTitle: String = "Item"
+    val dubbedList: List<String> = listOf(),
+    qualities: List<MediaQuality> = listOf()
 ) {
 
-    private val qualityList: MutableList<MediaQuality> =
-        mutableListOf(MediaQuality(defaultQualityTitle, url))
+    private val qualityList = mutableListOf<MediaQuality>()
 
     init {
-        qualities.forEach {
-            qualityList.add(MediaQuality(title = it.first, link = it.second))
-        }
+        qualityList.addAll(qualities)
+        if (qualities.isNotEmpty()) setDefaultQuality(0)
         if (qualityList.size > 1) qualityList.first().isSelected = true
     }
 
-    fun addQuality(quality: String, url: String): MediaItem {
-        qualityList.add(MediaQuality(quality, url))
+    fun addQuality(quality: String, link: String, adTagUri: Uri = Uri.EMPTY): MediaItem {
+        qualityList.add(MediaQuality(quality, link, adTagUri))
         if (qualityList.size > 1) qualityList.first().isSelected = true
         return this
     }
@@ -39,7 +34,6 @@ class MediaItem(
         if (index < getQualityList().size && index >= 0) {
             resetQualitySelected()
             qualityList[index].isSelected = true
-            url = qualityList[index].link
             qualityList[0] = qualityList[index].also { qualityList[index] = qualityList[0] }
         } else throw IndexOutOfBoundsException("Not found quality index in the list!")
     }
@@ -47,6 +41,14 @@ class MediaItem(
     @Throws(IndexOutOfBoundsException::class)
     fun setDefaultQuality(quality: String) {
         setDefaultQuality(getQualityIndexWithTitle(quality))
+    }
+
+    internal fun getCurrentQuality(): MediaQuality? {
+        getQualityList().forEach {
+            if (it.isSelected)
+                return it
+        }
+        return null
     }
 
     private fun getQualityIndexWithTitle(quality: String): Int {
@@ -58,7 +60,6 @@ class MediaItem(
 
     internal fun changeQualityUriInItem(qualitySelectedPosition: Int): MediaItem {
         resetQualitySelected()
-        url = qualityList[qualitySelectedPosition].link
         qualityList[qualitySelectedPosition].isSelected = true
         return this
     }
@@ -71,6 +72,9 @@ class MediaItem(
 
 }
 
-internal class MediaQuality(
-    val title: String, val link: String, internal var isSelected: Boolean = false
+class MediaQuality(
+    val title: String = "Auto",
+    val link: String,
+    val adTagUri: Uri = Uri.EMPTY,
+    internal var isSelected: Boolean = false
 )
