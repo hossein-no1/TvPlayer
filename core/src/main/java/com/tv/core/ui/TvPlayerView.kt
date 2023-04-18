@@ -316,7 +316,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
 
                                 setDecrementLabelText(decrementCounter.toString())
 
-                                delay(200)
+                                delay(80)
 
                                 if (decrementLongPressValidation) {
                                     setDecrementLabelText(decrementCounter.toString())
@@ -339,7 +339,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
 
                                 setIncrementLabelText(incrementCounter.toString())
 
-                                delay(200)
+                                delay(80)
 
                                 if (incrementLongPressValidation) {
                                     setIncrementLabelText(incrementCounter.toString())
@@ -372,7 +372,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
                 return false
             } else {
                 GlobalScope.launch(Dispatchers.Main) {
-                    delay(200)
+                    delay(80)
                     if (incrementLongPressValidation) {
                         playerHandler.fastForwardIncrement(incrementCounter)
                         incrementCounter = 10

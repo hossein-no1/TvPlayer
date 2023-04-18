@@ -4,20 +4,30 @@ import android.net.Uri
 import com.google.android.exoplayer2.MediaItem.AdsConfiguration
 
 internal object MediaItemConverter {
-    fun convertMediaItem(mediaItem : MediaItem) : com.google.android.exoplayer2.MediaItem{
-        return com.google.android.exoplayer2.MediaItem.Builder()
+    fun convertMediaItem(mediaItem: MediaItem): com.google.android.exoplayer2.MediaItem {
+        val exoMedia = com.google.android.exoplayer2.MediaItem.Builder()
+
+        exoMedia
             .setMediaId(mediaItem.id)
             .setUri(mediaItem.getCurrentQuality()?.link)
             .setSubtitleConfigurations(SubtitleConverter.convertList(mediaItem.subtitleItems))
-            .setAdsConfiguration(AdsConfiguration.Builder(mediaItem.getCurrentQuality()?.adTagUri ?: Uri.EMPTY).build())
-            .build()
+
+        mediaItem.getCurrentQuality()?.let { safeMediaItem ->
+            if (safeMediaItem.adTagUri != Uri.EMPTY)
+                exoMedia.setAdsConfiguration(
+                    AdsConfiguration.Builder(
+                        safeMediaItem.adTagUri
+                    ).build()
+                )
+        }
+        return exoMedia.build()
     }
 
-    fun convertMediaList(mediaItems : List<MediaItem>) : List<com.google.android.exoplayer2.MediaItem>{
+    fun convertMediaList(mediaItems: List<MediaItem>): List<com.google.android.exoplayer2.MediaItem> {
         return mediaItems.map { convertMediaItem(it) }
     }
 
-    fun convertAdvertiseItem(advertiseItem: AdvertiseItem) : com.google.android.exoplayer2.MediaItem{
+    fun convertAdvertiseItem(advertiseItem: AdvertiseItem): com.google.android.exoplayer2.MediaItem {
         val mediaItem = com.google.android.exoplayer2.MediaItem.Builder()
             .setMediaId(advertiseItem.id)
             .setUri(advertiseItem.url)
