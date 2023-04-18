@@ -11,6 +11,11 @@ and
 
 for show VAST ads
 
+# version 3.4.0
+##### What's happened in this version?
+1. Change Media item structor
+> `MediaItem(qualities = listOf(MediaQuality(title = "Title",link = "MediaLink",adTagUri = "AdUri"))))`
+
 # version 3.3.0
 ##### What's happened in this version?
 1. Handle remote key for rewind and fast forward
