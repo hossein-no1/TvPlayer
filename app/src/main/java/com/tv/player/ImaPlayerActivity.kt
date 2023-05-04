@@ -74,6 +74,7 @@ class ImaPlayerActivity : AppCompatActivity() {
                 }
 
             })
+            .setLanguage("fr")
             .create()
 
         playerHandler = TvPlayer.Builder(

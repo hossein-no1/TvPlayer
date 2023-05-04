@@ -21,8 +21,17 @@ import com.tv.core.R
 import com.tv.core.ui.BaseTvPlayerView
 import com.tv.core.ui.TvAdvertisePlayerView
 import com.tv.core.ui.TvPlayerView
-import com.tv.core.util.*
-import java.util.*
+import com.tv.core.util.AdvertiseItem
+import com.tv.core.util.AdvertisePlayerListener
+import com.tv.core.util.AlertDialogHelper
+import com.tv.core.util.AlertDialogItemView
+import com.tv.core.util.ExoPlayerHelper
+import com.tv.core.util.MediaItemConverter
+import com.tv.core.util.TvImaAdsLoader
+import com.tv.core.util.TvPlayBackException
+import com.tv.core.util.TvPlayerListener
+import java.util.Formatter
+import java.util.Locale
 import com.tv.core.util.MediaItem as TvMediaItem
 
 abstract class TvPlayer(
@@ -59,8 +68,10 @@ abstract class TvPlayer(
 
     init {
         setupElement(isLive)
+
         trackSelector = ExoPlayerHelper.getTrackSelector(activity.applicationContext)
         dataSourceFactory = ExoPlayerHelper.getDataSourceFactory(activity)
+
         tvImaAdsLoader?.let { safeAdsLoader ->
             mediaSourceFactory = ExoPlayerHelper.getMediaSourceFactory(
                 activity = activity,
@@ -114,14 +125,14 @@ abstract class TvPlayer(
             override fun onPlaybackStateChanged(playbackState: Int) {
                 super.onPlaybackStateChanged(playbackState)
                 if (playbackState == STATE_READY) {
-                    if (startToPlayMedia) {
+                    if (startToPlayMedia && !isAdPlaying()) {
                         listener.onMediaStartToPlay(currentMediaItem)
                         startToPlayMedia = false
                     }
                     tvPlayerView.changeSubtitleState(isThereSubtitle())
                     tvPlayerView.changeQualityState(isThereQualities())
                     tvPlayerView.changeAudioTrackState(isThereDubbed())
-                } else if (playbackState == STATE_ENDED) {
+                } else if (playbackState == STATE_ENDED && !isAdPlaying()) {
                     listener.onMediaListComplete(currentMediaItem)
                     startToPlayMedia = true
                 }
@@ -132,10 +143,10 @@ abstract class TvPlayer(
                 oldPosition: Player.PositionInfo, newPosition: Player.PositionInfo, reason: Int
             ) {
                 super.onPositionDiscontinuity(oldPosition, newPosition, reason)
-                if (reason == Player.DISCONTINUITY_REASON_AUTO_TRANSITION) {
+                if (reason == Player.DISCONTINUITY_REASON_AUTO_TRANSITION && !isAdPlaying()) {
                     listener.onMediaComplete(currentMediaItem)
                     startToPlayMedia = true
-                } else if (reason == Player.DISCONTINUITY_REASON_SEEK_ADJUSTMENT) {
+                } else if (reason == Player.DISCONTINUITY_REASON_SEEK_ADJUSTMENT && !isAdPlaying()) {
                     listener.onMediaChange(currentMediaItem)
                     startToPlayMedia = true
                 }
