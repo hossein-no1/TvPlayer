@@ -229,6 +229,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
         if (isLive) {
             findViewById<StyledPlayerView>(R.id.default_player_view).visibility = View.INVISIBLE
             findViewById<StyledPlayerView>(R.id.default_live_player_view).visibility = View.VISIBLE
+            findViewById<StyledPlayerView>(R.id.default_live_player_view).showController()
         } else {
             findViewById<StyledPlayerView>(R.id.default_player_view).visibility = View.VISIBLE
             findViewById<StyledPlayerView>(R.id.default_live_player_view).visibility =
