@@ -6,7 +6,12 @@ import android.view.KeyEvent
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.tv.core.base.TvPlayer
-import com.tv.core.util.*
+import com.tv.core.util.MediaItem
+import com.tv.core.util.MediaQuality
+import com.tv.core.util.SubtitleItem
+import com.tv.core.util.TvDispatchKeyEvent
+import com.tv.core.util.TvPlayBackException
+import com.tv.core.util.TvPlayerListener
 import com.tv.player.databinding.ActivitySimplePlayerBinding
 import com.tv.player.util.UrlHelper
 

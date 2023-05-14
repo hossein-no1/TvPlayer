@@ -11,6 +11,7 @@ import com.tv.core.base.TvPlayer
 import com.tv.core.util.MediaItem
 import com.tv.core.util.MediaQuality
 import com.tv.core.util.TvImaAdsLoader
+import com.tv.core.util.TvPlayerListener
 import com.tv.player.databinding.ActivityImaPlayerBinding
 import com.tv.player.util.UrlHelper
 
@@ -82,20 +83,48 @@ class ImaPlayerActivity : AppCompatActivity() {
             playerView = binding.tvPlayerViewActivityImaPlayer
         ).createImaPlayer(tvImaAdsLoader = imaAdsLoader)
 
-        val media =
+        val media1 =
             MediaItem(
                 qualities = listOf(
                     MediaQuality(
                         title = "720",
                         link = UrlHelper.film720,
-                        adTagUri = Uri.parse(UrlHelper.SAMPLE_VAST_TAG_URL_2)
+                        adTagUri = Uri.parse("https://play-dev.huma.ir/api/ads/2")
                     )
                 )
             )
 
-        playerHandler.addMedia(media)
+        val media2 =
+            MediaItem(
+                qualities = listOf(
+                    MediaQuality(
+                        title = "480",
+                        link = UrlHelper.film480
+                    )
+                )
+            )
+
+        playerHandler.addListener(playerListener)
+        playerHandler.addMediaList(listOf(media1, media2))
         playerHandler.prepareAndPlay()
 
+    }
+
+    private val playerListener = object : TvPlayerListener{
+        override fun onMediaStartToPlay(mediaItem: MediaItem) {
+            super.onMediaStartToPlay(mediaItem)
+            Log.i(TAG , "onMediaStartToPlay")
+        }
+
+        override fun onMediaComplete(mediaItem: MediaItem) {
+            super.onMediaComplete(mediaItem)
+            Log.i(TAG , "onMediaComplete")
+        }
+
+        override fun onMediaListComplete(mediaItem: MediaItem) {
+            super.onMediaListComplete(mediaItem)
+            Log.i(TAG , "onMediaListComplete")
+        }
     }
 
     override fun onDestroy() {

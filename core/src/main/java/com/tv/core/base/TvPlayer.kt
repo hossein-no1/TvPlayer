@@ -143,7 +143,10 @@ abstract class TvPlayer(
                 oldPosition: Player.PositionInfo, newPosition: Player.PositionInfo, reason: Int
             ) {
                 super.onPositionDiscontinuity(oldPosition, newPosition, reason)
-                if (reason == Player.DISCONTINUITY_REASON_AUTO_TRANSITION && !isAdPlaying()) {
+                if (reason == Player.DISCONTINUITY_REASON_AUTO_TRANSITION && isRealMediaComplete(
+                        oldPosition.positionMs
+                    )
+                ) {
                     listener.onMediaComplete(currentMediaItem)
                     startToPlayMedia = true
                 } else if (reason == Player.DISCONTINUITY_REASON_SEEK_ADJUSTMENT && !isAdPlaying()) {
@@ -161,6 +164,11 @@ abstract class TvPlayer(
 
         }
         player.addListener(requireNotNull(playerListener))
+    }
+
+    private fun isRealMediaComplete(position: Long): Boolean {
+        val mediaDuration = getDuration() - 1_000
+        return mediaDuration > 0 && (position >= mediaDuration)
     }
 
     fun addMedia(media: TvMediaItem, index: Int = 0) {
