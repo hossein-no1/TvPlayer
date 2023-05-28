@@ -23,6 +23,7 @@
         </activity>
 
         <activity android:name=".SimplePlayerActivity"/>
+        <activity android:name=".SerialActivity"/>
         <activity android:name=".LivePlayerActivity"/>
         <activity android:name=".ImaPlayerActivity"/>
         <activity android:name=".AdvertisePlayerActivity"/>

@@ -8,12 +8,10 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.Typeface
-import android.os.Build
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.View
 import android.widget.LinearLayout
-import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
@@ -25,10 +23,12 @@ import com.google.android.exoplayer2.ui.CaptionStyleCompat
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.tv.core.R
 import com.tv.core.base.TvPlayer
+import com.tv.core.util.RecyclerItemClick
 import com.tv.core.util.TvDispatchKeyEvent
+import com.tv.core.util.episodelistdialog.EpisodeListDialogHelper
+import com.tv.core.util.episodelistdialog.EpisodeModel
 import kotlinx.coroutines.*
 
-@SuppressLint("MissingInflatedId")
 class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
     BaseTvPlayerView(mContext, attrs) {
 
@@ -37,6 +37,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
     private var showSubtitleButton: Boolean? = true
     private var showQualityButton: Boolean? = true
     private var showAudioTrackButton: Boolean? = false
+    private var showEpisodeButton: Boolean? = false
     private var playerViewBackground: Int? = 0
     private var liveAnimationColor: Int? = 0
     private var showLiveAnimation: Boolean? = true
@@ -45,6 +46,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
     private var ibSubtitle: AppCompatImageButton? = null
     private var ibQuality: AppCompatImageButton? = null
     private var ibAudioTack: AppCompatImageButton? = null
+    private var ibEpisodeList: AppCompatImageButton? = null
 
     private var subtitleDialogTitle = "Select subtitle"
     private var subtitleDialogButtonText = "Off subtitle"
@@ -73,6 +75,10 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
     private var incrementCounter = 10
     private var decrementCounter = 10
 
+    private val episodeListDialog by lazy {
+        EpisodeListDialogHelper(mContext)
+    }
+
     init {
         init(
             layoutResId = R.layout.default_player_layout
@@ -92,6 +98,9 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
 
             showAudioTrackButton =
                 typedArray.getBoolean(R.styleable.TvPlayerView_show_dubbed_button, false)
+
+            showEpisodeButton =
+                typedArray.getBoolean(R.styleable.TvPlayerView_show_episode_button, false)
 
             playerViewBackground =
                 typedArray.getResourceId(R.styleable.TvPlayerView_player_view_background, 0)
@@ -119,6 +128,10 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
         ibAudioTack?.visibility = if (isVisible) View.VISIBLE else View.INVISIBLE
     }
 
+    fun episodeButtonVisibility(isVisible: Boolean) {
+        ibEpisodeList?.visibility = if (isVisible) View.VISIBLE else View.INVISIBLE
+    }
+
     fun liveAnimationVisibility(isVisible: Boolean) {
         lottieLiveAnimation?.visibility = if (isVisible) View.VISIBLE else View.INVISIBLE
     }
@@ -127,6 +140,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
         ibSubtitle = findViewById(R.id.ib_subtitles)
         ibQuality = findViewById(R.id.ib_qualities)
         ibAudioTack = findViewById(R.id.ib_audioTrack)
+        ibEpisodeList = findViewById(R.id.ib_episodeList)
         lottieLiveAnimation = findViewById(R.id.lottie_liveAnimation)
         tvIncrement = findViewById(R.id.tv_labelIncrement)
         tvDecrement = findViewById(R.id.tv_labelDecrement)
@@ -137,7 +151,6 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
         llParentVideoState = findViewById(R.id.ll_parentVideoState)
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun updateUi() {
         iranSansTypeFace = Typeface.createFromAsset(
             mContext.assets,
@@ -148,6 +161,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
         subtitleButtonVisibility(showSubtitleButton ?: true)
         qualityButtonVisibility(showQualityButton ?: true)
         audioTrackButtonVisibility(showAudioTrackButton ?: false)
+        episodeButtonVisibility(showEpisodeButton ?: false)
 
         playerViewBackground?.let { safeBackground ->
             if (safeBackground > 0) {
@@ -172,7 +186,6 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     fun configureSubtitleView(
         typeface: Typeface,
         textSize: Float = 18F,
@@ -217,7 +230,6 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
                 resIdStyle = qualityDialogResIdStyle
             )
         }
-
         ibAudioTack?.setOnClickListener {
             playerHandler.showAudioTrack(
                 dialogTitle = audioTrackDialogTitle,
@@ -225,6 +237,16 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
                 resIdStyle = audioTrackDialogResIdStyle
             )
         }
+        ibEpisodeList?.setOnClickListener {
+            episodeListDialog.setEpisodeList(playerHandler.mediaItems).show()
+        }
+        episodeListDialog.setOnEpisodeClickListener(object : RecyclerItemClick {
+            override fun onItemClickListener(episodeModel: EpisodeModel, position: Int) {
+                if (playerHandler.player.currentMediaItemIndex != position)
+                    playerHandler.changeMedia(position, episodeModel.startPosition)
+                episodeListDialog.dismiss()
+            }
+        })
 
         if (isLive) {
             findViewById<StyledPlayerView>(R.id.default_player_view).visibility = View.INVISIBLE
@@ -263,6 +285,11 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
             ibAudioTack?.isClickable = this
             ibAudioTack?.alpha = if (this) 1F else .3F
         }
+    }
+
+    override fun changeEpisodeListState(isThereEpisodeMediaItems: Boolean) {
+        super.changeEpisodeListState(isThereEpisodeMediaItems)
+        episodeButtonVisibility((showEpisodeButton == true) && isThereEpisodeMediaItems)
     }
 
     fun changeSubtitleDialogTexts(title: String = "Select quality", buttonText: String = "Close") {
@@ -330,6 +357,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
                             }
                         }
                     }
+
                     KeyEvent.KEYCODE_DPAD_RIGHT -> {
                         tvDispatcherListener?.onRightClick()
                         if (incrementLongPressJob == null) {
@@ -353,18 +381,22 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
                             }
                         }
                     }
+
                     KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> {
                         tvDispatcherListener?.onEnterClick()
                         showController()
                     }
+
                     KeyEvent.KEYCODE_BACK -> {
                         tvDispatcherListener?.onBackClick()
                         activity.onBackPressed()
                     }
+
                     KeyEvent.KEYCODE_DPAD_UP -> {
                         tvDispatcherListener?.onUpClick()
                         showController()
                     }
+
                     KeyEvent.KEYCODE_DPAD_DOWN -> {
                         tvDispatcherListener?.onDownClick()
                         showController()
@@ -406,14 +438,14 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
 
     private fun setIncrementLabelText(text: String) {
         tvIncrement.text = String.format(
-            mContext.getString(R.string.label_incrementVideo),
+            mContext.getString(R.string.tv_label_incrementVideo),
             text
         )
     }
 
     private fun setDecrementLabelText(text: String) {
         tvDecrement.text = String.format(
-            mContext.getString(R.string.label_decrementVideo),
+            mContext.getString(R.string.tv_label_decrementVideo),
             text
         )
     }

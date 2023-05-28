@@ -1,10 +1,12 @@
 package com.tv.core.util
 
+import com.tv.core.util.mediaItems.MediaItemParent
+
 interface TvPlayerListener {
     fun onPlayerError(error: TvPlayBackException){}
     fun onPlaybackStateChanged(playbackState: Int){}
-    fun onMediaStartToPlay(mediaItem : MediaItem){}
-    fun onMediaChange(mediaItem : MediaItem){}
-    fun onMediaComplete(mediaItem : MediaItem){}
-    fun onMediaListComplete(mediaItem : MediaItem){}
+    fun onMediaStartToPlay(mediaItem : MediaItemParent){}
+    fun onMediaChange(mediaItem : MediaItemParent){}
+    fun onMediaComplete(mediaItem : MediaItemParent){}
+    fun onMediaListComplete(mediaItem : MediaItemParent){}
 }

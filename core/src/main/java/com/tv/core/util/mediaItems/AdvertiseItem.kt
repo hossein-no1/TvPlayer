@@ -1,4 +1,4 @@
-package com.tv.core.util
+package com.tv.core.util.mediaItems
 
 import java.util.UUID
 

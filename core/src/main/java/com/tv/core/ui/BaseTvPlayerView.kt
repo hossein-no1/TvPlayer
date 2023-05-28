@@ -37,5 +37,6 @@ abstract class BaseTvPlayerView(private val mContext: Context, private val attrs
     open fun changeSubtitleState(isThereSubtitle: Boolean) {}
     open fun changeQualityState(isThereQualities: Boolean) {}
     open fun changeAudioTrackState(isThereDubbed: Boolean) {}
+    open fun changeEpisodeListState(isThereEpisodeMediaItems: Boolean) {}
 
 }

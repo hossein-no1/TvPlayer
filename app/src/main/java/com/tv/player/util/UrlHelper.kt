@@ -41,4 +41,15 @@ object UrlHelper {
 
     const val SAMPLE_VAST_TAG_URL_3 = "http://94.182.181.88:8080/api/page/custom-ads"
 
+    val episodeCoverList = listOf("https://image.3sigma.ir/t/p/w500/8YJqx02JNMu9gNX7Ok7qgaNJJgl.jpg",
+        "https://image.3sigma.ir/t/p/w500/2pNZYWhkY0DdUyVU8FEaYDSSfTW.jpg",
+        "https://image.3sigma.ir/t/p/w500/tiuQbGLBgXltDTZ95YyL2vCoIKr.jpg",
+        "https://image.3sigma.ir/t/p/w500/fbWzpmQlFENbnS6GbvHZhzywozo.jpg",
+        "https://image.3sigma.ir/t/p/w500/p4KDV9hxszklNHdkRm564qWfq9R.jpg",
+        "https://image.3sigma.ir/t/p/w500/o9g5v73OPWNA0lP4R0QrOgTrH0k.jpg",
+        "https://image.3sigma.ir/t/p/w500/iHc295TFzpmAMstLQvJe00oiF6G.jpg",
+        "https://image.3sigma.ir/t/p/w500/bEs22idG5SWG1qObfyMnCGavjMN.jpg",
+        "https://image.3sigma.ir/t/p/w500/rmNyV9dUPi7VeluqxYq0OFFCKNs.jpg"
+    )
+
 }

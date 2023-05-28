@@ -1,20 +1,20 @@
 package com.tv.core.base
 
-import android.app.Activity
 import android.os.Handler
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
 import com.tv.core.ui.TvAdvertisePlayerView
 import com.tv.core.ui.TvPlayerView
-import com.tv.core.util.AdvertiseItem
+import com.tv.core.util.mediaItems.AdvertiseItem
 import com.tv.core.util.AdvertisePlayerListener
-import com.tv.core.util.MediaItemConverter
+import com.tv.core.util.mediaItems.MediaItemConverter
 import com.tv.core.util.TvPlayBackException
 
 internal class AdvertisePlayer(
-    private val activity: Activity,
+    activity: AppCompatActivity,
     private val tvPlayerView: TvPlayerView,
     private val tvAdvertisePlayerView: TvAdvertisePlayerView,
     isLive: Boolean,

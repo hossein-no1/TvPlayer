@@ -17,6 +17,9 @@ class MainActivity : AppCompatActivity() {
         binding.btSimplePlayerActivityMain.setOnClickListener {
             startActivity(Intent(this, SimplePlayerActivity::class.java))
         }
+        binding.btSerialPlayerActivityMain.setOnClickListener {
+            startActivity(Intent(this, SerialActivity::class.java))
+        }
         binding.btAdvertisePlayerActivityMain.setOnClickListener {
             startActivity(Intent(this, AdvertisePlayerActivity::class.java))
         }

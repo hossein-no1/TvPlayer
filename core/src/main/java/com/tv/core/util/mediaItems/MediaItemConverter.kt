@@ -1,18 +1,18 @@
-package com.tv.core.util
+package com.tv.core.util.mediaItems
 
 import android.net.Uri
 import com.google.android.exoplayer2.MediaItem.AdsConfiguration
 
 internal object MediaItemConverter {
-    fun convertMediaItem(mediaItem: MediaItem): com.google.android.exoplayer2.MediaItem {
+    fun convertMediaItem(mediaItem: MediaItemParent): com.google.android.exoplayer2.MediaItem {
         val exoMedia = com.google.android.exoplayer2.MediaItem.Builder()
 
         exoMedia
             .setMediaId(mediaItem.id)
-            .setUri(mediaItem.getCurrentQuality()?.link)
+            .setUri(mediaItem.currentQuality?.link)
             .setSubtitleConfigurations(SubtitleConverter.convertList(mediaItem.subtitleItems))
 
-        mediaItem.getCurrentQuality()?.let { safeMediaItem ->
+        mediaItem.currentQuality?.let { safeMediaItem ->
             if (safeMediaItem.adTagUri != Uri.EMPTY)
                 exoMedia.setAdsConfiguration(
                     AdsConfiguration.Builder(

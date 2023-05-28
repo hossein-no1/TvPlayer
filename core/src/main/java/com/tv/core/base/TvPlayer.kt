@@ -1,14 +1,19 @@
 package com.tv.core.base
 
-import android.app.Activity
 import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ListAdapter
 import android.widget.TextView
-import com.google.android.exoplayer2.*
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.PlaybackException
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.Player.Listener
+import com.google.android.exoplayer2.Tracks
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.MergingMediaSource
@@ -21,21 +26,22 @@ import com.tv.core.R
 import com.tv.core.ui.BaseTvPlayerView
 import com.tv.core.ui.TvAdvertisePlayerView
 import com.tv.core.ui.TvPlayerView
-import com.tv.core.util.AdvertiseItem
 import com.tv.core.util.AdvertisePlayerListener
-import com.tv.core.util.AlertDialogHelper
-import com.tv.core.util.AlertDialogItemView
 import com.tv.core.util.ExoPlayerHelper
-import com.tv.core.util.MediaItemConverter
 import com.tv.core.util.TvImaAdsLoader
 import com.tv.core.util.TvPlayBackException
 import com.tv.core.util.TvPlayerListener
+import com.tv.core.util.mediaItems.AdvertiseItem
+import com.tv.core.util.mediaItems.EpisodeMediaItem
+import com.tv.core.util.mediaItems.MediaItemConverter
+import com.tv.core.util.mediaItems.MediaItemParent
+import com.tv.core.util.ui.AlertDialogHelper
+import com.tv.core.util.ui.AlertDialogItemView
 import java.util.Formatter
 import java.util.Locale
-import com.tv.core.util.MediaItem as TvMediaItem
 
 abstract class TvPlayer(
-    private val activity: Activity,
+    val activity: AppCompatActivity,
     private val tvPlayerView: BaseTvPlayerView,
     isLive: Boolean = false,
     playWhenReady: Boolean = true,
@@ -55,11 +61,11 @@ abstract class TvPlayer(
     private lateinit var mediaSourceFactory: MediaSource.Factory
     private var dataSourceFactory: DataSource.Factory
 
-    val currentMediaItem: TvMediaItem
+    val currentMediaItem: MediaItemParent
         get() {
             return mediaItems[player.currentMediaItemIndex]
         }
-    private val mediaItems = mutableListOf<TvMediaItem>()
+    val mediaItems = mutableListOf<MediaItemParent>()
 
     private var startToPlayMedia = false
 
@@ -104,7 +110,7 @@ abstract class TvPlayer(
 
     fun isAdPlaying() = player.isPlayingAd
 
-    fun getCurrentQuality() = currentMediaItem.getCurrentQuality()
+    fun getCurrentQuality() = currentMediaItem.currentQuality
 
     fun addListener(listener: TvPlayerListener) {
         //Remove last listener
@@ -136,6 +142,7 @@ abstract class TvPlayer(
                     listener.onMediaListComplete(currentMediaItem)
                     startToPlayMedia = true
                 }
+                tvPlayerView.changeEpisodeListState(isThereEpisodeMediaItem())
                 listener.onPlaybackStateChanged(playbackState)
             }
 
@@ -171,7 +178,7 @@ abstract class TvPlayer(
         return mediaDuration > 0 && (position >= mediaDuration)
     }
 
-    fun addMedia(media: TvMediaItem, index: Int = 0) {
+    fun addMedia(media: MediaItemParent, index: Int = 0) {
         mediaItems.add(media)
         player.addMediaSource(
             index, buildMediaSource(
@@ -180,11 +187,21 @@ abstract class TvPlayer(
         )
     }
 
-    fun addMediaList(medias: List<TvMediaItem>, index: Int = 0) {
+    fun addMediaEpisode(media: MediaItemParent, index: Int = 0) {
+        addMedia(media, index)
+//        tvPlayerView.addEpisodeToDialog(media.convertToItemView())
+    }
+
+    fun addMediaList(medias: List<MediaItemParent>, index: Int = 0) {
         mediaItems.addAll(medias)
         player.addMediaSources(
             index, buildMediaSources(medias)
         )
+    }
+
+    fun addMediaEpisodeList(medias: List<MediaItemParent>, index: Int = 0) {
+        addMediaList(medias, index)
+//        tvPlayerView.addEpisodeListToDialog(mediaItems.map { it.convertToItemView() })
     }
 
     fun isThereSubtitle(): Boolean {
@@ -205,6 +222,8 @@ abstract class TvPlayer(
         return false
     }
 
+    fun isThereEpisodeMediaItem() = mediaItems.any { it is EpisodeMediaItem }
+
     fun isThereQualities() = currentMediaItem.isThereQuality()
 
     private fun buildMediaSource(mediaItem: MediaItem, dubbedList: List<String>) =
@@ -214,7 +233,7 @@ abstract class TvPlayer(
             *buildSubtitleMediaSource(mediaItem).toTypedArray()
         )
 
-    private fun buildMediaSources(mediaItems: List<com.tv.core.util.MediaItem>): List<MediaSource> {
+    private fun buildMediaSources(mediaItems: List<MediaItemParent>): List<MediaSource> {
         val mediaSources = mutableListOf<MediaSource>()
         mediaItems.forEach { mediaItem ->
             mediaSources.add(
@@ -296,7 +315,15 @@ abstract class TvPlayer(
         player.seekTo(player.currentPosition - length)
     }
 
-    fun showSubtitle(
+    fun seekTo(msSecond: Long) {
+        player.seekTo(msSecond)
+    }
+
+    fun changeMedia(index: Int, seekPosition: Long = 0L) {
+        player.seekTo(index, seekPosition)
+    }
+
+    internal fun showSubtitle(
         dialogTitle: String, dialogButtonText: String, resIdStyle: Int
     ) {
         val subtitleLanguageList = ArrayList<String>()
@@ -349,7 +376,7 @@ abstract class TvPlayer(
         subtitleDialog.show()
     }
 
-    fun showAudioTrack(
+    internal fun showAudioTrack(
         dialogTitle: String, dialogButtonText: String, resIdStyle: Int
     ) {
         val audioTrackLanguageList = ArrayList<String>()
@@ -400,12 +427,12 @@ abstract class TvPlayer(
         audioTrackDialog.show()
     }
 
-    fun showQuality(
+    internal fun showQuality(
         dialogTitle: String, dialogButtonText: String, resIdStyle: Int
     ) {
         val qualityList = ArrayList<AlertDialogItemView>()
 
-        currentMediaItem.getQualityList().forEach { mediaQuality ->
+        currentMediaItem.qualityList.forEach { mediaQuality ->
             qualityList.add(
                 AlertDialogItemView(
                     mediaQuality.title, if (mediaQuality.isSelected) R.drawable.ic_check else 0
@@ -416,7 +443,7 @@ abstract class TvPlayer(
         val qualityDialog = AlertDialogHelper(activity, resIdStyle, dialogTitle)
         qualityDialog.create(adapter = getAlertDialogAdapter(qualityList.toTypedArray()),
             itemClickListener = { self, position ->
-                if (!currentMediaItem.getQualityList()[position].isSelected) changeQuality(position)
+                if (!currentMediaItem.qualityList[position].isSelected) changeQuality(position)
                 else self.dismiss()
             },
             positiveButtonText = dialogButtonText,
@@ -424,6 +451,10 @@ abstract class TvPlayer(
                 self.dismiss()
             })
         qualityDialog.show()
+    }
+
+    internal fun showEpisodeList() {
+        mediaItems
     }
 
     private fun changeQuality(qualitySelectedPosition: Int) {
@@ -482,7 +513,7 @@ abstract class TvPlayer(
     }
 
     class Builder(
-        private val activity: Activity,
+        private val activity: AppCompatActivity,
         private val playerView: TvPlayerView,
         private val playWhenReady: Boolean = true,
     ) {

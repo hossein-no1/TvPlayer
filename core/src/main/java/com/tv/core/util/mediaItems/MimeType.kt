@@ -1,4 +1,4 @@
-package com.tv.core.util
+package com.tv.core.util.mediaItems
 
 import com.google.android.exoplayer2.util.MimeTypes
 

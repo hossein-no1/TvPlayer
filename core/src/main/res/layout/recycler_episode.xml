@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/ll_parent_recyclerEpisode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <RelativeLayout
+            android:layout_width="220dp"
+            android:layout_height="160dp">
+
+            <RelativeLayout
+                android:id="@+id/rl_parentCover_recyclerEpisode"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/selector_rectangle_border_radius_4"
+                android:padding="2dp">
+
+                <com.tv.core.util.ui.RoundImageView
+                    android:id="@+id/iv_cover_recyclerEpisode"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/shape_rectangle_radius_4"
+                    android:scaleType="centerCrop" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_title_recyclerEpisode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:fontFamily="@font/iran_yekan_demi_bold"
+            android:lines="1"
+            android:padding="2dp"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:visibility="invisible" />
+
+    </LinearLayout>
+</layout>

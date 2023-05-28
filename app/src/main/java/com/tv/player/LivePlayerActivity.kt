@@ -3,8 +3,8 @@ package com.tv.player
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.tv.core.base.TvPlayer
-import com.tv.core.util.MediaItem
-import com.tv.core.util.MediaQuality
+import com.tv.core.util.mediaItems.MediaItem
+import com.tv.core.util.mediaItems.MediaQuality
 import com.tv.core.util.TvPlayBackException
 import com.tv.core.util.TvPlayerListener
 import com.tv.player.databinding.ActivityLivePlayerBinding

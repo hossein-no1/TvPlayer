@@ -1,4 +1,4 @@
-package com.tv.core.util
+package com.tv.core.util.ui
 
 import android.content.Context
 import android.content.DialogInterface

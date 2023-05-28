@@ -1,4 +1,4 @@
-package com.tv.core.util
+package com.tv.core.util.mediaItems
 
 class SubtitleItem(
     val url : String = "",

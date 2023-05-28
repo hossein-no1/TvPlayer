@@ -5,6 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/ib_episodeList"
+        style="@style/TvButtonEpisodeList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:nextFocusLeft="@id/ib_episodeList"
+        android:nextFocusRight="@id/ib_episodeList"
+        android:nextFocusUp="@id/ib_episodeList"
+        android:visibility="invisible"
+        android:nextFocusDown="@id/exo_play_pause" />
+
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/exo_position"
         style="@style/TvTextViewPosition"

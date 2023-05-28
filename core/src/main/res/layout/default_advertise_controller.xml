@@ -16,7 +16,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:paddingHorizontal="16dp"
-        android:text="@string/label_skipAdvertise"
+        android:text="@string/tv_label_skipAdvertise"
         android:paddingVertical="8dp"
         android:visibility="invisible"/>
 

@@ -7,6 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
 import com.tv.core.base.TvPlayer
 import com.tv.core.util.*
+import com.tv.core.util.mediaItems.AdvertiseItem
+import com.tv.core.util.mediaItems.MediaItem
+import com.tv.core.util.mediaItems.MediaQuality
 import com.tv.player.databinding.ActivityAdvertisePlayerBinding
 import com.tv.player.util.UrlHelper
 

@@ -1,11 +1,11 @@
 package com.tv.core.base
 
-import android.app.Activity
+import androidx.appcompat.app.AppCompatActivity
 import com.tv.core.ui.TvPlayerView
 
 internal class SimplePlayer(
     private val tvPlayerView: TvPlayerView,
-    activity: Activity,
+    activity: AppCompatActivity,
     isLive: Boolean = false,
     playWhenReady: Boolean = true
 ) : TvPlayer(activity, tvPlayerView, isLive, playWhenReady) {

@@ -1,4 +1,4 @@
-package com.tv.core.util
+package com.tv.core.util.mediaItems
 
 import android.net.Uri
 import com.google.android.exoplayer2.MediaItem.SubtitleConfiguration

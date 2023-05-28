@@ -1,4 +1,4 @@
-package com.tv.core.util
+package com.tv.core.util.ui
 
 data class AlertDialogItemView(
     val text : String = "Item",

@@ -26,6 +26,15 @@
                 tools:ignore="HardcodedText" />
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/bt_serialPlayer_activityMain"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="SerialPlayer"
+                android:textSize="16sp"
+                android:textColorHint="@color/black"
+                tools:ignore="HardcodedText" />
+
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/bt_advertisePlayer_activityMain"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
