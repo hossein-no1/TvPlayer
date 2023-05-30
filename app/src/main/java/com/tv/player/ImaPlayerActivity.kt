@@ -88,7 +88,7 @@ class ImaPlayerActivity : AppCompatActivity() {
             MediaItem(
                 qualities = listOf(
                     MediaQuality(
-                        title = "720",
+                        title = "media1",
                         link = UrlHelper.film720,
                         adTagUri = Uri.parse("https://play-dev.huma.ir/api/ads/2")
                     )
@@ -99,14 +99,24 @@ class ImaPlayerActivity : AppCompatActivity() {
             MediaItem(
                 qualities = listOf(
                     MediaQuality(
-                        title = "480",
+                        title = "media2",
                         link = UrlHelper.film480
                     )
                 )
             )
 
+        val media3 =
+            MediaItem(
+                qualities = listOf(
+                    MediaQuality(
+                        title = "media3",
+                        link = UrlHelper.film1080
+                    )
+                )
+            )
+
         playerHandler.addListener(playerListener)
-        playerHandler.addMediaList(listOf(media1, media2))
+        playerHandler.addMediaList(listOf(media1, media2, media3))
         playerHandler.prepareAndPlay()
 
     }

@@ -154,10 +154,9 @@ abstract class TvPlayer(
                         oldPosition.positionMs
                     )
                 ) {
-                    listener.onMediaComplete(currentMediaItem)
+                    listener.onMediaComplete(mediaItems[oldPosition.mediaItemIndex])
                     startToPlayMedia = true
                 } else if (reason == Player.DISCONTINUITY_REASON_SEEK_ADJUSTMENT && !isAdPlaying()) {
-                    listener.onMediaChange(currentMediaItem)
                     startToPlayMedia = true
                 }
             }
@@ -340,7 +339,7 @@ abstract class TvPlayer(
                                 ).label == null
                             ) "Subtitle" else groupInfo.getFormat(i).label
                         })"
-                    val subtitleIcon = if (group.isSelected) R.drawable.ic_check else 0
+                    val subtitleIcon = if (group.isSelected) R.drawable.tv_ic_check else 0
                     subtitlesList.add(AlertDialogItemView(subtitleText, subtitleIcon))
                 }
             }
@@ -396,7 +395,7 @@ abstract class TvPlayer(
                             ).label == null
                         ) "Dubbed" else groupInfo.getFormat(i).label
                     })"
-                    val audioTrackIcon = if (group.isSelected) R.drawable.ic_check else 0
+                    val audioTrackIcon = if (group.isSelected) R.drawable.tv_ic_check else 0
                     audioTracksList.add(AlertDialogItemView(subtitleText, audioTrackIcon))
                 }
             }
@@ -435,7 +434,7 @@ abstract class TvPlayer(
         currentMediaItem.qualityList.forEach { mediaQuality ->
             qualityList.add(
                 AlertDialogItemView(
-                    mediaQuality.title, if (mediaQuality.isSelected) R.drawable.ic_check else 0
+                    mediaQuality.title, if (mediaQuality.isSelected) R.drawable.tv_ic_check else 0
                 )
             )
         }

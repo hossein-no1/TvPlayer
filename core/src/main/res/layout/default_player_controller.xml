@@ -14,9 +14,31 @@
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:nextFocusLeft="@id/ib_episodeList"
-        android:nextFocusRight="@id/ib_episodeList"
         android:nextFocusUp="@id/ib_episodeList"
-        android:visibility="invisible"
+        android:nextFocusDown="@id/exo_play_pause"
+        android:visibility="gone" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/ib_increaseSubtitle"
+        style="@style/TvButtonIncreaseSubtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_toRightOf="@id/ib_episodeList"
+        android:nextFocusUp="@id/ib_increaseSubtitle"
+        android:nextFocusDown="@id/exo_play_pause" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/ib_reduceSubtitle"
+        style="@style/TvButtonReduceSubtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_toRightOf="@id/ib_increaseSubtitle"
+        android:nextFocusRight="@id/ib_reduceSubtitle"
+        android:nextFocusUp="@id/ib_reduceSubtitle"
         android:nextFocusDown="@id/exo_play_pause" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -42,7 +64,7 @@
         app:bar_height="1dp"
         app:buffered_color="@color/white_400"
         app:played_color="@color/white"
-        app:scrubber_drawable="@drawable/shape_vertical_line_white"
+        app:scrubber_drawable="@drawable/tv_shape_vertical_line_white"
         app:scrubber_enabled_size="1dp"
         app:unplayed_color="@color/white_200" />
 

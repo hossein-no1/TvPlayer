@@ -27,65 +27,80 @@
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">true</item>
-        <item name="android:src">@drawable/ic_subtitle</item>
-        <item name="android:background">@drawable/selector_controller_button</item>
+        <item name="android:src">@drawable/tv_ic_subtitle</item>
+        <item name="android:background">@drawable/tv_selector_controller_button</item>
     </style>
 
     <style name="TvButtonQuality" parent="ExoStyledControls.Button.Bottom.CC">
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">true</item>
-        <item name="android:src">@drawable/ic_quality</item>
-        <item name="android:background">@drawable/selector_controller_button</item>
+        <item name="android:src">@drawable/tv_ic_quality</item>
+        <item name="android:background">@drawable/tv_selector_controller_button</item>
     </style>
 
     <style name="TvButtonAudioTrack" parent="ExoStyledControls.Button.Bottom.CC">
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">true</item>
-        <item name="android:src">@drawable/ic_audio_track</item>
-        <item name="android:background">@drawable/selector_controller_button</item>
+        <item name="android:src">@drawable/tv_ic_audio_track</item>
+        <item name="android:background">@drawable/tv_selector_controller_button</item>
     </style>
 
     <style name="TvButtonEpisodeList" parent="ExoStyledControls.Button.Bottom.CC">
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">true</item>
-        <item name="android:src">@drawable/ic_list</item>
-        <item name="android:background">@drawable/selector_controller_button</item>
+        <item name="android:src">@drawable/tv_ic_list</item>
+        <item name="android:background">@drawable/tv_selector_controller_button</item>
     </style>
 
+    <style name="TvButtonIncreaseSubtitle" parent="ExoStyledControls.Button.Bottom.CC">
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">true</item>
+        <item name="android:src">@drawable/tv_ic_plus</item>
+        <item name="android:background">@drawable/tv_selector_controller_button</item>
+    </style>
+
+    <style name="TvButtonReduceSubtitle" parent="ExoStyledControls.Button.Bottom.CC">
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">true</item>
+        <item name="android:src">@drawable/tv_ic_minus</item>
+        <item name="android:background">@drawable/tv_selector_controller_button</item>
+    </style>
 
     <style name="TvButtonNext" parent="ExoMediaButton.Next">
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">true</item>
-        <item name="android:src">@drawable/ic_next</item>
-        <item name="android:background">@drawable/selector_controller_button</item>
+        <item name="android:src">@drawable/tv_ic_next</item>
+        <item name="android:background">@drawable/tv_selector_controller_button</item>
     </style>
 
     <style name="TvButtonPrev" parent="ExoMediaButton.Previous">
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">true</item>
-        <item name="android:src">@drawable/ic_prev</item>
-        <item name="android:background">@drawable/selector_controller_button</item>
+        <item name="android:src">@drawable/tv_ic_prev</item>
+        <item name="android:background">@drawable/tv_selector_controller_button</item>
     </style>
 
     <style name="TvButtonFastForward" parent="ExoMediaButton.FastForward">
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">true</item>
-        <item name="android:src">@drawable/ic_fast_forward</item>
-        <item name="android:background">@drawable/selector_controller_button</item>
+        <item name="android:src">@drawable/tv_ic_fast_forward</item>
+        <item name="android:background">@drawable/tv_selector_controller_button</item>
     </style>
 
     <style name="TvButtonRewind" parent="ExoMediaButton.Rewind">
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">true</item>
-        <item name="android:src">@drawable/ic_fast_rewind</item>
-        <item name="android:background">@drawable/selector_controller_button</item>
+        <item name="android:src">@drawable/tv_ic_fast_rewind</item>
+        <item name="android:background">@drawable/tv_selector_controller_button</item>
     </style>
 
     <style name="TvButtonPause" parent="ExoMediaButton.Pause">
@@ -93,14 +108,14 @@
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">true</item>
         <item name="android:src">@drawable/exo_icon_pause</item>
-        <item name="android:background">@drawable/selector_controller_button</item>
+        <item name="android:background">@drawable/tv_selector_controller_button</item>
     </style>
 
     <style name="TvButtonPlay" parent="ExoStyledControls.Button.Center.PlayPause">
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">true</item>
-        <item name="android:background">@drawable/selector_controller_button</item>
+        <item name="android:background">@drawable/tv_selector_controller_button</item>
     </style>
 
     <drawable name="exo_styled_controls_play" tools:ignore="DuplicateDefinition">

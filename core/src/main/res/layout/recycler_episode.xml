@@ -16,14 +16,14 @@
                 android:id="@+id/rl_parentCover_recyclerEpisode"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/selector_rectangle_border_radius_4"
+                android:background="@drawable/tv_selector_rectangle_border_radius_4"
                 android:padding="2dp">
 
                 <com.tv.core.util.ui.RoundImageView
                     android:id="@+id/iv_cover_recyclerEpisode"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/shape_rectangle_radius_4"
+                    android:background="@drawable/tv_shape_rectangle_radius_4"
                     android:scaleType="centerCrop" />
 
             </RelativeLayout>

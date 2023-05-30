@@ -8,6 +8,8 @@
         <attr name="show_quality_button" format="boolean" />
         <attr name="show_dubbed_button" format="boolean" />
         <attr name="show_episode_button" format="boolean" />
+        <attr name="show_increase_subtitle_button" format="boolean" />
+        <attr name="show_reduce_subtitle_button" format="boolean" />
         <attr name="live_animation_color" format="color" />
         <attr name="show_live_animation" format="boolean" />
         <attr name="player_view_background" />

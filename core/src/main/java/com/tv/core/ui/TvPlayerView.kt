@@ -38,6 +38,8 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
     private var showQualityButton: Boolean? = true
     private var showAudioTrackButton: Boolean? = false
     private var showEpisodeButton: Boolean? = false
+    private var showIncreaseSubtitleButton: Boolean? = false
+    private var showReduceButton: Boolean? = false
     private var playerViewBackground: Int? = 0
     private var liveAnimationColor: Int? = 0
     private var showLiveAnimation: Boolean? = true
@@ -47,6 +49,8 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
     private var ibQuality: AppCompatImageButton? = null
     private var ibAudioTack: AppCompatImageButton? = null
     private var ibEpisodeList: AppCompatImageButton? = null
+    private var ibIncreaseSubtitle: AppCompatImageButton? = null
+    private var ibReduceSubtitle: AppCompatImageButton? = null
 
     private var subtitleDialogTitle = "Select subtitle"
     private var subtitleDialogButtonText = "Off subtitle"
@@ -79,6 +83,8 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
         EpisodeListDialogHelper(mContext)
     }
 
+    private var subtitleTextSize: Float = 18F
+
     init {
         init(
             layoutResId = R.layout.default_player_layout
@@ -101,6 +107,12 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
 
             showEpisodeButton =
                 typedArray.getBoolean(R.styleable.TvPlayerView_show_episode_button, false)
+
+            showIncreaseSubtitleButton =
+                typedArray.getBoolean(R.styleable.TvPlayerView_show_increase_subtitle_button, true)
+
+            showReduceButton =
+                typedArray.getBoolean(R.styleable.TvPlayerView_show_reduce_subtitle_button, true)
 
             playerViewBackground =
                 typedArray.getResourceId(R.styleable.TvPlayerView_player_view_background, 0)
@@ -129,7 +141,15 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
     }
 
     fun episodeButtonVisibility(isVisible: Boolean) {
-        ibEpisodeList?.visibility = if (isVisible) View.VISIBLE else View.INVISIBLE
+        ibEpisodeList?.visibility = if (isVisible) View.VISIBLE else View.GONE
+    }
+
+    fun increaseSubtitleButtonVisibility(isVisible: Boolean) {
+        ibIncreaseSubtitle?.visibility = if (isVisible) View.VISIBLE else View.GONE
+    }
+
+    fun reduceSubtitleButtonVisibility(isVisible: Boolean) {
+        ibReduceSubtitle?.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 
     fun liveAnimationVisibility(isVisible: Boolean) {
@@ -141,6 +161,8 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
         ibQuality = findViewById(R.id.ib_qualities)
         ibAudioTack = findViewById(R.id.ib_audioTrack)
         ibEpisodeList = findViewById(R.id.ib_episodeList)
+        ibIncreaseSubtitle = findViewById(R.id.ib_increaseSubtitle)
+        ibReduceSubtitle = findViewById(R.id.ib_reduceSubtitle)
         lottieLiveAnimation = findViewById(R.id.lottie_liveAnimation)
         tvIncrement = findViewById(R.id.tv_labelIncrement)
         tvDecrement = findViewById(R.id.tv_labelDecrement)
@@ -162,6 +184,8 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
         qualityButtonVisibility(showQualityButton ?: true)
         audioTrackButtonVisibility(showAudioTrackButton ?: false)
         episodeButtonVisibility(showEpisodeButton ?: false)
+        increaseSubtitleButtonVisibility(showIncreaseSubtitleButton ?: true)
+        reduceSubtitleButtonVisibility(showReduceButton ?: true)
 
         playerViewBackground?.let { safeBackground ->
             if (safeBackground > 0) {
@@ -188,10 +212,13 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
 
     fun configureSubtitleView(
         typeface: Typeface,
-        textSize: Float = 18F,
+        textSize: Float = subtitleTextSize,
         textColor: Int = Color.WHITE,
         backgroundTextColor: Int = mContext.getColor(R.color.black_600)
     ) {
+
+        subtitleTextSize = textSize
+
         val subtitleView = playerView.subtitleView
         subtitleView?.setApplyEmbeddedFontSizes(false)
         subtitleView?.setApplyEmbeddedStyles(false)
@@ -203,6 +230,20 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
             CaptionStyleCompat.EDGE_TYPE_NONE, Color.TRANSPARENT, typeface
         )
         subtitleView?.setStyle(style)
+    }
+
+    fun increaseSubtitle() {
+        if (subtitleTextSize < 34F) {
+            subtitleTextSize += 2F
+            configureSubtitleView(iranSansTypeFace)
+        }
+    }
+
+    fun reduceSubtitle() {
+        if (subtitleTextSize > 14F) {
+            subtitleTextSize -= 2F
+            configureSubtitleView(iranSansTypeFace)
+        }
     }
 
     /*
@@ -240,6 +281,12 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
         ibEpisodeList?.setOnClickListener {
             episodeListDialog.setEpisodeList(playerHandler.mediaItems).show()
         }
+        ibIncreaseSubtitle?.setOnClickListener {
+            increaseSubtitle()
+        }
+        ibReduceSubtitle?.setOnClickListener {
+            reduceSubtitle()
+        }
         episodeListDialog.setOnEpisodeClickListener(object : RecyclerItemClick {
             override fun onItemClickListener(episodeModel: EpisodeModel, position: Int) {
                 if (playerHandler.player.currentMediaItemIndex != position)
@@ -261,10 +308,20 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
 
     override fun changeSubtitleState(isThereSubtitle: Boolean) {
         isThereSubtitle.apply {
-            ibSubtitle?.isFocusable = this
+            ibSubtitle?.isFocusable  = this
             ibSubtitle?.isFocusableInTouchMode = this
             ibSubtitle?.isClickable = this
             ibSubtitle?.alpha = if (this) 1F else .3F
+
+            ibIncreaseSubtitle?.isFocusable  = this
+            ibIncreaseSubtitle?.isFocusableInTouchMode = this
+            ibIncreaseSubtitle?.isClickable = this
+            ibIncreaseSubtitle?.alpha = if (this) 1F else .3F
+
+            ibReduceSubtitle?.isFocusable  = this
+            ibReduceSubtitle?.isFocusableInTouchMode = this
+            ibReduceSubtitle?.isClickable = this
+            ibReduceSubtitle?.alpha = if (this) 1F else .3F
         }
     }
 
