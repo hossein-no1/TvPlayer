@@ -11,6 +11,13 @@ and
 
 for show VAST ads
 
+# version 3.5.0
+##### What's happened in this version?
+- Add episode list dialog
+> `EpisodeMediaItem(cover = "CoverUrl", qualities = listOf(MediaQuality(title = "Title",link = "MediaLink",adTagUri = "AdUri"))))`
+- Fix bug(listener)
+- Add increase and reduse subtitle button 
+
 # version 3.4.0
 ##### What's happened in this version?
 1. Change Media item structor
