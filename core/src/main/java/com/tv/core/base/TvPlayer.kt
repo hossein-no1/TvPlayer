@@ -186,21 +186,11 @@ abstract class TvPlayer(
         )
     }
 
-    fun addMediaEpisode(media: MediaItemParent, index: Int = 0) {
-        addMedia(media, index)
-//        tvPlayerView.addEpisodeToDialog(media.convertToItemView())
-    }
-
     fun addMediaList(medias: List<MediaItemParent>, index: Int = 0) {
         mediaItems.addAll(medias)
         player.addMediaSources(
             index, buildMediaSources(medias)
         )
-    }
-
-    fun addMediaEpisodeList(medias: List<MediaItemParent>, index: Int = 0) {
-        addMediaList(medias, index)
-//        tvPlayerView.addEpisodeListToDialog(mediaItems.map { it.convertToItemView() })
     }
 
     fun isThereSubtitle(): Boolean {
@@ -349,18 +339,7 @@ abstract class TvPlayer(
         subtitleDialog.create(
             adapter = getAlertDialogAdapter(subtitlesList.toTypedArray()),
             itemClickListener = { _, position ->
-                val trackGroupList =
-                    trackSelector.currentMappedTrackInfo?.getTrackGroups(C.TRACK_TYPE_VIDEO)
-                val trackGroup = trackGroupList?.get(position)
-                trackGroup?.let { safeTrackGroup ->
-                    trackSelector.setParameters(
-                        trackSelector.buildUponParameters().setOverrideForType(
-                            TrackSelectionOverride(
-                                safeTrackGroup, 0
-                            )
-                        ).setRendererDisabled(C.TRACK_TYPE_VIDEO, false)
-                    )
-                }
+                selectSubtitle(position)
             },
             positiveClickListener = { self, _ ->
                 trackSelector.setParameters(
@@ -405,18 +384,7 @@ abstract class TvPlayer(
         audioTrackDialog.create(
             adapter = getAlertDialogAdapter(audioTracksList.toTypedArray()),
             itemClickListener = { _, position ->
-                val trackGroupList =
-                    trackSelector.currentMappedTrackInfo?.getTrackGroups(C.TRACK_TYPE_AUDIO)
-                val trackGroup = trackGroupList?.get(position)
-                trackGroup?.let { safeTrackGroup ->
-                    trackSelector.setParameters(
-                        trackSelector.buildUponParameters().setOverrideForType(
-                            TrackSelectionOverride(
-                                safeTrackGroup, 0
-                            )
-                        ).setRendererDisabled(C.TRACK_TYPE_AUDIO, false)
-                    )
-                }
+                selectAudioTrack(position)
             },
             positiveClickListener = { self, _ ->
                 self.dismiss()
@@ -424,6 +392,36 @@ abstract class TvPlayer(
             positiveButtonText = dialogButtonText
         )
         audioTrackDialog.show()
+    }
+
+    fun selectSubtitle(position: Int) {
+        val trackGroupList =
+            trackSelector.currentMappedTrackInfo?.getTrackGroups(C.TRACK_TYPE_VIDEO)
+        val trackGroup = trackGroupList?.get(position)
+        trackGroup?.let { safeTrackGroup ->
+            trackSelector.setParameters(
+                trackSelector.buildUponParameters().setOverrideForType(
+                    TrackSelectionOverride(
+                        safeTrackGroup, 0
+                    )
+                ).setRendererDisabled(C.TRACK_TYPE_VIDEO, false)
+            )
+        }
+    }
+
+    fun selectAudioTrack(position: Int) {
+        val trackGroupList =
+            trackSelector.currentMappedTrackInfo?.getTrackGroups(C.TRACK_TYPE_AUDIO)
+        val trackGroup = trackGroupList?.get(position)
+        trackGroup?.let { safeTrackGroup ->
+            trackSelector.setParameters(
+                trackSelector.buildUponParameters().setOverrideForType(
+                    TrackSelectionOverride(
+                        safeTrackGroup, 0
+                    )
+                ).setRendererDisabled(C.TRACK_TYPE_AUDIO, false)
+            )
+        }
     }
 
     internal fun showQuality(
@@ -450,10 +448,6 @@ abstract class TvPlayer(
                 self.dismiss()
             })
         qualityDialog.show()
-    }
-
-    internal fun showEpisodeList() {
-        mediaItems
     }
 
     private fun changeQuality(qualitySelectedPosition: Int) {

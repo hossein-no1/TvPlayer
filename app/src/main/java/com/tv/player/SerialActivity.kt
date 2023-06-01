@@ -49,7 +49,7 @@ class SerialActivity : AppCompatActivity() {
         }
 
         playerHandler.addListener(playerListener)
-        playerHandler.addMediaEpisodeList(episodeMedia)
+        playerHandler.addMediaList(episodeMedia)
         playerHandler.prepareAndPlay()
 
     }
