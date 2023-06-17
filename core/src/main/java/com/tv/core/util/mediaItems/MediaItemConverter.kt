@@ -10,7 +10,6 @@ internal object MediaItemConverter {
         exoMedia
             .setMediaId(mediaItem.id)
             .setUri(mediaItem.currentQuality?.link)
-            .setSubtitleConfigurations(SubtitleConverter.convertList(mediaItem.subtitleItems))
 
         mediaItem.currentQuality?.let { safeMediaItem ->
             if (safeMediaItem.adTagUri != Uri.EMPTY)
@@ -31,9 +30,7 @@ internal object MediaItemConverter {
         val mediaItem = com.google.android.exoplayer2.MediaItem.Builder()
             .setMediaId(advertiseItem.id)
             .setUri(advertiseItem.url)
-        advertiseItem.subtitleItem?.let { safeSubtitle ->
-            mediaItem.setSubtitleConfigurations(listOf(SubtitleConverter.convert(safeSubtitle)))
-        }
+
         return mediaItem.build()
     }
 }

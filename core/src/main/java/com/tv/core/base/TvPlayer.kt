@@ -35,6 +35,7 @@ import com.tv.core.util.mediaItems.AdvertiseItem
 import com.tv.core.util.mediaItems.EpisodeMediaItem
 import com.tv.core.util.mediaItems.MediaItemConverter
 import com.tv.core.util.mediaItems.MediaItemParent
+import com.tv.core.util.mediaItems.SubtitleConverter
 import com.tv.core.util.ui.AlertDialogHelper
 import com.tv.core.util.ui.AlertDialogItemView
 import java.util.Formatter
@@ -181,7 +182,7 @@ abstract class TvPlayer(
         mediaItems.add(media)
         player.addMediaSource(
             index, buildMediaSource(
-                MediaItemConverter.convertMediaItem(media), media.dubbedList
+                media, media.dubbedList
             )
         )
     }
@@ -215,9 +216,9 @@ abstract class TvPlayer(
 
     fun isThereQualities() = currentMediaItem.isThereQuality()
 
-    private fun buildMediaSource(mediaItem: MediaItem, dubbedList: List<String>) =
+    private fun buildMediaSource(mediaItem: MediaItemParent, dubbedList: List<String>) =
         MergingMediaSource(
-            mediaSourceFactory.createMediaSource(mediaItem),
+            mediaSourceFactory.createMediaSource(MediaItemConverter.convertMediaItem(mediaItem)),
             *buildDubbedMediaSource(dubbedList).toTypedArray(),
             *buildSubtitleMediaSource(mediaItem).toTypedArray()
         )
@@ -227,19 +228,19 @@ abstract class TvPlayer(
         mediaItems.forEach { mediaItem ->
             mediaSources.add(
                 buildMediaSource(
-                    MediaItemConverter.convertMediaItem(mediaItem), mediaItem.dubbedList
+                    mediaItem, mediaItem.dubbedList
                 )
             )
         }
         return mediaSources
     }
 
-    private fun buildSubtitleMediaSource(mediaItem: MediaItem): ArrayList<MediaSource> {
+    private fun buildSubtitleMediaSource(mediaItem: MediaItemParent): ArrayList<MediaSource> {
         val subtitleSources: ArrayList<MediaSource> = arrayListOf()
-        mediaItem.localConfiguration?.subtitleConfigurations?.forEach { subtitleConfig ->
+        mediaItem.subtitleItems.forEach { subtitleConfig ->
             subtitleSources.add(
                 SingleSampleMediaSource.Factory(dataSourceFactory)
-                    .createMediaSource(subtitleConfig, C.TIME_UNSET)
+                    .createMediaSource(SubtitleConverter.convert(subtitleConfig), C.TIME_UNSET)
             )
         }
         return subtitleSources
@@ -465,10 +466,8 @@ abstract class TvPlayer(
 
     private fun changeQualityUriInItem(qualitySelectedPosition: Int) {
         val mediaSource = buildMediaSource(
-            MediaItemConverter.convertMediaItem(
-                currentMediaItem.changeQualityUriInItem(
-                    qualitySelectedPosition
-                )
+            currentMediaItem.changeQualityUriInItem(
+                qualitySelectedPosition
             ), currentMediaItem.dubbedList
         )
         player.setMediaSource(mediaSource)

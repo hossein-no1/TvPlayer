@@ -25,7 +25,7 @@ object UrlHelper {
         "https://5fb0e2805042ef0018e46033.iran.liara.space/subtitles/6443346/Black.Adam.2022.KORSUB.WEBRip.x264.3.srt"
 
     const val subtitleUrl2 =
-        "https://5fb0e2805042ef0018e46033.iran.liara.space/subtitles/10687116/Entergalactic_2022_1080p_NF_WEB_DL_DDP5_1_Atmos_H_264_SMURF_FA.srt"
+        "https://sub.papkorndl.com/10298810/Lightyear.2022.WEB.Fa%5BANSI%5D.srt"
 
     const val film480 =
         "http://dl.gemescape.com/film/2022/Lightyear/BluRay/Lightyear.2022.480p.BluRay.x264.Pahe.SoftSub.PK.mkv"

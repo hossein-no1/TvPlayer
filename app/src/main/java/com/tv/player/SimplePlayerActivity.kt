@@ -63,9 +63,9 @@ class SimplePlayerActivity : AppCompatActivity() {
         playerHandler.addListener(playerListener)
         playerHandler.addMediaList(
             listOf(
-                mediaWithoutSubtitle,
+//                mediaWithoutSubtitle,
                 mediaWithQuality,
-                mediaWithQualityList
+//                mediaWithQualityList
             )
         )
         playerHandler.prepareAndPlay()
