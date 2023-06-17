@@ -331,7 +331,8 @@ abstract class TvPlayer(
                             ) "Subtitle" else groupInfo.getFormat(i).label
                         })"
                     val subtitleIcon = if (group.isSelected) R.drawable.tv_ic_check else 0
-                    subtitlesList.add(AlertDialogItemView(subtitleText, subtitleIcon))
+                    val subtitleCheckSupported = group.isSupported
+                    subtitlesList.add(AlertDialogItemView(subtitleText, subtitleIcon, subtitleCheckSupported))
                 }
             }
         }
@@ -376,7 +377,8 @@ abstract class TvPlayer(
                         ) "Dubbed" else groupInfo.getFormat(i).label
                     })"
                     val audioTrackIcon = if (group.isSelected) R.drawable.tv_ic_check else 0
-                    audioTracksList.add(AlertDialogItemView(subtitleText, audioTrackIcon))
+                    val audioTrackCheckSupported = group.isSupported
+                    audioTracksList.add(AlertDialogItemView(subtitleText, audioTrackIcon, audioTrackCheckSupported))
                 }
             }
         }
@@ -493,7 +495,7 @@ abstract class TvPlayer(
 
                 tv.text = items[position].text
                 tv.textSize = 16F
-                tv.setTextColor(Color.parseColor("#ffffff"))
+                tv.setTextColor(if (items[position].isSupported) Color.parseColor("#ffffff") else Color.parseColor("#F44336"))
                 tv.setCompoundDrawablesWithIntrinsicBounds(items[position].icon, 0, 0, 0)
 
                 val dp5 = (5 * context.resources.displayMetrics.density + 0.5f).toInt()
