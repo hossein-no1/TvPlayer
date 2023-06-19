@@ -1,6 +1,7 @@
 package com.tv.core.util.mediaItems
 
 import android.net.Uri
+import com.google.android.exoplayer2.C.ROLE_FLAG_SUBTITLE
 import com.google.android.exoplayer2.MediaItem.SubtitleConfiguration
 
 internal object SubtitleConverter {
@@ -9,6 +10,8 @@ internal object SubtitleConverter {
             .setLanguage(subtitleItem.language)
             .setLabel(subtitleItem.label)
             .setMimeType(subtitleItem.mimeType)
+            .setSelectionFlags(subtitleItem.selectionFlags)
+            .setRoleFlags(ROLE_FLAG_SUBTITLE)
             .build()
     }
 

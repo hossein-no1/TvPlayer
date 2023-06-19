@@ -34,12 +34,12 @@ class SimplePlayerActivity : AppCompatActivity() {
             playerView = binding.tvPlayerViewActivitySimplePlayer
         ).createSimplePlayer(isLive = false)
 
-        val subtitle1 = SubtitleItem(url = UrlHelper.subtitleUrl, label = "Subtitle 1")
-        val subtitle2 = SubtitleItem(url = UrlHelper.subtitleUrl2, label = "Subtitle 2")
+        val subtitle1 = SubtitleItem(url = UrlHelper.subtitleUrl, label = "Subtitle 1", selectionFlags = SubtitleItem.SELECTION_FLAG_FORCED)
+        val subtitle2 = SubtitleItem(url = UrlHelper.subtitleUrl2, label = "Subtitle 2", selectionFlags = SubtitleItem.SELECTION_FLAG_AUTOSELECT)
 
         val mediaWithoutSubtitle = MediaItem(
             qualities = listOf(
-                MediaQuality(title = "Movie with Dubbed", link = UrlHelper.film720)
+                MediaQuality(title = "Movie with Dubbed", link = UrlHelper.filmHeavy)
             ),
             dubbedList = listOf(UrlHelper.dubbed1, UrlHelper.dubbed2)
         )

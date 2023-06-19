@@ -12,9 +12,11 @@ import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.View
 import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.model.KeyPath
@@ -384,7 +386,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
 
     fun handleDispatchKeyEvent(
         event: KeyEvent,
-        activity: Activity,
+        activity: AppCompatActivity,
         tvDispatcherListener: TvDispatchKeyEvent? = null
     ): Boolean {
         if (!isControllerVisible() && !playerHandler.isAdPlaying()) {
@@ -395,7 +397,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
                         tvDispatcherListener?.onLeftClick()
                         if (decrementLongPressJob == null) {
                             decrementLongPressValidation = true
-                            decrementLongPressJob = GlobalScope.launch(Dispatchers.Main) {
+                            decrementLongPressJob = activity.lifecycleScope.launch(Dispatchers.Main) {
                                 llParentRewindAnimation.visibility = View.VISIBLE
                                 llParentVideoState.visibility = View.VISIBLE
 
@@ -419,7 +421,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
                         tvDispatcherListener?.onRightClick()
                         if (incrementLongPressJob == null) {
                             incrementLongPressValidation = true
-                            incrementLongPressJob = GlobalScope.launch(Dispatchers.Main) {
+                            incrementLongPressJob = activity.lifecycleScope.launch(Dispatchers.Main) {
                                 llParentFastForwardAnimation.visibility = View.VISIBLE
                                 llParentVideoState.visibility = View.VISIBLE
 
@@ -446,7 +448,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
 
                     KeyEvent.KEYCODE_BACK -> {
                         tvDispatcherListener?.onBackClick()
-                        activity.onBackPressed()
+                        activity.onBackPressedDispatcher.onBackPressed()
                     }
 
                     KeyEvent.KEYCODE_DPAD_UP -> {
@@ -461,7 +463,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
                 }
                 return false
             } else {
-                GlobalScope.launch(Dispatchers.Main) {
+                activity.lifecycleScope.launch(Dispatchers.Main) {
                     delay(80)
                     if (incrementLongPressValidation) {
                         playerHandler.fastForwardIncrement(incrementCounter)

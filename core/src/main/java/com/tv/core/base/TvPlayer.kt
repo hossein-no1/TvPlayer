@@ -1,6 +1,7 @@
 package com.tv.core.base
 
 import android.graphics.Color
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -332,7 +333,13 @@ abstract class TvPlayer(
                         })"
                     val subtitleIcon = if (group.isSelected) R.drawable.tv_ic_check else 0
                     val subtitleCheckSupported = group.isSupported
-                    subtitlesList.add(AlertDialogItemView(subtitleText, subtitleIcon, subtitleCheckSupported))
+                    subtitlesList.add(
+                        AlertDialogItemView(
+                            subtitleText,
+                            subtitleIcon,
+                            subtitleCheckSupported
+                        )
+                    )
                 }
             }
         }
@@ -354,6 +361,15 @@ abstract class TvPlayer(
             positiveButtonText = dialogButtonText
         )
         subtitleDialog.show()
+
+        player.currentTracks.groups.forEachIndexed { index, group ->
+            when(group.type){
+                C.TRACK_TYPE_TEXT -> { Log.i("hossein" , "Subtitle with : ${group.mediaTrackGroup.getFormat(0).label} in index : $index") }
+                C.TRACK_TYPE_AUDIO -> { Log.i("hossein" , "Dubbed with : ${group.mediaTrackGroup.getFormat(0).label} in index : $index") }
+                C.TRACK_TYPE_VIDEO -> { Log.i("hossein" , "Video with : ${group.mediaTrackGroup.getFormat(0).label} in index : $index") }
+                else -> { Log.i("hossein" , "Unknown with : ${group.mediaTrackGroup.getFormat(0).label} in index : $index") }
+            }
+        }
     }
 
     internal fun showAudioTrack(
@@ -378,7 +394,13 @@ abstract class TvPlayer(
                     })"
                     val audioTrackIcon = if (group.isSelected) R.drawable.tv_ic_check else 0
                     val audioTrackCheckSupported = group.isSupported
-                    audioTracksList.add(AlertDialogItemView(subtitleText, audioTrackIcon, audioTrackCheckSupported))
+                    audioTracksList.add(
+                        AlertDialogItemView(
+                            subtitleText,
+                            audioTrackIcon,
+                            audioTrackCheckSupported
+                        )
+                    )
                 }
             }
         }
@@ -495,7 +517,11 @@ abstract class TvPlayer(
 
                 tv.text = items[position].text
                 tv.textSize = 16F
-                tv.setTextColor(if (items[position].isSupported) Color.parseColor("#ffffff") else Color.parseColor("#F44336"))
+                tv.setTextColor(
+                    if (items[position].isSupported) Color.parseColor("#ffffff") else Color.parseColor(
+                        "#F44336"
+                    )
+                )
                 tv.setCompoundDrawablesWithIntrinsicBounds(items[position].icon, 0, 0, 0)
 
                 val dp5 = (5 * context.resources.displayMetrics.density + 0.5f).toInt()
