@@ -1,7 +1,6 @@
 package com.tv.core.base
 
 import android.graphics.Color
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -33,6 +32,7 @@ import com.tv.core.util.TvImaAdsLoader
 import com.tv.core.util.TvPlayBackException
 import com.tv.core.util.TvPlayerListener
 import com.tv.core.util.mediaItems.AdvertiseItem
+import com.tv.core.util.mediaItems.DubbedItem
 import com.tv.core.util.mediaItems.EpisodeMediaItem
 import com.tv.core.util.mediaItems.MediaItemConverter
 import com.tv.core.util.mediaItems.MediaItemParent
@@ -181,11 +181,7 @@ abstract class TvPlayer(
 
     fun addMedia(media: MediaItemParent, index: Int = 0) {
         mediaItems.add(media)
-        player.addMediaSource(
-            index, buildMediaSource(
-                media, media.dubbedList
-            )
-        )
+        player.addMediaSource(index, buildMediaSource(media, media.dubbedList))
     }
 
     fun addMediaList(medias: List<MediaItemParent>, index: Int = 0) {
@@ -217,7 +213,7 @@ abstract class TvPlayer(
 
     fun isThereQualities() = currentMediaItem.isThereQuality()
 
-    private fun buildMediaSource(mediaItem: MediaItemParent, dubbedList: List<String>) =
+    private fun buildMediaSource(mediaItem: MediaItemParent, dubbedList: List<DubbedItem>) =
         MergingMediaSource(
             mediaSourceFactory.createMediaSource(MediaItemConverter.convertMediaItem(mediaItem)),
             *buildDubbedMediaSource(dubbedList).toTypedArray(),
@@ -227,11 +223,7 @@ abstract class TvPlayer(
     private fun buildMediaSources(mediaItems: List<MediaItemParent>): List<MediaSource> {
         val mediaSources = mutableListOf<MediaSource>()
         mediaItems.forEach { mediaItem ->
-            mediaSources.add(
-                buildMediaSource(
-                    mediaItem, mediaItem.dubbedList
-                )
-            )
+            mediaSources.add(buildMediaSource(mediaItem, mediaItem.dubbedList))
         }
         return mediaSources
     }
@@ -247,14 +239,14 @@ abstract class TvPlayer(
         return subtitleSources
     }
 
-    private fun buildDubbedMediaSource(dubbedList: List<String>): ArrayList<MediaSource> {
+    private fun buildDubbedMediaSource(dubbedList: List<DubbedItem>): ArrayList<MediaSource> {
         val dubbedSources: ArrayList<MediaSource> = arrayListOf()
-        dubbedList.forEach {
+        dubbedList.forEach { dubbedMedia ->
             dubbedSources.add(
                 DefaultMediaSourceFactory(activity).createMediaSource(
-                    MediaItem.Builder().setUri(
-                        it
-                    ).build()
+                    MediaItem.Builder()
+                        .setUri(dubbedMedia.url)
+                        .build()
                 )
             )
         }
@@ -319,28 +311,27 @@ abstract class TvPlayer(
     ) {
         val subtitleLanguageList = ArrayList<String>()
         val subtitlesList = ArrayList<AlertDialogItemView>()
-        for (group in player.currentTracks.groups) {
+
+        player.currentTracks.groups.forEach { group ->
             if (group.type == C.TRACK_TYPE_TEXT) {
                 val groupInfo = group.mediaTrackGroup
-                for (i in 0 until groupInfo.length) {
-                    subtitleLanguageList.add(groupInfo.getFormat(i).language.toString())
-                    val subtitleText =
-                        "${subtitlesList.size + 1}. " + Locale(groupInfo.getFormat(i).language.toString()).displayLanguage + " (${
-                            if (groupInfo.getFormat(
-                                    i
-                                ).label == null
-                            ) "Subtitle" else groupInfo.getFormat(i).label
-                        })"
-                    val subtitleIcon = if (group.isSelected) R.drawable.tv_ic_check else 0
-                    val subtitleCheckSupported = group.isSupported
-                    subtitlesList.add(
-                        AlertDialogItemView(
-                            subtitleText,
-                            subtitleIcon,
-                            subtitleCheckSupported
-                        )
+
+                subtitleLanguageList.add(groupInfo.getFormat(0).language.toString())
+                val subtitleText =
+                    "${subtitlesList.size + 1}. " + Locale(groupInfo.getFormat(0).language.toString()).displayLanguage + " (${
+                        if (groupInfo.getFormat(0).label == null) "Subtitle" else groupInfo.getFormat(
+                            0
+                        ).label
+                    })"
+
+                val subtitleIcon = if (group.isSelected) R.drawable.tv_ic_check else 0
+                val subtitleCheckSupported = group.isSupported
+                subtitlesList.add(
+                    AlertDialogItemView(
+                        subtitleText, subtitleIcon, subtitleCheckSupported
                     )
-                }
+                )
+
             }
         }
 
@@ -361,15 +352,6 @@ abstract class TvPlayer(
             positiveButtonText = dialogButtonText
         )
         subtitleDialog.show()
-
-        player.currentTracks.groups.forEachIndexed { index, group ->
-            when(group.type){
-                C.TRACK_TYPE_TEXT -> { Log.i("hossein" , "Subtitle with : ${group.mediaTrackGroup.getFormat(0).label} in index : $index") }
-                C.TRACK_TYPE_AUDIO -> { Log.i("hossein" , "Dubbed with : ${group.mediaTrackGroup.getFormat(0).label} in index : $index") }
-                C.TRACK_TYPE_VIDEO -> { Log.i("hossein" , "Video with : ${group.mediaTrackGroup.getFormat(0).label} in index : $index") }
-                else -> { Log.i("hossein" , "Unknown with : ${group.mediaTrackGroup.getFormat(0).label} in index : $index") }
-            }
-        }
     }
 
     internal fun showAudioTrack(
@@ -377,31 +359,37 @@ abstract class TvPlayer(
     ) {
         val audioTrackLanguageList = ArrayList<String>()
         val audioTracksList = ArrayList<AlertDialogItemView>()
-        for (group in player.currentTracks.groups) {
+
+        var softAudioTrackCounter = 0
+        val allAudioMediaSize =
+            player.currentTracks.groups.filter { it.type == C.TRACK_TYPE_AUDIO }.size
+        val softAudioMediaSize = currentMediaItem.dubbedList.size
+        val hardAudioMediaSize = allAudioMediaSize - softAudioMediaSize
+
+        player.currentTracks.groups.forEachIndexed { index, group ->
             if (group.type == C.TRACK_TYPE_AUDIO) {
                 val groupInfo = group.mediaTrackGroup
-                for (i in 0 until groupInfo.length) {
-                    audioTrackLanguageList.add(groupInfo.getFormat(i).language.toString())
-                    val displayLanguage =
-                        Locale(groupInfo.getFormat(i).language.toString()).displayLanguage.let {
-                            if (it == "null") "" else it
-                        }
-                    val subtitleText = "${audioTracksList.size + 1}. " + displayLanguage + " (${
-                        if (groupInfo.getFormat(
-                                i
-                            ).label == null
-                        ) "Dubbed" else groupInfo.getFormat(i).label
-                    })"
-                    val audioTrackIcon = if (group.isSelected) R.drawable.tv_ic_check else 0
-                    val audioTrackCheckSupported = group.isSupported
-                    audioTracksList.add(
-                        AlertDialogItemView(
-                            subtitleText,
-                            audioTrackIcon,
-                            audioTrackCheckSupported
-                        )
-                    )
+                audioTrackLanguageList.add(groupInfo.getFormat(0).language.toString())
+                val displayLanguage =
+                    Locale(groupInfo.getFormat(0).language.toString()).displayLanguage.let {
+                        if (it == "null") "" else it
+                    }
+                var audioTrackText = "${audioTracksList.size + 1}. " + displayLanguage + " (${
+                    if (groupInfo.getFormat(0).label == null) "Dubbed" else groupInfo.getFormat(0).label
+                })"
+
+                if (index > hardAudioMediaSize) {
+                    audioTrackText = "${audioTracksList.size + 1}. " + currentMediaItem.dubbedList[softAudioTrackCounter++].title
                 }
+
+                val audioTrackIcon = if (group.isSelected) R.drawable.tv_ic_check else 0
+                val audioTrackCheckSupported = group.isSupported
+                audioTracksList.add(
+                    AlertDialogItemView(
+                        audioTrackText, audioTrackIcon, audioTrackCheckSupported
+                    )
+                )
+
             }
         }
 
@@ -489,11 +477,9 @@ abstract class TvPlayer(
     }
 
     private fun changeQualityUriInItem(qualitySelectedPosition: Int) {
-        val mediaSource = buildMediaSource(
-            currentMediaItem.changeQualityUriInItem(
-                qualitySelectedPosition
-            ), currentMediaItem.dubbedList
-        )
+        val mediaSource = buildMediaSource(currentMediaItem.changeQualityUriInItem(
+            qualitySelectedPosition
+        ), currentMediaItem.dubbedList)
         player.setMediaSource(mediaSource)
     }
 

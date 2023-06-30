@@ -9,6 +9,7 @@ import com.tv.core.base.TvPlayer
 import com.tv.core.util.TvDispatchKeyEvent
 import com.tv.core.util.TvPlayBackException
 import com.tv.core.util.TvPlayerListener
+import com.tv.core.util.mediaItems.DubbedItem
 import com.tv.core.util.mediaItems.MediaItem
 import com.tv.core.util.mediaItems.MediaQuality
 import com.tv.core.util.mediaItems.SubtitleItem
@@ -39,9 +40,18 @@ class SimplePlayerActivity : AppCompatActivity() {
 
         val mediaWithoutSubtitle = MediaItem(
             qualities = listOf(
-                MediaQuality(title = "Movie with Dubbed", link = UrlHelper.filmHeavy)
+                MediaQuality(title = "Movie with Dubbed", link = UrlHelper.film480)
             ),
-            dubbedList = listOf(UrlHelper.dubbed1, UrlHelper.dubbed2)
+            dubbedList = listOf(
+                DubbedItem(
+                    title = "Medad rangi",
+                    url = UrlHelper.dubbed1
+                ),
+                DubbedItem(
+                    title = "Qeble",
+                    url = UrlHelper.dubbed2
+                )
+            )
         )
         val mediaWithQuality = MediaItem(
             startPositionMs = 3_600_000L,
@@ -63,9 +73,9 @@ class SimplePlayerActivity : AppCompatActivity() {
         playerHandler.addListener(playerListener)
         playerHandler.addMediaList(
             listOf(
-//                mediaWithoutSubtitle,
+                mediaWithoutSubtitle,
                 mediaWithQuality,
-//                mediaWithQualityList
+                mediaWithQualityList
             )
         )
         playerHandler.prepareAndPlay()

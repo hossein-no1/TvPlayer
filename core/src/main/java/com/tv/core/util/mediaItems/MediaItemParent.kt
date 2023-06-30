@@ -8,7 +8,7 @@ abstract class MediaItemParent(
     val id: String = UUID.randomUUID().toString(),
     var startPositionMs: Long = 0L,
     val subtitleItems: List<SubtitleItem> = listOf(),
-    val dubbedList: List<String> = listOf(),
+    val dubbedList: List<DubbedItem> = listOf(),
     qualities: List<MediaQuality> = listOf()
 ) {
 

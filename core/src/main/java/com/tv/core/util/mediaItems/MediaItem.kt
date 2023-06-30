@@ -7,7 +7,7 @@ class MediaItem(
     id: String = UUID.randomUUID().toString(),
     startPositionMs: Long = 0L,
     subtitleItems: List<SubtitleItem> = listOf(),
-    dubbedList: List<String> = listOf(),
+    dubbedList: List<DubbedItem> = listOf(),
     qualities: List<MediaQuality> = listOf()
 ) : MediaItemParent(id, startPositionMs, subtitleItems, dubbedList, qualities) {
 
