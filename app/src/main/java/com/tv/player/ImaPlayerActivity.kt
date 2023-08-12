@@ -136,6 +136,11 @@ class ImaPlayerActivity : AppCompatActivity() {
             super.onMediaListComplete(mediaItem)
             Log.i(TAG , "onMediaListComplete")
         }
+
+        override fun onControllerVisibilityChanged(visibility: Int) {
+            super.onControllerVisibilityChanged(visibility)
+            Log.i(TAG, "onControllerVisibilityChanged: $visibility")
+        }
     }
 
     override fun onDestroy() {

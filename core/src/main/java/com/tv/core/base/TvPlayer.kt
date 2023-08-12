@@ -20,6 +20,7 @@ import com.google.android.exoplayer2.source.MergingMediaSource
 import com.google.android.exoplayer2.source.SingleSampleMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionOverride
+import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.util.Util
 import com.tv.core.R
@@ -171,6 +172,9 @@ abstract class TvPlayer(
             }
 
         }
+        tvPlayerView.playerView.setControllerVisibilityListener(StyledPlayerView.ControllerVisibilityListener { visibility ->
+            listener.onControllerVisibilityChanged(visibility)
+        })
         player.addListener(requireNotNull(playerListener))
     }
 
