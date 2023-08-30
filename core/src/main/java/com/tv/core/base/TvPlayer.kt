@@ -306,6 +306,10 @@ abstract class TvPlayer(
         player.seekTo(msSecond)
     }
 
+    fun seekToDefaultPosition(){
+        player.seekToDefaultPosition()
+    }
+
     fun changeMedia(index: Int, seekPosition: Long = 0L) {
         player.seekTo(index, seekPosition)
     }
