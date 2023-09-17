@@ -471,7 +471,7 @@ abstract class TvPlayer(
         qualityDialog.show()
     }
 
-    private fun changeQuality(qualitySelectedPosition: Int) {
+    fun changeQuality(qualitySelectedPosition: Int) {
         val currentTime = player.currentPosition
         if (mediaItems.size > 1) changeQualityUriInMediaList(qualitySelectedPosition) else changeQualityUriInItem(
             qualitySelectedPosition

@@ -9,7 +9,7 @@ abstract class MediaItemParent(
     var startPositionMs: Long = 0L,
     val subtitleItems: List<SubtitleItem> = listOf(),
     val dubbedList: List<DubbedItem> = listOf(),
-    qualities: List<MediaQuality> = listOf()
+    val qualities: List<MediaQuality> = listOf()
 ) {
 
     internal val qualityList = mutableListOf<MediaQuality>()
