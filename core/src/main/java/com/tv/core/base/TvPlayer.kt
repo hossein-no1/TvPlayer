@@ -160,6 +160,7 @@ abstract class TvPlayer(
                     listener.onMediaComplete(mediaItems[oldPosition.mediaItemIndex])
                     startToPlayMedia = true
                 } else if (reason == Player.DISCONTINUITY_REASON_SEEK_ADJUSTMENT && !isAdPlaying()) {
+                    listener.onMediaChange(currentMediaItem)
                     startToPlayMedia = true
                 }
             }
