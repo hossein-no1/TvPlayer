@@ -20,6 +20,7 @@ object ExoPlayerHelper {
         DefaultTrackSelector(context, AdaptiveTrackSelection.Factory())
 
     fun getDataSourceFactory(activity: Activity) = DefaultHttpDataSource.Factory()
+        .setAllowCrossProtocolRedirects(true)
         .setUserAgent(Util.getUserAgent(activity, activity.packageName))
 
     fun getMediaSourceFactory(
