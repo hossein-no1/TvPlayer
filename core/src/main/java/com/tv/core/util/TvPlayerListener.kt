@@ -10,4 +10,5 @@ interface TvPlayerListener {
     fun onMediaComplete(mediaItem : MediaItemParent){}
     fun onMediaListComplete(mediaItem : MediaItemParent){}
     fun onControllerVisibilityChanged(visibility: Int){}
+    fun onAdRollStarted(adGroupIndex: Int, adIndexInAdGroup: Int) {}
 }
