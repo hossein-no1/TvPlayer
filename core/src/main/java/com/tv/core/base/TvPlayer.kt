@@ -164,6 +164,7 @@ abstract class TvPlayer(
                         oldPosition.positionMs
                     )
                 ) {
+                    if (!hasAd || newPosition.contentPositionMs == 0L)
                     listener.onMediaComplete(mediaItems[oldPosition.mediaItemIndex])
                     startToPlayMedia = true
                 } else if (reason == Player.DISCONTINUITY_REASON_SEEK_ADJUSTMENT && !isAdPlaying()) {
