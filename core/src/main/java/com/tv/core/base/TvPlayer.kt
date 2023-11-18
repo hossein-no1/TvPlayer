@@ -160,12 +160,14 @@ abstract class TvPlayer(
                         newPosition.adIndexInAdGroup
                     )
                 }
-                if (reason == Player.DISCONTINUITY_REASON_AUTO_TRANSITION && (isRealMediaComplete(
+                if (reason == Player.DISCONTINUITY_REASON_AUTO_TRANSITION && isRealMediaComplete(
                         oldPosition.positionMs
-                    ) || !hasAd)
+                    )
                 ) {
-                    listener.onMediaComplete(mediaItems[oldPosition.mediaItemIndex])
-                    startToPlayMedia = true
+                    if (!hasAd) {
+                        listener.onMediaComplete(mediaItems[oldPosition.mediaItemIndex])
+                        startToPlayMedia = true
+                    }
                 } else if (reason == Player.DISCONTINUITY_REASON_SEEK_ADJUSTMENT && !isAdPlaying()) {
                     listener.onMediaChange(mediaItems[oldPosition.mediaItemIndex])
                     startToPlayMedia = true
