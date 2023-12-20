@@ -310,17 +310,17 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
 
     override fun changeSubtitleState(isThereSubtitle: Boolean) {
         isThereSubtitle.apply {
-            ibSubtitle?.isFocusable  = this
+            ibSubtitle?.isFocusable = this
             ibSubtitle?.isFocusableInTouchMode = this
             ibSubtitle?.isClickable = this
             ibSubtitle?.alpha = if (this) 1F else .3F
 
-            ibIncreaseSubtitle?.isFocusable  = this
+            ibIncreaseSubtitle?.isFocusable = this
             ibIncreaseSubtitle?.isFocusableInTouchMode = this
             ibIncreaseSubtitle?.isClickable = this
             ibIncreaseSubtitle?.alpha = if (this) 1F else .3F
 
-            ibReduceSubtitle?.isFocusable  = this
+            ibReduceSubtitle?.isFocusable = this
             ibReduceSubtitle?.isFocusableInTouchMode = this
             ibReduceSubtitle?.isClickable = this
             ibReduceSubtitle?.alpha = if (this) 1F else .3F
@@ -397,23 +397,24 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
                         tvDispatcherListener?.onLeftClick()
                         if (decrementLongPressJob == null) {
                             decrementLongPressValidation = true
-                            decrementLongPressJob = activity.lifecycleScope.launch(Dispatchers.Main) {
-                                llParentRewindAnimation.visibility = View.VISIBLE
-                                llParentVideoState.visibility = View.VISIBLE
+                            decrementLongPressJob =
+                                activity.lifecycleScope.launch(Dispatchers.Main) {
+                                    llParentRewindAnimation.visibility = View.VISIBLE
+                                    llParentVideoState.visibility = View.VISIBLE
 
-                                setDecrementLabelText(decrementCounter.toString())
-
-                                delay(80)
-
-                                if (decrementLongPressValidation) {
                                     setDecrementLabelText(decrementCounter.toString())
 
-                                    decrementCounter += 10
-                                    tvPositionKeyControl.text =
-                                        playerHandler.getPositionString(playerHandler.getCurrentPosition() - (decrementCounter * 1_000))
+                                    delay(80)
+
+                                    if (decrementLongPressValidation) {
+                                        setDecrementLabelText(decrementCounter.toString())
+
+                                        decrementCounter += 10
+                                        tvPositionKeyControl.text =
+                                            playerHandler.getPositionString(playerHandler.getCurrentPosition() - (decrementCounter * 1_000))
+                                    }
+                                    decrementLongPressJob = null
                                 }
-                                decrementLongPressJob = null
-                            }
                         }
                     }
 
@@ -421,23 +422,24 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
                         tvDispatcherListener?.onRightClick()
                         if (incrementLongPressJob == null) {
                             incrementLongPressValidation = true
-                            incrementLongPressJob = activity.lifecycleScope.launch(Dispatchers.Main) {
-                                llParentFastForwardAnimation.visibility = View.VISIBLE
-                                llParentVideoState.visibility = View.VISIBLE
+                            incrementLongPressJob =
+                                activity.lifecycleScope.launch(Dispatchers.Main) {
+                                    llParentFastForwardAnimation.visibility = View.VISIBLE
+                                    llParentVideoState.visibility = View.VISIBLE
 
-                                setIncrementLabelText(incrementCounter.toString())
-
-                                delay(80)
-
-                                if (incrementLongPressValidation) {
                                     setIncrementLabelText(incrementCounter.toString())
 
-                                    incrementCounter += 10
-                                    tvPositionKeyControl.text =
-                                        playerHandler.getPositionString(playerHandler.getCurrentPosition() + (incrementCounter * 1_000))
+                                    delay(80)
+
+                                    if (incrementLongPressValidation) {
+                                        setIncrementLabelText(incrementCounter.toString())
+
+                                        incrementCounter += 10
+                                        tvPositionKeyControl.text =
+                                            playerHandler.getPositionString(playerHandler.getCurrentPosition() + (incrementCounter * 1_000))
+                                    }
+                                    incrementLongPressJob = null
                                 }
-                                incrementLongPressJob = null
-                            }
                         }
                     }
 

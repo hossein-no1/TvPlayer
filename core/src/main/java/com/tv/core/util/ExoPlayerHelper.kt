@@ -2,6 +2,7 @@ package com.tv.core.util
 
 import android.app.Activity
 import android.content.Context
+import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
 import com.google.android.exoplayer2.source.MediaSource
@@ -14,7 +15,16 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.android.exoplayer2.upstream.cache.CacheDataSource
 import com.google.android.exoplayer2.util.Util
 
+
 object ExoPlayerHelper {
+
+    private var loadControl = DefaultLoadControl.Builder()
+        .setBufferDurationsMs(
+            32*1024,
+            64*10240,
+            1024,
+            1024
+        ).build()
 
     fun getTrackSelector(context: Context) =
         DefaultTrackSelector(context, AdaptiveTrackSelection.Factory())
@@ -50,6 +60,7 @@ object ExoPlayerHelper {
         .setMediaSourceFactory(mediaSourceFactory)
         .setSeekBackIncrementMs(10_000)
         .setSeekForwardIncrementMs(10_000)
+        .setLoadControl(loadControl)
         .build()
 
 }
