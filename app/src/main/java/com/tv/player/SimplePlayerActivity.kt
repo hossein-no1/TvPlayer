@@ -32,7 +32,8 @@ class SimplePlayerActivity : AppCompatActivity() {
 
         playerHandler = TvPlayer.Builder(
             activity = this,
-            playerView = binding.tvPlayerViewActivitySimplePlayer
+            playerView = binding.tvPlayerViewActivitySimplePlayer,
+            maxBufferMs = 32*1024
         ).createSimplePlayer(isLive = false)
 
         val subtitle1 = SubtitleItem(url = UrlHelper.subtitleUrl, label = "Subtitle 1", selectionFlags = SubtitleItem.SELECTION_FLAG_FORCED)
