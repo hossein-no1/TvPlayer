@@ -18,8 +18,17 @@ internal class AdvertisePlayer(
     private val tvPlayerView: TvPlayerView,
     private val tvAdvertisePlayerView: TvAdvertisePlayerView,
     isLive: Boolean,
-    playWhenReady: Boolean = true
-) : TvPlayer(activity, tvPlayerView, isLive, playWhenReady) {
+    playWhenReady: Boolean = true,
+    minBufferMs: Int,
+    maxBufferMs: Int
+) : TvPlayer(
+    activity = activity,
+    tvPlayerView = tvPlayerView,
+    isLive = isLive,
+    playWhenReady = playWhenReady,
+    minBufferMs = minBufferMs,
+    maxBufferMs = maxBufferMs
+) {
 
     private var adPlayer: ExoPlayer = ExoPlayer.Builder(activity.applicationContext).build()
 
@@ -100,7 +109,12 @@ internal class AdvertisePlayer(
 
         override fun onPlayerError(error: PlaybackException) {
             super.onPlayerError(error)
-            advertiseListener?.onPlayerError(TvPlayBackException(errorMessage = error.message, errorCode = error.errorCode))
+            advertiseListener?.onPlayerError(
+                TvPlayBackException(
+                    errorMessage = error.message,
+                    errorCode = error.errorCode
+                )
+            )
         }
     }
 

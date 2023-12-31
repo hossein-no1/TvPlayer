@@ -10,7 +10,17 @@ internal class ImaPlayer(
     activity: AppCompatActivity,
     isLive: Boolean = false,
     playWhenReady: Boolean = true,
-) : TvPlayer(activity, tvPlayerView, isLive, playWhenReady, tvImaAdsLoader) {
+    minBufferMs: Int,
+    maxBufferMs: Int
+) : TvPlayer(
+    activity = activity,
+    tvPlayerView = tvPlayerView,
+    isLive = isLive,
+    playWhenReady = playWhenReady,
+    tvImaAdsLoader = tvImaAdsLoader,
+    minBufferMs = minBufferMs,
+    maxBufferMs = maxBufferMs
+) {
 
     override fun release() {
         tvPlayerView.playerView.player = null

@@ -47,7 +47,9 @@ abstract class TvPlayer(
     private val tvPlayerView: BaseTvPlayerView,
     isLive: Boolean = false,
     playWhenReady: Boolean = true,
-    tvImaAdsLoader: TvImaAdsLoader? = null
+    tvImaAdsLoader: TvImaAdsLoader? = null,
+    minBufferMs: Int,
+    maxBufferMs: Int
 ) {
 
     companion object {
@@ -97,7 +99,9 @@ abstract class TvPlayer(
         player = ExoPlayerHelper.getExoPlayer(
             context = activity.applicationContext,
             trackSelector = trackSelector,
-            mediaSourceFactory = mediaSourceFactory
+            mediaSourceFactory = mediaSourceFactory,
+            minBufferMs,
+            maxBufferMs
         )
         tvPlayerView.playerView.player = player
         tvImaAdsLoader?.setPlayer(player)
@@ -379,7 +383,8 @@ abstract class TvPlayer(
                 })"
 
                 if (index > hardAudioMediaSize) {
-                    audioTrackText = "${audioTracksList.size + 1}. " + currentMediaItem.dubbedList[softAudioTrackCounter++].title
+                    audioTrackText =
+                        "${audioTracksList.size + 1}. " + currentMediaItem.dubbedList[softAudioTrackCounter++].title
                 }
 
                 val audioTrackIcon = if (group.isSelected) R.drawable.tv_ic_check else 0
@@ -477,9 +482,11 @@ abstract class TvPlayer(
     }
 
     private fun changeQualityUriInItem(qualitySelectedPosition: Int) {
-        val mediaSource = buildMediaSource(currentMediaItem.changeQualityUriInItem(
-            qualitySelectedPosition
-        ), currentMediaItem.dubbedList)
+        val mediaSource = buildMediaSource(
+            currentMediaItem.changeQualityUriInItem(
+                qualitySelectedPosition
+            ), currentMediaItem.dubbedList
+        )
         player.setMediaSource(mediaSource)
     }
 
@@ -522,6 +529,9 @@ abstract class TvPlayer(
         private val activity: AppCompatActivity,
         private val playerView: TvPlayerView,
         private val playWhenReady: Boolean = true,
+
+        private val minBufferMs: Int = 32_768 /*32 x 1024*/,
+        private val maxBufferMs: Int = 65_536 /*32 x 2048*/
     ) {
 
         fun createSimplePlayer(
@@ -530,7 +540,9 @@ abstract class TvPlayer(
             activity = activity,
             tvPlayerView = playerView,
             isLive = isLive,
-            playWhenReady = playWhenReady
+            playWhenReady = playWhenReady,
+            minBufferMs = minBufferMs,
+            maxBufferMs = maxBufferMs
         )
 
         fun createImaPlayer(
@@ -540,7 +552,9 @@ abstract class TvPlayer(
             tvPlayerView = playerView,
             isLive = isLive,
             playWhenReady = playWhenReady,
-            tvImaAdsLoader = tvImaAdsLoader
+            tvImaAdsLoader = tvImaAdsLoader,
+            minBufferMs = minBufferMs,
+            maxBufferMs = maxBufferMs
         )
 
         fun createAdvertisePlayer(
@@ -550,7 +564,9 @@ abstract class TvPlayer(
             tvPlayerView = playerView,
             tvAdvertisePlayerView = adPlayerView,
             isLive = isLive,
-            playWhenReady = playWhenReady
+            playWhenReady = playWhenReady,
+            minBufferMs = minBufferMs,
+            maxBufferMs = maxBufferMs
         )
 
     }

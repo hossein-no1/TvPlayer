@@ -18,14 +18,6 @@ import com.google.android.exoplayer2.util.Util
 
 object ExoPlayerHelper {
 
-    private var loadControl = DefaultLoadControl.Builder()
-        .setBufferDurationsMs(
-            32*1024,
-            64*10240,
-            1024,
-            1024
-        ).build()
-
     fun getTrackSelector(context: Context) =
         DefaultTrackSelector(context, AdaptiveTrackSelection.Factory())
 
@@ -54,13 +46,26 @@ object ExoPlayerHelper {
     fun getExoPlayer(
         context: Context,
         trackSelector: TrackSelector,
-        mediaSourceFactory: MediaSource.Factory
+        mediaSourceFactory: MediaSource.Factory,
+        minBufferMs: Int,
+        maxBufferMs: Int
     ) = ExoPlayer.Builder(context)
         .setTrackSelector(trackSelector)
         .setMediaSourceFactory(mediaSourceFactory)
         .setSeekBackIncrementMs(10_000)
         .setSeekForwardIncrementMs(10_000)
-        .setLoadControl(loadControl)
+        .setLoadControl(getPlayerLoadControl(minBufferMs, maxBufferMs))
         .build()
+
+    private fun getPlayerLoadControl(
+        minBufferMs: Int,
+        maxBufferMs: Int
+    ) = DefaultLoadControl.Builder()
+        .setBufferDurationsMs(
+            minBufferMs,
+            maxBufferMs,
+            1024,
+            1024
+        ).build()
 
 }
