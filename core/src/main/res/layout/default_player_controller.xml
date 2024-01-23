@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/TvRelativeParent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/black_a10">
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/ib_episodeList"
@@ -181,5 +182,34 @@
         </LinearLayout>
 
     </RelativeLayout>
+
+    <com.tv.core.util.ui.RoundImageView
+        android:id="@+id/exo_cover"
+        android:layout_width="300dp"
+        android:layout_height="220dp"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="100dp"
+        android:background="@drawable/shape_rectangle_radius_4"
+        android:clipToOutline="true"
+        android:scaleType="centerCrop" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/exo_title"
+        style="@style/TvTextViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/exo_cover"
+        android:layout_marginStart="6dp"
+        android:layout_toRightOf="@id/exo_cover" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/exo_description"
+        style="@style/TvTextViewDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/exo_title"
+        android:layout_marginStart="6dp"
+        android:layout_toRightOf="@id/exo_cover"
+        app:fontFamily="@font/iran_yekan_medium" />
 
 </RelativeLayout>

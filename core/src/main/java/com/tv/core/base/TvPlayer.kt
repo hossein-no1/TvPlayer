@@ -7,6 +7,7 @@ import android.widget.ArrayAdapter
 import android.widget.ListAdapter
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -125,6 +126,7 @@ abstract class TvPlayer(
             player.removeListener(safeListener)
         }
         playerListener = object : Listener {
+
             override fun onPlayerError(error: PlaybackException) {
                 super.onPlayerError(error)
                 listener.onPlayerError(
@@ -145,11 +147,13 @@ abstract class TvPlayer(
                     tvPlayerView.changeSubtitleState(isThereSubtitle())
                     tvPlayerView.changeQualityState(isThereQualities())
                     tvPlayerView.changeAudioTrackState(isThereDubbed())
+
                 } else if (playbackState == STATE_ENDED && !isAdPlaying()) {
                     listener.onMediaListComplete(currentMediaItem)
                     startToPlayMedia = true
                 }
                 tvPlayerView.changeEpisodeListState(isThereEpisodeMediaItem())
+                changeUiData()
                 listener.onPlaybackStateChanged(playbackState)
             }
 
@@ -170,6 +174,7 @@ abstract class TvPlayer(
 
             override fun onTracksChanged(tracks: Tracks) {
                 super.onTracksChanged(tracks)
+
                 if (getCurrentPosition() == 0L) player.seekTo(
                     currentMediaItem.startPositionMs
                 )
@@ -180,6 +185,22 @@ abstract class TvPlayer(
             listener.onControllerVisibilityChanged(visibility)
         })
         player.addListener(requireNotNull(playerListener))
+    }
+
+    private var lastCoverLoaded = ""
+    private fun changeUiData() {
+        if (lastCoverLoaded != currentMediaItem.cover) {
+            tvPlayerView.exoCover?.let { safeCoverView ->
+                Glide.with(activity.applicationContext).load(currentMediaItem.cover)
+                    .into(safeCoverView)
+            }
+        }
+
+        lastCoverLoaded = currentMediaItem.cover
+
+        tvPlayerView.setTitle(currentMediaItem.title)
+        tvPlayerView.setDescription(currentMediaItem.description)
+
     }
 
     private fun isRealMediaComplete(position: Long): Boolean {

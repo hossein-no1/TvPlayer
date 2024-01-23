@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import androidx.appcompat.widget.AppCompatImageView
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.tv.core.base.TvPlayer
 
@@ -12,14 +13,15 @@ abstract class BaseTvPlayerView(private val mContext: Context, private val attrs
     FrameLayout(mContext, attrs) {
 
     lateinit var playerView: StyledPlayerView
-    private lateinit var view : View
+    var exoCover: AppCompatImageView? = null
+    private lateinit var view: View
 
     fun init(layoutResId: Int) {
         view = LayoutInflater.from(context).inflate(layoutResId, this, true)
         obtainAttributes(mContext, attrs)
     }
 
-    fun setupPlayerView(playerViewId: Int){
+    fun setupPlayerView(playerViewId: Int) {
         playerView = view.findViewById(playerViewId)
         findViews()
         updateUi()
@@ -38,5 +40,7 @@ abstract class BaseTvPlayerView(private val mContext: Context, private val attrs
     open fun changeQualityState(isThereQualities: Boolean) {}
     open fun changeAudioTrackState(isThereDubbed: Boolean) {}
     open fun changeEpisodeListState(isThereEpisodeMediaItems: Boolean) {}
+    open fun setTitle(text: String) {}
+    open fun setDescription(text: String) {}
 
 }

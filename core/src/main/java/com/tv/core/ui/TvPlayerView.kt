@@ -9,6 +9,7 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.Typeface
 import android.util.AttributeSet
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.widget.LinearLayout
@@ -53,6 +54,8 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
     private var ibEpisodeList: AppCompatImageButton? = null
     private var ibIncreaseSubtitle: AppCompatImageButton? = null
     private var ibReduceSubtitle: AppCompatImageButton? = null
+    private var tvDescription: AppCompatTextView? = null
+    private var tvTitle: AppCompatTextView? = null
 
     private var subtitleDialogTitle = "Select subtitle"
     private var subtitleDialogButtonText = "Off subtitle"
@@ -173,6 +176,9 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
         llParentRewindAnimation = findViewById(R.id.ll_parentRewindAnimation)
         llParentFastForwardAnimation = findViewById(R.id.ll_parentFastForwardAnimation)
         llParentVideoState = findViewById(R.id.ll_parentVideoState)
+        exoCover = findViewById(R.id.exo_cover)
+        tvTitle = findViewById(R.id.exo_title)
+        tvDescription = findViewById(R.id.exo_description)
     }
 
     override fun updateUi() {
@@ -382,6 +388,15 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
 
     fun setDubbedDialogStyle(resId: Int) {
         this.audioTrackDialogResIdStyle = resId
+    }
+
+    override fun setTitle(text: String) {
+        this.tvTitle?.text = text
+        Log.i("hossein", text)
+    }
+
+    override fun setDescription(text: String) {
+        this.tvDescription?.text = text
     }
 
     fun handleDispatchKeyEvent(
