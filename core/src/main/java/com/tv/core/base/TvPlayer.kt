@@ -204,6 +204,12 @@ abstract class TvPlayer(
         )
     }
 
+    fun updateMedia(index: Int, newMedia: MediaItemParent) {
+        mediaItems[index] = newMedia
+        player.removeMediaItem(index)
+        player.addMediaSource(index, buildMediaSource(newMedia, newMedia.dubbedList))
+    }
+
     fun isThereSubtitle(): Boolean {
         for (group in player.currentTracks.groups) {
             if (group.type == C.TRACK_TYPE_TEXT) {
