@@ -164,9 +164,10 @@ abstract class TvPlayer(
                         oldPosition.positionMs
                     )
                 ) {
-                    if (!hasAd || newPosition.contentPositionMs == 0L)
-                    listener.onMediaComplete(mediaItems[oldPosition.mediaItemIndex])
-                    startToPlayMedia = true
+                    if (!hasAd || newPosition.contentPositionMs == 0L) {
+                        listener.onMediaComplete(mediaItems[oldPosition.mediaItemIndex])
+                        startToPlayMedia = true
+                    }
                 } else if (reason == Player.DISCONTINUITY_REASON_SEEK_ADJUSTMENT && !isAdPlaying()) {
                     listener.onMediaChange(currentMediaItem)
                     startToPlayMedia = true
@@ -321,7 +322,7 @@ abstract class TvPlayer(
         player.seekTo(msSecond)
     }
 
-    fun seekToDefaultPosition(){
+    fun seekToDefaultPosition() {
         player.seekToDefaultPosition()
     }
 
@@ -402,7 +403,8 @@ abstract class TvPlayer(
                 })"
 
                 if (index > hardAudioMediaSize) {
-                    audioTrackText = "${audioTracksList.size + 1}. " + currentMediaItem.dubbedList[softAudioTrackCounter++].title
+                    audioTrackText =
+                        "${audioTracksList.size + 1}. " + currentMediaItem.dubbedList[softAudioTrackCounter++].title
                 }
 
                 val audioTrackIcon = if (group.isSelected) R.drawable.tv_ic_check else 0
@@ -500,9 +502,11 @@ abstract class TvPlayer(
     }
 
     private fun changeQualityUriInItem(qualitySelectedPosition: Int) {
-        val mediaSource = buildMediaSource(currentMediaItem.changeQualityUriInItem(
-            qualitySelectedPosition
-        ), currentMediaItem.dubbedList)
+        val mediaSource = buildMediaSource(
+            currentMediaItem.changeQualityUriInItem(
+                qualitySelectedPosition
+            ), currentMediaItem.dubbedList
+        )
         player.setMediaSource(mediaSource)
     }
 
