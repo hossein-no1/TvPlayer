@@ -165,7 +165,7 @@ abstract class TvPlayer(
                     )
                 ) {
                     if (!hasAd || newPosition.contentPositionMs == 0L) {
-                        listener.onMediaComplete(mediaItems[oldPosition.mediaItemIndex])
+                        listener.onMediaComplete(currentMediaItem)
                         startToPlayMedia = true
                     }
                 } else if (reason == Player.DISCONTINUITY_REASON_SEEK_ADJUSTMENT && !isAdPlaying()) {
