@@ -11,6 +11,7 @@ import com.tv.core.util.TvPlayBackException
 import com.tv.core.util.TvPlayerListener
 import com.tv.core.util.mediaItems.DubbedItem
 import com.tv.core.util.mediaItems.MediaItem
+import com.tv.core.util.mediaItems.MediaItemParent
 import com.tv.core.util.mediaItems.MediaQuality
 import com.tv.core.util.mediaItems.SubtitleItem
 import com.tv.player.databinding.ActivitySimplePlayerBinding
@@ -84,8 +85,8 @@ class SimplePlayerActivity : AppCompatActivity() {
 
     private val playerListener = object : TvPlayerListener {
 
-        override fun onPlayerError(error: TvPlayBackException) {
-            super.onPlayerError(error)
+        override fun onPlayerError(error: TvPlayBackException, currentMediaItem: MediaItemParent) {
+            super.onPlayerError(error, currentMediaItem)
             error.getErrorCodeMessage()
             if (error.errorCode == TvPlayBackException.ERROR_CODE_IO_BAD_HTTP_STATUS)
                 Toast.makeText(

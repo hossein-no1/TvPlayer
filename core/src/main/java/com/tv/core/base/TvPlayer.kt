@@ -126,7 +126,7 @@ abstract class TvPlayer(
                 listener.onPlayerError(
                     TvPlayBackException(
                         errorMessage = error.message, errorCode = error.errorCode
-                    )
+                    ), currentMediaItem
                 )
                 startToPlayMedia = true
             }

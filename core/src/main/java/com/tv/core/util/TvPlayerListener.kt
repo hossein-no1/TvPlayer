@@ -3,7 +3,7 @@ package com.tv.core.util
 import com.tv.core.util.mediaItems.MediaItemParent
 
 interface TvPlayerListener {
-    fun onPlayerError(error: TvPlayBackException){}
+    fun onPlayerError(error: TvPlayBackException, currentMediaItem: MediaItemParent){}
     fun onPlaybackStateChanged(playbackState: Int){}
     fun onMediaStartToPlay(mediaItem : MediaItemParent){}
     fun onMediaChange(mediaItem : MediaItemParent){}

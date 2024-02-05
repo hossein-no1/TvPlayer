@@ -9,6 +9,7 @@ import com.tv.core.base.TvPlayer
 import com.tv.core.util.TvPlayBackException
 import com.tv.core.util.TvPlayerListener
 import com.tv.core.util.mediaItems.EpisodeMediaItem
+import com.tv.core.util.mediaItems.MediaItemParent
 import com.tv.core.util.mediaItems.MediaQuality
 import com.tv.player.databinding.ActivitySerialBinding
 import com.tv.player.util.UrlHelper
@@ -56,8 +57,8 @@ class SerialActivity : AppCompatActivity() {
 
     private val playerListener = object : TvPlayerListener {
 
-        override fun onPlayerError(error: TvPlayBackException) {
-            super.onPlayerError(error)
+        override fun onPlayerError(error: TvPlayBackException, currentMediaItem: MediaItemParent) {
+            super.onPlayerError(error, currentMediaItem)
             error.getErrorCodeMessage()
             if (error.errorCode == TvPlayBackException.ERROR_CODE_IO_BAD_HTTP_STATUS)
                 Toast.makeText(

@@ -9,6 +9,7 @@ import com.tv.core.base.TvPlayer
 import com.tv.core.util.*
 import com.tv.core.util.mediaItems.AdvertiseItem
 import com.tv.core.util.mediaItems.MediaItem
+import com.tv.core.util.mediaItems.MediaItemParent
 import com.tv.core.util.mediaItems.MediaQuality
 import com.tv.player.databinding.ActivityAdvertisePlayerBinding
 import com.tv.player.util.UrlHelper
@@ -52,8 +53,8 @@ class AdvertisePlayerActivity : AppCompatActivity() {
             binding.isLoading = playbackState == TvPlayer.STATE_BUFFERING
         }
 
-        override fun onPlayerError(error: TvPlayBackException) {
-            super.onPlayerError(error)
+        override fun onPlayerError(error: TvPlayBackException, currentMediaItem: MediaItemParent) {
+            super.onPlayerError(error, currentMediaItem)
             error.printStackTrace()
         }
 
@@ -73,8 +74,8 @@ class AdvertisePlayerActivity : AppCompatActivity() {
     }
 
     private val playerListener = object : TvPlayerListener {
-        override fun onPlayerError(error: TvPlayBackException) {
-            super.onPlayerError(error)
+        override fun onPlayerError(error: TvPlayBackException, currentMediaItem: MediaItemParent) {
+            super.onPlayerError(error, currentMediaItem)
             error.printStackTrace()
         }
 
