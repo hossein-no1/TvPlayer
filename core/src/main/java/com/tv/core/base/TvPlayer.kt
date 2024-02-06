@@ -70,6 +70,9 @@ abstract class TvPlayer(
         }
     val mediaItems = mutableListOf<MediaItemParent>()
 
+    val currentMediaItemIndex
+        get() = player.currentMediaItemIndex
+
     private var startToPlayMedia = false
 
     private val formatBuilder = StringBuilder()
@@ -126,7 +129,7 @@ abstract class TvPlayer(
                 listener.onPlayerError(
                     TvPlayBackException(
                         errorMessage = error.message, errorCode = error.errorCode
-                    )
+                    ), currentMediaItem, currentMediaItemIndex
                 )
                 startToPlayMedia = true
             }
@@ -135,7 +138,7 @@ abstract class TvPlayer(
                 super.onPlaybackStateChanged(playbackState)
                 if (playbackState == STATE_READY) {
                     if (startToPlayMedia && !isAdPlaying()) {
-                        listener.onMediaStartToPlay(currentMediaItem)
+                        listener.onMediaStartToPlay(currentMediaItem, currentMediaItemIndex)
                         startToPlayMedia = false
                     }
                     tvPlayerView.changeSubtitleState(isThereSubtitle())
@@ -164,7 +167,7 @@ abstract class TvPlayer(
                         oldPosition.positionMs
                     )
                 ) {
-                    if (!hasAd || newPosition.contentPositionMs == 0L){
+                    if (!hasAd || newPosition.contentPositionMs == 0L) {
                         listener.onMediaComplete(mediaItems[oldPosition.mediaItemIndex])
                         startToPlayMedia = true
                     }
@@ -322,7 +325,7 @@ abstract class TvPlayer(
         player.seekTo(msSecond)
     }
 
-    fun seekToDefaultPosition(){
+    fun seekToDefaultPosition() {
         player.seekToDefaultPosition()
     }
 
@@ -403,7 +406,8 @@ abstract class TvPlayer(
                 })"
 
                 if (index > hardAudioMediaSize) {
-                    audioTrackText = "${audioTracksList.size + 1}. " + currentMediaItem.dubbedList[softAudioTrackCounter++].title
+                    audioTrackText =
+                        "${audioTracksList.size + 1}. " + currentMediaItem.dubbedList[softAudioTrackCounter++].title
                 }
 
                 val audioTrackIcon = if (group.isSelected) R.drawable.tv_ic_check else 0
@@ -501,9 +505,11 @@ abstract class TvPlayer(
     }
 
     private fun changeQualityUriInItem(qualitySelectedPosition: Int) {
-        val mediaSource = buildMediaSource(currentMediaItem.changeQualityUriInItem(
-            qualitySelectedPosition
-        ), currentMediaItem.dubbedList)
+        val mediaSource = buildMediaSource(
+            currentMediaItem.changeQualityUriInItem(
+                qualitySelectedPosition
+            ), currentMediaItem.dubbedList
+        )
         player.setMediaSource(mediaSource)
     }
 

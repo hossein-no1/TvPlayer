@@ -122,8 +122,8 @@ class ImaPlayerActivity : AppCompatActivity() {
     }
 
     private val playerListener = object : TvPlayerListener{
-        override fun onMediaStartToPlay(mediaItem: MediaItemParent) {
-            super.onMediaStartToPlay(mediaItem)
+        override fun onMediaStartToPlay(mediaItem: MediaItemParent, currentMediaItemIndex: Int) {
+            super.onMediaStartToPlay(mediaItem, currentMediaItemIndex)
             Log.i(TAG , "onMediaStartToPlay")
         }
 
