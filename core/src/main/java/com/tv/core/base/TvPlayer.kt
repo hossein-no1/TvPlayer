@@ -228,7 +228,8 @@ abstract class TvPlayer(
 
     fun isThereDubbed() = player.currentTracks.groups.count { it.type == C.TRACK_TYPE_AUDIO } > 1
 
-    fun isThereQuality() = player.currentTracks.groups.count { it.type == C.TRACK_TYPE_VIDEO } > 1
+    fun isThereQuality() =
+        player.currentTracks.groups.count { it.type == C.TRACK_TYPE_VIDEO } > 0 && !isThereLink()
 
     fun isThereEpisodeMediaItem() = mediaItems.any { it is EpisodeMediaItem }
 
