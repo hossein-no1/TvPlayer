@@ -87,16 +87,6 @@
         android:orientation="horizontal">
 
         <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/ib_audioTrack"
-            style="@style/TvButtonAudioTrack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="8dp"
-            android:visibility="invisible" />
-
-        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/exo_prev"
             style="@style/TvButtonPrev"
             android:layout_width="wrap_content"
@@ -152,29 +142,53 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/ib_qualities"
-                style="@style/TvButtonQuality"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center"
-                android:layout_marginLeft="4dp"
-                android:layout_marginEnd="8dp"
-                android:layout_toLeftOf="@id/ib_subtitles"
-                android:tintMode="src_in"
-                android:visibility="invisible" />
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/ib_subtitles"
                 style="@style/TvButtonSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center"
+                android:layout_marginLeft="4dp"
+                android:layout_marginEnd="8dp"
+                android:tintMode="src_in" />
+
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/ib_audioTrack"
+                style="@style/TvButtonAudioTrack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:layout_marginEnd="8dp"
+                android:tintMode="src_in" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/ib_quality"
+                style="@style/TvButtonQuality"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:layout_marginEnd="8dp"
+                android:tintMode="src_in" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/ib_links"
+                style="@style/TvButtonLink"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:layout_marginEnd="8dp"
+                android:tintMode="src_in" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/ib_source"
+                style="@style/TvButtonSource"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
                 android:layout_marginEnd="8dp"
                 android:tintMode="src_in" />
 

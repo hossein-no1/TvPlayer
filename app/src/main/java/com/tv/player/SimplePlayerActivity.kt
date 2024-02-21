@@ -12,7 +12,7 @@ import com.tv.core.util.TvPlayerListener
 import com.tv.core.util.mediaItems.DubbedItem
 import com.tv.core.util.mediaItems.MediaItem
 import com.tv.core.util.mediaItems.MediaItemParent
-import com.tv.core.util.mediaItems.MediaQuality
+import com.tv.core.util.mediaItems.MediaLink
 import com.tv.core.util.mediaItems.SubtitleItem
 import com.tv.player.databinding.ActivitySimplePlayerBinding
 import com.tv.player.util.UrlHelper
@@ -40,8 +40,8 @@ class SimplePlayerActivity : AppCompatActivity() {
         val subtitle2 = SubtitleItem(url = UrlHelper.subtitleUrl2, label = "Subtitle 2", selectionFlags = SubtitleItem.SELECTION_FLAG_AUTOSELECT)
 
         val mediaWithoutSubtitle = MediaItem(
-            qualities = listOf(
-                MediaQuality(title = "Movie with Dubbed", link = UrlHelper.film480)
+            links = listOf(
+                MediaLink(title = "Movie with Dubbed", link = UrlHelper.film480)
             ),
             dubbedList = listOf(
                 DubbedItem(
@@ -57,17 +57,17 @@ class SimplePlayerActivity : AppCompatActivity() {
         val mediaWithQuality = MediaItem(
             startPositionMs = 3_600_000L,
             subtitleItems = listOf(subtitle1, subtitle2),
-            qualities = listOf(
-                MediaQuality(title = "1080", link = UrlHelper.film1080)
+            links = listOf(
+                MediaLink(title = "1080", link = UrlHelper.film1080)
             )
         )
-            .addQuality("720", link = UrlHelper.film720)
-            .addQuality("480", link = UrlHelper.film480)
+            .addLink("720", link = UrlHelper.film720)
+            .addLink("480", link = UrlHelper.film480)
 
         val mediaWithQualityList = MediaItem(
-            qualities = listOf(
-                MediaQuality(title = "720", link = UrlHelper.film720),
-                MediaQuality(title = "1080", link = UrlHelper.film1080)
+            links = listOf(
+                MediaLink(title = "720", link = UrlHelper.film720),
+                MediaLink(title = "1080", link = UrlHelper.film1080)
             )
         )
 

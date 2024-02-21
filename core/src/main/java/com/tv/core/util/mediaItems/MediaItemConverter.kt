@@ -9,9 +9,9 @@ internal object MediaItemConverter {
 
         exoMedia
             .setMediaId(mediaItem.id)
-            .setUri(mediaItem.currentQuality?.link)
+            .setUri(mediaItem.currentLink?.link)
 
-        mediaItem.currentQuality?.let { safeMediaItem ->
+        mediaItem.currentLink?.let { safeMediaItem ->
             if (safeMediaItem.adTagUri != Uri.EMPTY)
                 exoMedia.setAdsConfiguration(
                     AdsConfiguration.Builder(

@@ -1,7 +1,6 @@
 package com.tv.core.util.mediaItems
 
 import android.net.Uri
-import com.tv.core.util.episodelistdialog.EpisodeModel
 import java.util.UUID
 
 abstract class MediaItemParent(
@@ -9,14 +8,14 @@ abstract class MediaItemParent(
     var startPositionMs: Long = 0L,
     val subtitleItems: List<SubtitleItem> = listOf(),
     val dubbedList: List<DubbedItem> = listOf(),
-    val qualities: List<MediaQuality> = listOf()
+    val links: List<MediaLink> = listOf()
 ) {
 
-    internal val qualityList = mutableListOf<MediaQuality>()
+    internal val linkList = mutableListOf<MediaLink>()
 
-    val currentQuality: MediaQuality?
+    val currentLink: MediaLink?
         get() {
-            qualityList.forEach {
+            linkList.forEach {
                 if (it.isSelected)
                     return it
             }
@@ -24,19 +23,19 @@ abstract class MediaItemParent(
         }
 
     init {
-        qualityList.addAll(qualities)
-        if (qualities.isNotEmpty()) setDefaultQuality(0)
-        if (qualityList.size > 1) qualityList.first().isSelected = true
+        linkList.addAll(links)
+        if (links.isNotEmpty()) setDefaultQuality(0)
+        if (linkList.size > 1) linkList.first().isSelected = true
     }
 
-    fun isThereQuality() = qualityList.size > 1
+    fun isThereLink() = linkList.size > 1
 
     @Throws(IndexOutOfBoundsException::class)
     fun setDefaultQuality(index: Int) {
-        if (index < qualityList.size && index >= 0) {
+        if (index < linkList.size && index >= 0) {
             resetQualitySelected()
-            qualityList[index].isSelected = true
-            qualityList[0] = qualityList[index].also { qualityList[index] = qualityList[0] }
+            linkList[index].isSelected = true
+            linkList[0] = linkList[index].also { linkList[index] = linkList[0] }
         } else throw IndexOutOfBoundsException("Not found quality index in the list!")
     }
 
@@ -46,19 +45,19 @@ abstract class MediaItemParent(
     }
 
     private fun getQualityIndexWithTitle(quality: String): Int {
-        qualityList.forEachIndexed { index, qualityItem ->
+        linkList.forEachIndexed { index, qualityItem ->
             if (qualityItem.title == quality) return index
         }
         return -1
     }
 
     protected fun resetQualitySelected() {
-        qualityList.forEach { mediaQuality ->
+        linkList.forEach { mediaQuality ->
             mediaQuality.isSelected = false
         }
     }
 
-    abstract fun addQuality(quality: String, link: String, adTagUri: Uri = Uri.EMPTY): MediaItemParent
+    abstract fun addLink(quality: String, link: String, adTagUri: Uri = Uri.EMPTY): MediaItemParent
     abstract fun changeQualityUriInItem(qualitySelectedPosition: Int): MediaItemParent
 
 }

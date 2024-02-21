@@ -34,9 +34,11 @@ abstract class BaseTvPlayerView(private val mContext: Context, private val attrs
     protected abstract fun updateUi()
     open fun setupElement(playerHandler: TvPlayer, isLive: Boolean) {}
     open fun setupElement(adPlayerHandler: TvPlayer) {}
-    open fun changeSubtitleState(isThereSubtitle: Boolean) {}
+    open fun changeSourceState(isThereSource: Boolean) {}
+    open fun changeLinkState(isThereLinks: Boolean) {}
     open fun changeQualityState(isThereQualities: Boolean) {}
     open fun changeAudioTrackState(isThereDubbed: Boolean) {}
+    open fun changeSubtitleState(isThereSubtitle: Boolean) {}
     open fun changeEpisodeListState(isThereEpisodeMediaItems: Boolean) {}
 
 }

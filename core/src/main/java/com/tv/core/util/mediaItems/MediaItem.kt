@@ -8,18 +8,18 @@ class MediaItem(
     startPositionMs: Long = 0L,
     subtitleItems: List<SubtitleItem> = listOf(),
     dubbedList: List<DubbedItem> = listOf(),
-    qualities: List<MediaQuality> = listOf()
-) : MediaItemParent(id, startPositionMs, subtitleItems, dubbedList, qualities) {
+    links: List<MediaLink> = listOf()
+) : MediaItemParent(id, startPositionMs, subtitleItems, dubbedList, links) {
 
-    override fun addQuality(quality: String, link: String, adTagUri: Uri): MediaItemParent {
-        qualityList.add(MediaQuality(quality, link, adTagUri))
-        if (qualityList.size > 1) qualityList.first().isSelected = true
+    override fun addLink(quality: String, link: String, adTagUri: Uri): MediaItemParent {
+        linkList.add(MediaLink(quality, link, adTagUri))
+        if (linkList.size > 1) linkList.first().isSelected = true
         return this
     }
 
     override fun changeQualityUriInItem(qualitySelectedPosition: Int): MediaItem {
         resetQualitySelected()
-        qualityList[qualitySelectedPosition].isSelected = true
+        linkList[qualitySelectedPosition].isSelected = true
         return this
     }
 

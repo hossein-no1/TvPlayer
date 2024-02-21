@@ -23,11 +23,19 @@
         <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
     </style>
 
-    <style name="TvButtonSubtitle" parent="ExoStyledControls.Button.Bottom.CC">
+    <style name="TvButtonSource" parent="ExoStyledControls.Button.Bottom.CC">
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">true</item>
-        <item name="android:src">@drawable/tv_ic_subtitle</item>
+        <item name="android:src">@drawable/tv_ic_source</item>
+        <item name="android:background">@drawable/tv_selector_controller_button</item>
+    </style>
+
+    <style name="TvButtonLink" parent="ExoStyledControls.Button.Bottom.CC">
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">true</item>
+        <item name="android:src">@drawable/tv_ic_link</item>
         <item name="android:background">@drawable/tv_selector_controller_button</item>
     </style>
 
@@ -44,6 +52,14 @@
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">true</item>
         <item name="android:src">@drawable/tv_ic_audio_track</item>
+        <item name="android:background">@drawable/tv_selector_controller_button</item>
+    </style>
+
+    <style name="TvButtonSubtitle" parent="ExoStyledControls.Button.Bottom.CC">
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">true</item>
+        <item name="android:src">@drawable/tv_ic_subtitle</item>
         <item name="android:background">@drawable/tv_selector_controller_button</item>
     </style>
 

@@ -30,6 +30,8 @@ object UrlHelper {
     const val subtitleUrl2 =
         "https://sub.papkorndl.com/10298810/Lightyear.2022.WEB.Fa%5BANSI%5D.srt"
 
+    const val streamLinkWithMoreQuality = "https://traffic.upera.tv/2936255-0-hls.m3u8?ref=tUWI"
+
     const val film480 =
         "http://dl.gemescape.com/film/2022/Lightyear/BluRay/Lightyear.2022.480p.BluRay.x264.Pahe.SoftSub.PK.mkv"
     const val film720 =
@@ -40,11 +42,13 @@ object UrlHelper {
     const val SAMPLE_VAST_TAG_URL =
         "https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_ad_samples&sz=640x480&cust_params=sample_ct%3Dlinear&ciu_szs=300x250%2C728x90&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator="
 
-    const val SAMPLE_VAST_TAG_URL_2 = "https://newsapi.akharinkhabar.ir/api/v1/Video/news/6748352/tile/38"
+    const val SAMPLE_VAST_TAG_URL_2 =
+        "https://newsapi.akharinkhabar.ir/api/v1/Video/news/6748352/tile/38"
 
     const val SAMPLE_VAST_TAG_URL_3 = "http://94.182.181.88:8080/api/page/custom-ads"
 
-    val episodeCoverList = listOf("https://image.3sigma.ir/t/p/w500/8YJqx02JNMu9gNX7Ok7qgaNJJgl.jpg",
+    val episodeCoverList = listOf(
+        "https://image.3sigma.ir/t/p/w500/8YJqx02JNMu9gNX7Ok7qgaNJJgl.jpg",
         "https://image.3sigma.ir/t/p/w500/2pNZYWhkY0DdUyVU8FEaYDSSfTW.jpg",
         "https://image.3sigma.ir/t/p/w500/tiuQbGLBgXltDTZ95YyL2vCoIKr.jpg",
         "https://image.3sigma.ir/t/p/w500/fbWzpmQlFENbnS6GbvHZhzywozo.jpg",

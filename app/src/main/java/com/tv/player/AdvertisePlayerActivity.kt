@@ -10,7 +10,7 @@ import com.tv.core.util.*
 import com.tv.core.util.mediaItems.AdvertiseItem
 import com.tv.core.util.mediaItems.MediaItem
 import com.tv.core.util.mediaItems.MediaItemParent
-import com.tv.core.util.mediaItems.MediaQuality
+import com.tv.core.util.mediaItems.MediaLink
 import com.tv.player.databinding.ActivityAdvertisePlayerBinding
 import com.tv.player.util.UrlHelper
 
@@ -35,7 +35,7 @@ class AdvertisePlayerActivity : AppCompatActivity() {
 
         val adMedia = AdvertiseItem(url = UrlHelper.ad)
 
-        val media = MediaItem(qualities = listOf(MediaQuality(link = UrlHelper.film720)))
+        val media = MediaItem(links = listOf(MediaLink(link = UrlHelper.film720)))
 
         playerHandler.addMediaAdvertise(adMedia)
         playerHandler.addMedia(media)

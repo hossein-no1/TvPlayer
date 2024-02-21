@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.tv.core.base.TvPlayer
 import com.tv.core.util.mediaItems.MediaItem
-import com.tv.core.util.mediaItems.MediaQuality
+import com.tv.core.util.mediaItems.MediaLink
 import com.tv.core.util.TvPlayBackException
 import com.tv.core.util.TvPlayerListener
 import com.tv.core.util.mediaItems.MediaItemParent
@@ -27,7 +27,7 @@ class LivePlayerActivity : AppCompatActivity() {
         ).createSimplePlayer(isLive = true)
 
         val media = MediaItem(
-            qualities = listOf(MediaQuality(title = "Live", link = UrlHelper.linkLive))
+            links = listOf(MediaLink(title = "Live", link = UrlHelper.linkLive))
         )
         playerHandler.addListener(playerListener)
         playerHandler.addMedia(media)

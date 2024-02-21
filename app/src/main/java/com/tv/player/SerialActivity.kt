@@ -10,7 +10,7 @@ import com.tv.core.util.TvPlayBackException
 import com.tv.core.util.TvPlayerListener
 import com.tv.core.util.mediaItems.EpisodeMediaItem
 import com.tv.core.util.mediaItems.MediaItemParent
-import com.tv.core.util.mediaItems.MediaQuality
+import com.tv.core.util.mediaItems.MediaLink
 import com.tv.player.databinding.ActivitySerialBinding
 import com.tv.player.util.UrlHelper
 
@@ -40,7 +40,7 @@ class SerialActivity : AppCompatActivity() {
                 EpisodeMediaItem(
                     cover = coverUrl,
                     qualities = listOf(
-                        MediaQuality(
+                        MediaLink(
                             title = "Episode ${index + 1}",
                             link = UrlHelper.film720
                         )

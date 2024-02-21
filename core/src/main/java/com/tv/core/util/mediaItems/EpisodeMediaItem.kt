@@ -9,28 +9,28 @@ class EpisodeMediaItem(
     startPositionMs: Long = 0L,
     subtitleItems: List<SubtitleItem> = listOf(),
     dubbedList: List<DubbedItem> = listOf(),
-    qualities: List<MediaQuality> = listOf(),
+    qualities: List<MediaLink> = listOf(),
     private val cover: String = ""
 ) : MediaItemParent(id, startPositionMs, subtitleItems, dubbedList, qualities) {
 
     internal fun convertToEpisodeModel(): EpisodeModel {
         return EpisodeModel(
             id = this.id,
-            title = currentQuality?.title ?: "",
+            title = currentLink?.title ?: "",
             cover = this.cover,
             startPosition = this.startPositionMs
         )
     }
 
-    override fun addQuality(quality: String, link: String, adTagUri: Uri): EpisodeMediaItem {
-        qualityList.add(MediaQuality(quality, link, adTagUri))
-        if (qualityList.size > 1) qualityList.first().isSelected = true
+    override fun addLink(quality: String, link: String, adTagUri: Uri): EpisodeMediaItem {
+        linkList.add(MediaLink(quality, link, adTagUri))
+        if (linkList.size > 1) linkList.first().isSelected = true
         return this
     }
 
     override fun changeQualityUriInItem(qualitySelectedPosition: Int): EpisodeMediaItem {
         resetQualitySelected()
-        qualityList[qualitySelectedPosition].isSelected = true
+        linkList[qualitySelectedPosition].isSelected = true
         return this
     }
 
