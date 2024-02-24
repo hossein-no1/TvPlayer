@@ -495,7 +495,11 @@ abstract class TvPlayer(
             adapter = getAlertDialogAdapter(qualityList.toTypedArray()),
             itemClickListener = { self, position ->
                 interactionListener?.onUserAction(TVUserAction.SELECT_QUALITY, false)
-                if (!currentMediaItem.linkList[position].isSelected) changeQuality(position)
+                val currentSource = currentMediaItem.currentLink?.source
+                val targetLink =
+                    currentMediaItem.links.filter { it.source == currentSource }[position]
+                val targetIndex = currentMediaItem.links.indexOf(targetLink)
+                if (!currentMediaItem.links[targetIndex].isSelected) changeQuality(targetIndex)
                 else self.dismiss()
             },
             positiveButtonText = dialogButtonText,
@@ -510,7 +514,6 @@ abstract class TvPlayer(
         interactionListener?.onUserAction(TVUserAction.SHOW_SOURCE)
 
         val qualityList = ArrayList<AlertDialogItemView>()
-
         val data = currentMediaItem.linkList.groupBy { it.source }
         data.forEach { (source, list) ->
             val isSelected = list.any { it.isSelected }
@@ -529,7 +532,7 @@ abstract class TvPlayer(
                     positionInAll++
                     if (position == index) {
                         val linkList = data[key]
-                        if (linkList?.first()?.isSelected == false) changeQuality(positionInAll)
+                        if (linkList?.any { it.isSelected } == false) changeQuality(positionInAll)
                     }
                 }
                 interactionListener?.onUserAction(TVUserAction.SELECT_SOURCE)
@@ -559,8 +562,7 @@ abstract class TvPlayer(
                     subtitleLanguageList.add(safeGroupInfo.getFormat(0).language.toString())
                     for (i in 0 until safeGroupInfo.length) {
                         val format = safeGroupInfo.getFormat(i)
-                        val quality =
-                            "${format.width}x${format.height} ${format.bitrate / 1000} kbps"
+                        val quality = "${format.height}p"
                         val subtitleIcon =
                             if (group.isTrackSelected(i)) R.drawable.tv_ic_check else 0
                         val subtitleCheckSupported = group.isSupported
