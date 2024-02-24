@@ -7,7 +7,9 @@ import com.google.ads.interactivemedia.v3.api.player.AdMediaInfo
 import com.google.ads.interactivemedia.v3.api.player.VideoAdPlayer
 import com.google.ads.interactivemedia.v3.api.player.VideoProgressUpdate
 import com.tv.core.base.TvPlayer
+import com.tv.core.util.TVUserAction
 import com.tv.core.util.TvImaAdsLoader
+import com.tv.core.util.TvPlayerInteractionListener
 import com.tv.core.util.TvPlayerListener
 import com.tv.core.util.mediaItems.MediaItem
 import com.tv.core.util.mediaItems.MediaItemParent
@@ -134,11 +136,21 @@ class ImaPlayerActivity : AppCompatActivity() {
 
                     )
             )
-
+        playerHandler.addInteractionListener(interactionListener)
         playerHandler.addListener(playerListener)
         playerHandler.addMediaList(listOf(media2, media1))
         playerHandler.prepareAndPlay()
 
+    }
+
+    private val interactionListener = object : TvPlayerInteractionListener {
+        override fun onUserAction(action: TVUserAction, data: Any?) {
+            super.onUserAction(action, data)
+            val isStream = data?.let {
+                (it as Boolean)
+            }
+            Log.d(TAG, "onUserAction: TVUserAction:${action.value} isStream:${isStream}")
+        }
     }
 
     private val playerListener = object : TvPlayerListener {

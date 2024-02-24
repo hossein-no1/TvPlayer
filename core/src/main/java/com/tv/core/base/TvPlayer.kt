@@ -30,8 +30,10 @@ import com.tv.core.ui.TvAdvertisePlayerView
 import com.tv.core.ui.TvPlayerView
 import com.tv.core.util.AdvertisePlayerListener
 import com.tv.core.util.ExoPlayerHelper
+import com.tv.core.util.TVUserAction
 import com.tv.core.util.TvImaAdsLoader
 import com.tv.core.util.TvPlayBackException
+import com.tv.core.util.TvPlayerInteractionListener
 import com.tv.core.util.TvPlayerListener
 import com.tv.core.util.mediaItems.AdvertiseItem
 import com.tv.core.util.mediaItems.DubbedItem
@@ -61,6 +63,7 @@ abstract class TvPlayer(
 
     private var trackSelector: DefaultTrackSelector
     private var playerListener: Listener? = null
+    private var interactionListener: TvPlayerInteractionListener? = null
     var player: ExoPlayer
     private lateinit var mediaSourceFactory: MediaSource.Factory
     private var dataSourceFactory: DataSource.Factory
@@ -192,6 +195,10 @@ abstract class TvPlayer(
             listener.onControllerVisibilityChanged(visibility)
         })
         player.addListener(requireNotNull(playerListener))
+    }
+
+    fun addInteractionListener(tvPlayerInteractionListener: TvPlayerInteractionListener) {
+        interactionListener = tvPlayerInteractionListener
     }
 
     private fun isRealMediaComplete(position: Long): Boolean {
@@ -337,6 +344,7 @@ abstract class TvPlayer(
     internal fun showSubtitle(
         dialogTitle: String, dialogButtonText: String, resIdStyle: Int
     ) {
+        interactionListener?.onUserAction(TVUserAction.SHOW_SUBTITLE)
         val subtitleLanguageList = ArrayList<String>()
         val subtitlesList = ArrayList<AlertDialogItemView>()
 
@@ -368,6 +376,7 @@ abstract class TvPlayer(
             adapter = getAlertDialogAdapter(subtitlesList.toTypedArray()),
             itemClickListener = { _, position ->
                 selectSubtitle(position)
+                interactionListener?.onUserAction(TVUserAction.SELECT_SUBTITLE)
             },
             positiveClickListener = { self, _ ->
                 trackSelector.setParameters(
@@ -385,6 +394,8 @@ abstract class TvPlayer(
     internal fun showAudioTrack(
         dialogTitle: String, dialogButtonText: String, resIdStyle: Int
     ) {
+        interactionListener?.onUserAction(TVUserAction.SHOW_AUDIO)
+
         val audioTrackLanguageList = ArrayList<String>()
         val audioTracksList = ArrayList<AlertDialogItemView>()
 
@@ -427,6 +438,7 @@ abstract class TvPlayer(
             adapter = getAlertDialogAdapter(audioTracksList.toTypedArray()),
             itemClickListener = { _, position ->
                 selectAudioTrack(position)
+                interactionListener?.onUserAction(TVUserAction.SELECT_AUDIO)
             },
             positiveClickListener = { self, _ ->
                 self.dismiss()
@@ -467,6 +479,8 @@ abstract class TvPlayer(
     }
 
     internal fun showLink(dialogTitle: String, dialogButtonText: String, resIdStyle: Int) {
+        interactionListener?.onUserAction(TVUserAction.SHOW_QUALITY, false)
+
         val qualityList = currentMediaItem.linkList
             .filter { it.source == currentMediaItem.currentLink?.source }
             .map {
@@ -480,6 +494,7 @@ abstract class TvPlayer(
         qualityDialog.create(
             adapter = getAlertDialogAdapter(qualityList.toTypedArray()),
             itemClickListener = { self, position ->
+                interactionListener?.onUserAction(TVUserAction.SELECT_QUALITY, false)
                 if (!currentMediaItem.linkList[position].isSelected) changeQuality(position)
                 else self.dismiss()
             },
@@ -492,6 +507,8 @@ abstract class TvPlayer(
     internal fun showSource(
         dialogTitle: String, dialogButtonText: String, resIdStyle: Int
     ) {
+        interactionListener?.onUserAction(TVUserAction.SHOW_SOURCE)
+
         val qualityList = ArrayList<AlertDialogItemView>()
 
         val data = currentMediaItem.linkList.groupBy { it.source }
@@ -515,6 +532,7 @@ abstract class TvPlayer(
                         if (linkList?.first()?.isSelected == false) changeQuality(positionInAll)
                     }
                 }
+                interactionListener?.onUserAction(TVUserAction.SELECT_SOURCE)
                 self.dismiss()
             },
             positiveButtonText = dialogButtonText,
@@ -527,6 +545,8 @@ abstract class TvPlayer(
     internal fun showQuality(
         dialogTitle: String, dialogButtonText: String, resIdStyle: Int
     ) {
+        interactionListener?.onUserAction(TVUserAction.SHOW_QUALITY, true)
+
         val subtitleLanguageList = ArrayList<String>()
         val subtitlesList = ArrayList<AlertDialogItemView>()
         var groupIndex = -1
@@ -559,6 +579,7 @@ abstract class TvPlayer(
             adapter = getAlertDialogAdapter(subtitlesList.toTypedArray()),
             itemClickListener = { _, position ->
                 groupInfo?.let { selectStreamQuality(position, it) }
+                interactionListener?.onUserAction(TVUserAction.SELECT_QUALITY, true)
             },
             positiveClickListener = { self, _ ->
                 trackSelector.setParameters(
@@ -638,6 +659,10 @@ abstract class TvPlayer(
                 return v
             }
         }
+    }
+
+    fun submitUserInteractionLogs(tvUserAction: TVUserAction) {
+        interactionListener?.onUserAction(tvUserAction)
     }
 
     class Builder(

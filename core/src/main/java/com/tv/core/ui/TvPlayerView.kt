@@ -22,9 +22,11 @@ import com.airbnb.lottie.model.KeyPath
 import com.google.android.exoplayer2.text.Cue.TEXT_SIZE_TYPE_ABSOLUTE
 import com.google.android.exoplayer2.ui.CaptionStyleCompat
 import com.google.android.exoplayer2.ui.StyledPlayerView
+import com.google.android.exoplayer2.ui.TimeBar
 import com.tv.core.R
 import com.tv.core.base.TvPlayer
 import com.tv.core.util.RecyclerItemClick
+import com.tv.core.util.TVUserAction
 import com.tv.core.util.TvDispatchKeyEvent
 import com.tv.core.util.episodelistdialog.EpisodeListDialogHelper
 import com.tv.core.util.episodelistdialog.EpisodeModel
@@ -56,6 +58,12 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
     private var ibEpisodeList: AppCompatImageButton? = null
     private var ibIncreaseSubtitle: AppCompatImageButton? = null
     private var ibReduceSubtitle: AppCompatImageButton? = null
+    private var exoNext: AppCompatImageButton? = null
+    private var exoPrev: AppCompatImageButton? = null
+    private var exoPlayPause: AppCompatImageButton? = null
+    private var exoForward: AppCompatImageButton? = null
+    private var exoRewind: AppCompatImageButton? = null
+    private var exoProgress: TvDefaultTimeBar? = null
 
     private var sourceDialogTitle = "Select source"
     private var sourceDialogButtonText = "Close"
@@ -199,6 +207,12 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
         llParentRewindAnimation = findViewById(R.id.ll_parentRewindAnimation)
         llParentFastForwardAnimation = findViewById(R.id.ll_parentFastForwardAnimation)
         llParentVideoState = findViewById(R.id.ll_parentVideoState)
+        exoNext = findViewById(R.id.exo_next)
+        exoPrev = findViewById(R.id.exo_prev)
+        exoPlayPause = findViewById(R.id.exo_play_pause)
+        exoForward = findViewById(R.id.exo_ffwd)
+        exoRewind = findViewById(R.id.exo_rew)
+        exoProgress = findViewById(R.id.exo_progress)
     }
 
     override fun updateUi() {
@@ -323,20 +337,50 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
         }
         ibEpisodeList?.setOnClickListener {
             episodeListDialog.setEpisodeList(playerHandler.mediaItems).show()
+            playerHandler.submitUserInteractionLogs(TVUserAction.SHOW_EPISODE)
         }
         ibIncreaseSubtitle?.setOnClickListener {
             increaseSubtitle()
+            playerHandler.submitUserInteractionLogs(TVUserAction.INCREASE_SUBTITLE)
         }
         ibReduceSubtitle?.setOnClickListener {
             reduceSubtitle()
+            playerHandler.submitUserInteractionLogs(TVUserAction.REDUCE_SUBTITLE)
         }
         episodeListDialog.setOnEpisodeClickListener(object : RecyclerItemClick {
             override fun onItemClickListener(episodeModel: EpisodeModel, position: Int) {
                 if (playerHandler.player.currentMediaItemIndex != position)
                     playerHandler.changeMedia(position, episodeModel.startPosition)
+                playerHandler.submitUserInteractionLogs(TVUserAction.SELECT_EPISODE)
                 episodeListDialog.dismiss()
             }
         })
+        exoNext?.setOnClickListener {
+            playerHandler.submitUserInteractionLogs(TVUserAction.NEXT_MEDIA)
+            playerHandler.player.seekToNext()
+        }
+        exoPrev?.setOnClickListener {
+            playerHandler.submitUserInteractionLogs(TVUserAction.PREV_MEDIA)
+            playerHandler.player.seekToPrevious()
+        }
+        exoPlayPause?.setOnClickListener {
+            if (playerHandler.player.playWhenReady) {
+                playerHandler.player.pause()
+                playerHandler.submitUserInteractionLogs(TVUserAction.PLAY_MEDIA)
+            } else {
+                playerHandler.player.play()
+                playerHandler.submitUserInteractionLogs(TVUserAction.PAUSE_MEDIA)
+            }
+        }
+        exoForward?.setOnClickListener {
+            playerHandler.player.seekForward()
+            playerHandler.submitUserInteractionLogs(TVUserAction.FORWARD_MEDIA)
+        }
+        exoRewind?.setOnClickListener {
+            playerHandler.player.seekBack()
+            playerHandler.submitUserInteractionLogs(TVUserAction.REWIND_MEDIA)
+        }
+        exoProgress?.addListener(onScrubListener)
 
         if (isLive) {
             findViewById<StyledPlayerView>(R.id.default_player_view).visibility = View.INVISIBLE
@@ -346,6 +390,19 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
             findViewById<StyledPlayerView>(R.id.default_player_view).visibility = View.VISIBLE
             findViewById<StyledPlayerView>(R.id.default_live_player_view).visibility =
                 View.INVISIBLE
+        }
+    }
+
+    private val onScrubListener = object : TimeBar.OnScrubListener {
+        override fun onScrubStart(timeBar: TimeBar, position: Long) {
+        }
+
+        override fun onScrubMove(timeBar: TimeBar, position: Long) {
+        }
+
+        override fun onScrubStop(timeBar: TimeBar, position: Long, canceled: Boolean) {
+            playerHandler.player.seekTo(position)
+            playerHandler.submitUserInteractionLogs(TVUserAction.SCRUB_MEDIA)
         }
     }
 
@@ -416,6 +473,11 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
         episodeButtonVisibility((showEpisodeButton == true) && isThereEpisodeMediaItems)
     }
 
+    fun changeSourceDialogTexts(title: String = "Select Source", buttonText: String = "Close") {
+        this.sourceDialogTitle = title
+        this.sourceDialogButtonText = buttonText
+    }
+
     fun changeSubtitleDialogTexts(title: String = "Select quality", buttonText: String = "Close") {
         this.subtitleDialogTitle = title
         this.subtitleDialogButtonText = buttonText
@@ -427,6 +489,8 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
     ) {
         this.qualityDialogTitle = title
         this.qualityDialogButtonText = buttonText
+        this.linkDialogTitle = title
+        this.linkDialogButtonText = buttonText
     }
 
     fun changeDubbedDialogTexts(
@@ -477,6 +541,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
                                         decrementCounter += 10
                                         tvPositionKeyControl.text =
                                             playerHandler.getPositionString(playerHandler.getCurrentPosition() - (decrementCounter * 1_000))
+                                        playerHandler.submitUserInteractionLogs(TVUserAction.FAST_DECREMENT_COUNTER)
                                     }
                                     decrementLongPressJob = null
                                 }
@@ -502,6 +567,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
                                         incrementCounter += 10
                                         tvPositionKeyControl.text =
                                             playerHandler.getPositionString(playerHandler.getCurrentPosition() + (incrementCounter * 1_000))
+                                        playerHandler.submitUserInteractionLogs(TVUserAction.FAST_INCREMENT_COUNTER)
                                     }
                                     incrementLongPressJob = null
                                 }
