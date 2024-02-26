@@ -92,6 +92,22 @@ class ImaPlayerActivity : AppCompatActivity() {
                         title = "media1",
                         link = UrlHelper.streamLinkWithMoreQuality,
                         source = "Fam"
+                    ), MediaLink(
+                        title = "media2",
+                        link = UrlHelper.streamLinkWithMoreQuality,
+                        source = "Fam"
+                    ), MediaLink(
+                        title = "media3",
+                        link = UrlHelper.streamLinkWithMoreQuality,
+                        source = "Fam"
+                    ), MediaLink(
+                        title = "media4",
+                        link = UrlHelper.streamLinkWithMoreQuality,
+                        source = "Fam"
+                    ), MediaLink(
+                        title = "media5",
+                        link = UrlHelper.streamLinkWithMoreQuality,
+                        source = "Fam"
                     ),
                     MediaLink(
                         title = "media2",
@@ -138,7 +154,7 @@ class ImaPlayerActivity : AppCompatActivity() {
             )
         playerHandler.addInteractionListener(interactionListener)
         playerHandler.addListener(playerListener)
-        playerHandler.addMediaList(listOf(media2, media1))
+        playerHandler.addMediaList(listOf(media1,media2))
         playerHandler.prepareAndPlay()
 
     }

@@ -527,14 +527,9 @@ abstract class TvPlayer(
         val qualityDialog = AlertDialogHelper(activity, resIdStyle, dialogTitle)
         qualityDialog.create(adapter = getAlertDialogAdapter(qualityList.toTypedArray()),
             itemClickListener = { self, position ->
-                var positionInAll = -1
-                data.keys.forEachIndexed { index, key ->
-                    positionInAll++
-                    if (position == index) {
-                        val linkList = data[key]
-                        if (linkList?.any { it.isSelected } == false) changeQuality(positionInAll)
-                    }
-                }
+                val targetSource = currentMediaItem.links.distinctBy { it.source }[position].source
+                val targetIndex = currentMediaItem.links.indexOfFirst { it.source == targetSource }
+                if (data[targetSource]?.any { it.isSelected } == false) changeQuality(targetIndex)
                 interactionListener?.onUserAction(TVUserAction.SELECT_SOURCE)
                 self.dismiss()
             },
