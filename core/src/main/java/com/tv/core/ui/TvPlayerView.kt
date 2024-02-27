@@ -81,6 +81,12 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
     private var sourceDialogResIdStyle = R.style.defaultAlertDialogStyle
     private var linkDialogResIdStyle = R.style.defaultAlertDialogStyle
 
+    private var subtitleLanguageDictionary =
+        mapOf("fa" to "فارسی", "en" to "انگلیسی", "eng" to "انگلیسی", null to "زیرنویس")
+    private var audioLanguageDictionary = subtitleLanguageDictionary
+    private var defaultSubtitle = "زیرنویس"
+    private var defaultAudio = "صدا"
+
     private lateinit var iranSansTypeFace: Typeface
 
     private lateinit var tvIncrement: AppCompatTextView
@@ -325,14 +331,18 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
             playerHandler.showAudioTrack(
                 dialogTitle = audioTrackDialogTitle,
                 dialogButtonText = audioTrackDialogButtonText,
-                resIdStyle = audioTrackDialogResIdStyle
+                resIdStyle = audioTrackDialogResIdStyle,
+                audioLanguageDictionary = audioLanguageDictionary,
+                defaultAudio = defaultAudio
             )
         }
         ibSubtitle?.setOnClickListener {
             playerHandler.showSubtitle(
                 dialogTitle = subtitleDialogTitle,
                 dialogButtonText = subtitleDialogButtonText,
-                resIdStyle = subtitleDialogResIdStyle
+                resIdStyle = subtitleDialogResIdStyle,
+                subtitleLanguageDictionary = subtitleLanguageDictionary,
+                defaultSubtitle = defaultSubtitle
             )
         }
         ibEpisodeList?.setOnClickListener {
@@ -478,9 +488,14 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
         this.sourceDialogButtonText = buttonText
     }
 
-    fun changeSubtitleDialogTexts(title: String = "Select quality", buttonText: String = "Close") {
+    fun changeSubtitleDialogTexts(
+        title: String = "Select quality",
+        buttonText: String = "Close",
+        subtitleLanguageDictionary: Map<String?, String>? = null
+    ) {
         this.subtitleDialogTitle = title
         this.subtitleDialogButtonText = buttonText
+        subtitleLanguageDictionary?.let { this.subtitleLanguageDictionary = it }
     }
 
     fun changeQualityDialogTexts(
@@ -495,10 +510,12 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
 
     fun changeDubbedDialogTexts(
         title: String = "Select dubbed",
-        buttonText: String = "Close"
+        buttonText: String = "Close",
+        audioLanguageDictionary: Map<String?, String>? = null
     ) {
         this.audioTrackDialogTitle = title
         this.audioTrackDialogButtonText = buttonText
+        audioLanguageDictionary?.let { this.audioLanguageDictionary = it }
     }
 
     fun setSubtitleDialogStyle(resId: Int) {

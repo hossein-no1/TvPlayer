@@ -342,7 +342,11 @@ abstract class TvPlayer(
     }
 
     internal fun showSubtitle(
-        dialogTitle: String, dialogButtonText: String, resIdStyle: Int
+        dialogTitle: String,
+        dialogButtonText: String,
+        resIdStyle: Int,
+        subtitleLanguageDictionary: Map<String?, String>,
+        defaultSubtitle: String
     ) {
         interactionListener?.onUserAction(TVUserAction.SHOW_SUBTITLE)
         val subtitleLanguageList = ArrayList<String>()
@@ -353,12 +357,9 @@ abstract class TvPlayer(
                 val groupInfo = group.mediaTrackGroup
 
                 subtitleLanguageList.add(groupInfo.getFormat(0).language.toString())
+                val language = groupInfo.getFormat(0).language?.lowercase()
                 val subtitleText =
-                    "${subtitlesList.size + 1}. " + Locale(groupInfo.getFormat(0).language.toString()).displayLanguage + " (${
-                        if (groupInfo.getFormat(0).label == null) "Subtitle" else groupInfo.getFormat(
-                            0
-                        ).label
-                    })"
+                    subtitleLanguageDictionary[language] ?: language ?: defaultSubtitle
 
                 val subtitleIcon = if (group.isSelected) R.drawable.tv_ic_check else 0
                 val subtitleCheckSupported = group.isSupported
@@ -392,35 +393,23 @@ abstract class TvPlayer(
     }
 
     internal fun showAudioTrack(
-        dialogTitle: String, dialogButtonText: String, resIdStyle: Int
+        dialogTitle: String,
+        dialogButtonText: String,
+        resIdStyle: Int,
+        audioLanguageDictionary: Map<String?, String>,
+        defaultAudio: String
     ) {
         interactionListener?.onUserAction(TVUserAction.SHOW_AUDIO)
 
         val audioTrackLanguageList = ArrayList<String>()
         val audioTracksList = ArrayList<AlertDialogItemView>()
 
-        var softAudioTrackCounter = 0
-        val allAudioMediaSize =
-            player.currentTracks.groups.filter { it.type == C.TRACK_TYPE_AUDIO }.size
-        val softAudioMediaSize = currentMediaItem.dubbedList.size
-        val hardAudioMediaSize = allAudioMediaSize - softAudioMediaSize
-
         player.currentTracks.groups.forEachIndexed { index, group ->
             if (group.type == C.TRACK_TYPE_AUDIO) {
                 val groupInfo = group.mediaTrackGroup
                 audioTrackLanguageList.add(groupInfo.getFormat(0).language.toString())
-                val displayLanguage =
-                    Locale(groupInfo.getFormat(0).language.toString()).displayLanguage.let {
-                        if (it == "null") "" else it
-                    }
-                var audioTrackText = "${audioTracksList.size + 1}. " + displayLanguage + " (${
-                    if (groupInfo.getFormat(0).label == null) "Dubbed" else groupInfo.getFormat(0).label
-                })"
-
-                if (index > hardAudioMediaSize) {
-                    audioTrackText =
-                        "${audioTracksList.size + 1}. " + currentMediaItem.dubbedList[softAudioTrackCounter++].title
-                }
+                val language = groupInfo.getFormat(0).language?.lowercase()
+                val audioTrackText = audioLanguageDictionary[language] ?: language ?: defaultAudio
 
                 val audioTrackIcon = if (group.isSelected) R.drawable.tv_ic_check else 0
                 val audioTrackCheckSupported = group.isSupported
@@ -544,7 +533,7 @@ abstract class TvPlayer(
         dialogTitle: String, dialogButtonText: String, resIdStyle: Int
     ) {
         interactionListener?.onUserAction(TVUserAction.SHOW_QUALITY, true)
-
+        val source = currentMediaItem.currentLink?.source
         val subtitleLanguageList = ArrayList<String>()
         val subtitlesList = ArrayList<AlertDialogItemView>()
         var groupIndex = -1
@@ -557,7 +546,8 @@ abstract class TvPlayer(
                     subtitleLanguageList.add(safeGroupInfo.getFormat(0).language.toString())
                     for (i in 0 until safeGroupInfo.length) {
                         val format = safeGroupInfo.getFormat(i)
-                        val quality = "${format.height}p"
+                        val quality =
+                            if (source == "آپرا") "${format.width}p" else "${format.height}p"
                         val subtitleIcon =
                             if (group.isTrackSelected(i)) R.drawable.tv_ic_check else 0
                         val subtitleCheckSupported = group.isSupported
