@@ -73,6 +73,7 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
     private var linkDialogButtonText = "Close"
     private var qualityDialogTitle = "Select quality"
     private var qualityDialogButtonText = "Close"
+    private var qualityDialogItemDefault = "Auto"
     private var audioTrackDialogTitle = "Select dubbed"
     private var audioTrackDialogButtonText = "Close"
     private var subtitleDialogResIdStyle = R.style.defaultAlertDialogStyle
@@ -324,7 +325,8 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
             playerHandler.showQuality(
                 dialogTitle = qualityDialogTitle,
                 dialogButtonText = qualityDialogButtonText,
-                resIdStyle = qualityDialogResIdStyle
+                resIdStyle = qualityDialogResIdStyle,
+                qualityDialogItemDefault = qualityDialogItemDefault,
             )
         }
         ibAudioTack?.setOnClickListener {
@@ -500,12 +502,14 @@ class TvPlayerView(private val mContext: Context, attrs: AttributeSet?) :
 
     fun changeQualityDialogTexts(
         title: String = "Select subtitle",
-        buttonText: String = "Off subtitle"
+        buttonText: String = "Off subtitle",
+        qualityDialogItemDefault: String = "Auto"
     ) {
         this.qualityDialogTitle = title
         this.qualityDialogButtonText = buttonText
         this.linkDialogTitle = title
         this.linkDialogButtonText = buttonText
+        this.qualityDialogItemDefault = qualityDialogItemDefault
     }
 
     fun changeDubbedDialogTexts(

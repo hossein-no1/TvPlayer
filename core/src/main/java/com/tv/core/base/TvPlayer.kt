@@ -45,6 +45,7 @@ import com.tv.core.util.ui.AlertDialogHelper
 import com.tv.core.util.ui.AlertDialogItemView
 import java.util.Formatter
 import java.util.Locale
+import kotlin.math.min
 
 abstract class TvPlayer(
     val activity: AppCompatActivity,
@@ -404,7 +405,7 @@ abstract class TvPlayer(
         val audioTrackLanguageList = ArrayList<String>()
         val audioTracksList = ArrayList<AlertDialogItemView>()
 
-        player.currentTracks.groups.forEachIndexed { index, group ->
+        player.currentTracks.groups.forEach { group ->
             if (group.type == C.TRACK_TYPE_AUDIO) {
                 val groupInfo = group.mediaTrackGroup
                 audioTrackLanguageList.add(groupInfo.getFormat(0).language.toString())
@@ -530,10 +531,12 @@ abstract class TvPlayer(
     }
 
     internal fun showQuality(
-        dialogTitle: String, dialogButtonText: String, resIdStyle: Int
+        dialogTitle: String,
+        dialogButtonText: String,
+        resIdStyle: Int,
+        qualityDialogItemDefault: String
     ) {
         interactionListener?.onUserAction(TVUserAction.SHOW_QUALITY, true)
-        val source = currentMediaItem.currentLink?.source
         val subtitleLanguageList = ArrayList<String>()
         val subtitlesList = ArrayList<AlertDialogItemView>()
         var groupIndex = -1
@@ -544,16 +547,26 @@ abstract class TvPlayer(
                 groupIndex = index
                 groupInfo?.let { safeGroupInfo ->
                     subtitleLanguageList.add(safeGroupInfo.getFormat(0).language.toString())
-                    for (i in 0 until safeGroupInfo.length) {
-                        val format = safeGroupInfo.getFormat(i)
-                        val quality =
-                            if (source == "آپرا") "${format.width}p" else "${format.height}p"
-                        val subtitleIcon =
-                            if (group.isTrackSelected(i)) R.drawable.tv_ic_check else 0
+                    if (safeGroupInfo.getFormat(0).width > 0) {
+                        for (i in 0 until safeGroupInfo.length) {
+                            val format = safeGroupInfo.getFormat(i)
+                            val qualityValue = min(format.width, format.height)
+                            val quality = "${qualityValue}p"
+                            val subtitleIcon =
+                                if (group.isTrackSelected(i)) R.drawable.tv_ic_check else 0
+                            val subtitleCheckSupported = group.isSupported
+                            subtitlesList.add(
+                                AlertDialogItemView(
+                                    quality, subtitleIcon, subtitleCheckSupported
+                                )
+                            )
+                        }
+                    } else {
+                        val subtitleIcon = R.drawable.tv_ic_check
                         val subtitleCheckSupported = group.isSupported
                         subtitlesList.add(
                             AlertDialogItemView(
-                                quality, subtitleIcon, subtitleCheckSupported
+                                qualityDialogItemDefault, subtitleIcon, subtitleCheckSupported
                             )
                         )
                     }
@@ -569,11 +582,13 @@ abstract class TvPlayer(
                 interactionListener?.onUserAction(TVUserAction.SELECT_QUALITY, true)
             },
             positiveClickListener = { self, _ ->
-                trackSelector.setParameters(
-                    trackSelector.buildUponParameters().setRendererDisabled(
-                        C.TRACK_TYPE_VIDEO, true
+                if (subtitlesList.size > 1) {
+                    trackSelector.setParameters(
+                        trackSelector.buildUponParameters().setRendererDisabled(
+                            C.TRACK_TYPE_VIDEO, true
+                        )
                     )
-                )
+                }
                 self.dismiss()
             },
             positiveButtonText = dialogButtonText
