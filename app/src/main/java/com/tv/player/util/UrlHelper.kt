@@ -32,6 +32,8 @@ object UrlHelper {
 
     const val streamLinkWithMoreQuality = "https://traffic.upera.tv/2936255-0-hls.m3u8?ref=tUWI"
 
+    const val shortVideo = "https://traffic.upera.tv/2846911-0-480.mp4?ref=tUWI"
+
     const val film480 =
         "http://dl.gemescape.com/film/2022/Lightyear/BluRay/Lightyear.2022.480p.BluRay.x264.Pahe.SoftSub.PK.mkv"
     const val film720 =

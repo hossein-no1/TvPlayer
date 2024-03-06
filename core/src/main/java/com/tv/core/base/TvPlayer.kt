@@ -7,6 +7,7 @@ import android.widget.ArrayAdapter
 import android.widget.ListAdapter
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -43,6 +44,9 @@ import com.tv.core.util.mediaItems.MediaItemParent
 import com.tv.core.util.mediaItems.SubtitleConverter
 import com.tv.core.util.ui.AlertDialogHelper
 import com.tv.core.util.ui.AlertDialogItemView
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.Formatter
 import java.util.Locale
 import kotlin.math.min
@@ -68,6 +72,7 @@ abstract class TvPlayer(
     var player: ExoPlayer
     private lateinit var mediaSourceFactory: MediaSource.Factory
     private var dataSourceFactory: DataSource.Factory
+    private var job: Job? = null
 
     val currentMediaItem: MediaItemParent
         get() {
@@ -163,6 +168,7 @@ abstract class TvPlayer(
                 oldPosition: Player.PositionInfo, newPosition: Player.PositionInfo, reason: Int
             ) {
                 super.onPositionDiscontinuity(oldPosition, newPosition, reason)
+                handleCheckMediaFinish()
                 val hasAd = newPosition.adGroupIndex >= 0
                 if (hasAd) {
                     listener.onAdRollStarted(
@@ -196,6 +202,19 @@ abstract class TvPlayer(
             listener.onControllerVisibilityChanged(visibility)
         })
         player.addListener(requireNotNull(playerListener))
+    }
+
+    fun handleCheckMediaFinish() {
+        val timeToFinish = (getDuration() - getCurrentPosition())
+        if (timeToFinish > 0 && player.hasNextMediaItem()) {
+            job?.cancel()
+            job = activity.lifecycleScope.launch {
+                delay(timeToFinish)
+                if (player.hasNextMediaItem()) {
+                    player.seekToNextMediaItem()
+                }
+            }
+        }
     }
 
     fun addInteractionListener(tvPlayerInteractionListener: TvPlayerInteractionListener) {

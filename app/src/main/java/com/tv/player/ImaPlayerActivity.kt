@@ -1,5 +1,6 @@
 package com.tv.player
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -36,11 +37,11 @@ class ImaPlayerActivity : AppCompatActivity() {
             .setAdErrorListener { Log.i(TAG, "Error : ${it?.error?.message}") }
             .setAdEventListener { Log.i(TAG, it?.ad?.title.toString()) }
             .setVideoAdPlayerCallBack(object : VideoAdPlayer.VideoAdPlayerCallback {
-                override fun onAdProgress(p0: AdMediaInfo?, p1: VideoProgressUpdate?) {
+                override fun onAdProgress(p0: AdMediaInfo, p1: VideoProgressUpdate) {
                     Log.i(TAG, "onAdProgress")
                 }
 
-                override fun onBuffering(p0: AdMediaInfo?) {
+                override fun onBuffering(p0: AdMediaInfo) {
                     Log.i(TAG, "onBuffering")
                 }
 
@@ -48,38 +49,37 @@ class ImaPlayerActivity : AppCompatActivity() {
                     Log.i(TAG, "onContentComplete")
                 }
 
-                override fun onEnded(p0: AdMediaInfo?) {
+                override fun onEnded(p0: AdMediaInfo) {
                     Log.i(TAG, "onEnded")
                 }
 
-                override fun onError(p0: AdMediaInfo?) {
+                override fun onError(p0: AdMediaInfo) {
                     Log.i(TAG, "onError")
                 }
 
-                override fun onLoaded(p0: AdMediaInfo?) {
+                override fun onLoaded(p0: AdMediaInfo) {
                     Log.i(TAG, "onLoaded")
                 }
 
-                override fun onPause(p0: AdMediaInfo?) {
+                override fun onPause(p0: AdMediaInfo) {
                     Log.i(TAG, "onPause")
                 }
 
-                override fun onPlay(p0: AdMediaInfo?) {
+                override fun onPlay(p0: AdMediaInfo) {
                     Log.i(TAG, "onPlay")
                 }
 
-                override fun onResume(p0: AdMediaInfo?) {
+                override fun onResume(p0: AdMediaInfo) {
                     Log.i(TAG, "onResume")
                 }
 
-                override fun onVolumeChanged(p0: AdMediaInfo?, p1: Int) {
+                override fun onVolumeChanged(p0: AdMediaInfo, p1: Int) {
                     Log.i(TAG, "onVolumeChanged")
                 }
 
             })
             .setLanguage("fa")
             .create()
-
         playerHandler = TvPlayer.Builder(
             activity = this,
             playerView = binding.tvPlayerViewActivityImaPlayer
@@ -152,9 +152,20 @@ class ImaPlayerActivity : AppCompatActivity() {
 
                     )
             )
+        val media3 =
+            MediaItem(
+                links = listOf(
+                    MediaLink(
+                        title = "media1",
+                        link = UrlHelper.shortVideo,
+                        source = "Fam",
+                        adTagUri = Uri.parse("https://play.huma.ir/api/ads/vmap?type=1&genreName=Animation&genreName=Family")
+                    )
+                )
+            )
         playerHandler.addInteractionListener(interactionListener)
         playerHandler.addListener(playerListener)
-        playerHandler.addMediaList(listOf(media1,media2))
+        playerHandler.addMediaList(listOf(media3, media3, media3))
         playerHandler.prepareAndPlay()
 
     }
@@ -188,6 +199,11 @@ class ImaPlayerActivity : AppCompatActivity() {
         override fun onControllerVisibilityChanged(visibility: Int) {
             super.onControllerVisibilityChanged(visibility)
             Log.i(TAG, "onControllerVisibilityChanged: $visibility")
+        }
+
+        override fun onMediaChange(mediaItem: MediaItemParent) {
+            super.onMediaChange(mediaItem)
+            Log.d(TAG, "onMediaChange: ")
         }
     }
 
