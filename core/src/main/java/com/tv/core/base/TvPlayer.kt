@@ -247,7 +247,7 @@ abstract class TvPlayer(
     fun isThereSubtitle(): Boolean {
         for (group in player.currentTracks.groups) {
             if (group.type == C.TRACK_TYPE_TEXT) {
-                return true
+                if (!group.mediaTrackGroup.getFormat(0).language.isNullOrEmpty()) return true
             }
         }
         return false
@@ -369,14 +369,12 @@ abstract class TvPlayer(
         defaultSubtitle: String
     ) {
         interactionListener?.onUserAction(TVUserAction.SHOW_SUBTITLE)
-        val subtitleLanguageList = ArrayList<String>()
         val subtitlesList = ArrayList<AlertDialogItemView>()
 
         player.currentTracks.groups.forEach { group ->
             if (group.type == C.TRACK_TYPE_TEXT) {
                 val groupInfo = group.mediaTrackGroup
 
-                subtitleLanguageList.add(groupInfo.getFormat(0).language.toString())
                 val language = groupInfo.getFormat(0).language?.lowercase()
                 val subtitleText =
                     subtitleLanguageDictionary[language] ?: language ?: defaultSubtitle
