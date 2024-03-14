@@ -8,18 +8,27 @@ import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
 import com.tv.core.ui.TvAdvertisePlayerView
 import com.tv.core.ui.TvPlayerView
-import com.tv.core.util.mediaItems.AdvertiseItem
 import com.tv.core.util.AdvertisePlayerListener
-import com.tv.core.util.mediaItems.MediaItemConverter
 import com.tv.core.util.TvPlayBackException
+import com.tv.core.util.mediaItems.AdvertiseItem
+import com.tv.core.util.mediaItems.MediaItemConverter
 
 internal class AdvertisePlayer(
     activity: AppCompatActivity,
     private val tvPlayerView: TvPlayerView,
     private val tvAdvertisePlayerView: TvAdvertisePlayerView,
     isLive: Boolean,
-    playWhenReady: Boolean = true
-) : TvPlayer(activity, tvPlayerView, isLive, playWhenReady) {
+    playWhenReady: Boolean = true,
+    minBufferMs: Int,
+    maxBufferMs: Int
+) : TvPlayer(
+    activity = activity,
+    tvPlayerView = tvPlayerView,
+    isLive = isLive,
+    playWhenReady = playWhenReady,
+    minBufferMs = minBufferMs,
+    maxBufferMs = maxBufferMs
+) {
 
     private var adPlayer: ExoPlayer = ExoPlayer.Builder(activity.applicationContext).build()
 
