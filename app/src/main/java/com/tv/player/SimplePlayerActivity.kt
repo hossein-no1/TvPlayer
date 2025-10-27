@@ -33,26 +33,33 @@ class SimplePlayerActivity : AppCompatActivity() {
         playerHandler = TvPlayer.Builder(
             activity = this,
             playerView = binding.tvPlayerViewActivitySimplePlayer,
-            maxBufferMs = 32*1024
+            maxBufferMs = 32 * 1024
         ).createSimplePlayer(isLive = false)
 
-        val subtitle1 = SubtitleItem(url = UrlHelper.subtitleUrl, label = "Subtitle 1", selectionFlags = SubtitleItem.SELECTION_FLAG_FORCED)
-        val subtitle2 = SubtitleItem(url = UrlHelper.subtitleUrl2, label = "Subtitle 2", selectionFlags = SubtitleItem.SELECTION_FLAG_AUTOSELECT)
+        val subtitle1 = SubtitleItem(
+            url = UrlHelper.subtitleUrl,
+            label = "Subtitle 1",
+            selectionFlags = SubtitleItem.SELECTION_FLAG_FORCED
+        )
+        val subtitle2 = SubtitleItem(
+            url = UrlHelper.subtitleUrl2,
+            label = "Subtitle 2",
+            selectionFlags = SubtitleItem.SELECTION_FLAG_AUTOSELECT
+        )
 
         val mediaWithoutSubtitle = MediaItem(
             qualities = listOf(
                 MediaQuality(title = "Movie with Dubbed", link = UrlHelper.film480)
-            ),
-            dubbedList = listOf(
+            ), dubbedList = listOf(
                 DubbedItem(
-                    title = "Medad rangi",
-                    url = UrlHelper.dubbed1
-                ),
-                DubbedItem(
-                    title = "Qeble",
-                    url = UrlHelper.dubbed2
+                    title = "Medad rangi", url = UrlHelper.dubbed1
+                ), DubbedItem(
+                    title = "Qeble", url = UrlHelper.dubbed2
                 )
-            )
+            ),
+            title = "Breaking bad",
+            description = "Season one, Episode four",
+            cover = "http://tmdb.papkorndl.com/t/p/w500/ydlY3iPfeOAvu8gVqrxPoMvzNCn.jpg"
         )
         val mediaWithQuality = MediaItem(
             startPositionMs = 3_600_000L,
@@ -60,9 +67,7 @@ class SimplePlayerActivity : AppCompatActivity() {
             qualities = listOf(
                 MediaQuality(title = "1080", link = UrlHelper.film1080)
             )
-        )
-            .addQuality("720", link = UrlHelper.film720)
-            .addQuality("480", link = UrlHelper.film480)
+        ).addQuality("720", link = UrlHelper.film720).addQuality("480", link = UrlHelper.film480)
 
         val mediaWithQualityList = MediaItem(
             qualities = listOf(
@@ -74,9 +79,7 @@ class SimplePlayerActivity : AppCompatActivity() {
         playerHandler.addListener(playerListener)
         playerHandler.addMediaList(
             listOf(
-                mediaWithoutSubtitle,
-                mediaWithQuality,
-                mediaWithQualityList
+                mediaWithoutSubtitle, mediaWithQuality, mediaWithQualityList
             )
         )
         playerHandler.prepareAndPlay()
@@ -88,12 +91,11 @@ class SimplePlayerActivity : AppCompatActivity() {
         override fun onPlayerError(error: TvPlayBackException) {
             super.onPlayerError(error)
             error.getErrorCodeMessage()
-            if (error.errorCode == TvPlayBackException.ERROR_CODE_IO_BAD_HTTP_STATUS)
-                Toast.makeText(
-                    this@SimplePlayerActivity.applicationContext,
-                    "Bad source error!",
-                    Toast.LENGTH_SHORT
-                ).show()
+            if (error.errorCode == TvPlayBackException.ERROR_CODE_IO_BAD_HTTP_STATUS) Toast.makeText(
+                this@SimplePlayerActivity.applicationContext,
+                "Bad source error!",
+                Toast.LENGTH_SHORT
+            ).show()
             Log.i(
                 TAG,
                 "ErrorMessage : ${error.errorMessage} and errorCode : ${error.errorCode} for ${playerHandler.getCurrentQuality()?.title}"
@@ -112,9 +114,7 @@ class SimplePlayerActivity : AppCompatActivity() {
 
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
         return binding.tvPlayerViewActivitySimplePlayer.handleDispatchKeyEvent(
-            event,
-            this,
-            customDispatcherKeyEvent
+            event, this, customDispatcherKeyEvent
         )
     }
 

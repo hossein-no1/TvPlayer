@@ -37,7 +37,9 @@ class SerialActivity : AppCompatActivity() {
         UrlHelper.episodeCoverList.forEachIndexed { index, coverUrl ->
             episodeMedia.add(
                 EpisodeMediaItem(
-                    cover = coverUrl,
+                    title = "Breaking bad",
+                    description = "30 EP",
+                    cover = "https://image.3sigma.ir/t/p/w500/2pNZYWhkY0DdUyVU8FEaYDSSfTW.jpg",
                     qualities = listOf(
                         MediaQuality(
                             title = "Episode ${index + 1}",

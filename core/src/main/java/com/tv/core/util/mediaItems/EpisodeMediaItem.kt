@@ -10,8 +10,19 @@ class EpisodeMediaItem(
     subtitleItems: List<SubtitleItem> = listOf(),
     dubbedList: List<DubbedItem> = listOf(),
     qualities: List<MediaQuality> = listOf(),
-    private val cover: String = ""
-) : MediaItemParent(id, startPositionMs, subtitleItems, dubbedList, qualities) {
+    title: String = "",
+    description: String = "",
+    cover: String = ""
+) : MediaItemParent(
+    id = id,
+    startPositionMs = startPositionMs,
+    subtitleItems = subtitleItems,
+    dubbedList = dubbedList,
+    qualities = qualities,
+    title = title,
+    description = description,
+    cover = cover
+) {
 
     internal fun convertToEpisodeModel(): EpisodeModel {
         return EpisodeModel(

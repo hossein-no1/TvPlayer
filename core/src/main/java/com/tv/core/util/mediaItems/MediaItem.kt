@@ -8,8 +8,20 @@ class MediaItem(
     startPositionMs: Long = 0L,
     subtitleItems: List<SubtitleItem> = listOf(),
     dubbedList: List<DubbedItem> = listOf(),
-    qualities: List<MediaQuality> = listOf()
-) : MediaItemParent(id, startPositionMs, subtitleItems, dubbedList, qualities) {
+    qualities: List<MediaQuality> = listOf(),
+    title: String = "",
+    description: String = "",
+    cover: String = ""
+) : MediaItemParent(
+    id = id,
+    startPositionMs = startPositionMs,
+    subtitleItems = subtitleItems,
+    dubbedList = dubbedList,
+    qualities = qualities,
+    title = title,
+    description = description,
+    cover = cover
+) {
 
     override fun addQuality(quality: String, link: String, adTagUri: Uri): MediaItemParent {
         qualityList.add(MediaQuality(quality, link, adTagUri))

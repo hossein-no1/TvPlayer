@@ -1,7 +1,6 @@
 package com.tv.core.util.mediaItems
 
 import android.net.Uri
-import com.tv.core.util.episodelistdialog.EpisodeModel
 import java.util.UUID
 
 abstract class MediaItemParent(
@@ -9,7 +8,10 @@ abstract class MediaItemParent(
     var startPositionMs: Long = 0L,
     val subtitleItems: List<SubtitleItem> = listOf(),
     val dubbedList: List<DubbedItem> = listOf(),
-    qualities: List<MediaQuality> = listOf()
+    qualities: List<MediaQuality> = listOf(),
+    val title : String = "",
+    val description : String = "",
+    val cover : String = ""
 ) {
 
     internal val qualityList = mutableListOf<MediaQuality>()
